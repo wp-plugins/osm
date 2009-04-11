@@ -1,22 +1,19 @@
 === OSM ===
-Tags: map, OpenStreetMap, geo
+Tags: map, OpenStreetMap, geo, KML, GPX
 Requires at least: 2.5.1
 Tested up to: 2.7.1
-Stable tag: 0.3
+Stable tag: 0.4
 
 Allows you to add OpenStreetMap maps with personal markers and routes. In addition geo meta data are added to posts and pages.
 
 == Description ==
 
-OSM is a plugin the focuses on OSM maps and geo data in your blog
-
+OSM is a plugin the focuses on OpenstreetMap and geo data in your blog
 
 * using shortcode to add OSM maps in your blog
-* visualize your marks in the map
-* visualize your route in the map
+* visualize your marks in the map 
+* visualize your route in the map (KML and GPX format)
 * visualize all geo meta data in the map
-
-
 * use custom field to add geodata to your blog
 * geo data are written to html-meta tags
 
@@ -41,6 +38,11 @@ Just use as many shortcodes as you want to, even within one post.
 Yes, the format has to be Lat,Long. The name of the customfield has to be configured.
 
 == Screenshots ==
+
+1. Showing a track added with a GPX file
+Osm_Plugin_02.png
+2. Showing all places or blog has got tagged posts/pages
+Osm_Plugin_01.png
 
 == Arbitrary section ==
 

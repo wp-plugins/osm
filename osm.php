@@ -3,7 +3,7 @@
 Plugin Name: OSM
 Plugin URI: http://www.Fotomobil.at/wp-osm-plugin
 Description: Embeds <a href="http://www.OpenStreetMap.org">OpenStreetMap</a> maps in your blog and adds geo data to your posts. Get the latest version on the <a href="http://www.Fotomobil.at/wp-osm-plugin">OSM plugin page</a>.
-Version: 0.3
+Version: 0.4
 Author: Michael Kang
 Author URI: http://www.Fotomobil.at
 Minimum WordPress Version Required: 2.5.1
@@ -32,9 +32,16 @@ Minimum WordPress Version Required: 2.5.1
      + java scripts are not loaded in wp-admin
 
     Versions 0.3 - features added bugs fixed
-     + adde shortcode marker_all_posts to get markes of meta geo data
+     + added shortcode marker_all_posts to get markes of meta geo data
+    
+    Versions 0.4 - features added bugs fixed
+     + added KML support and colour interface
+
 */
 load_plugin_textdomain('Osm');
+
+// modify the name of the markes for the posts if needed 
+define ("POST_MARKER_PNG", "Ol_icon_blue_dot.png");
 
 // these defines are given by OpenStreetMap.org
 define ("URL_INDEX", "http://www.openstreetmap.org/index.html?");
@@ -44,6 +51,23 @@ define ("URL_ZOOM_01","&zoom=[");
 define ("URL_ZOOM_02","]");
 define (ZOOM_LEVEL_MAX,17);
 define (ZOOM_LEVEL_MIN,1);
+
+if ( ! defined( 'WP_CONTENT_URL' ) )
+      define( 'WP_CONTENT_URL', get_option( 'siteurl' ) . '/wp-content' );
+if ( ! defined( 'WP_CONTENT_DIR' ) )
+      define( 'WP_CONTENT_DIR', ABSPATH . 'wp-content' );
+if ( ! defined( 'WP_PLUGIN_URL' ) )
+      define( 'WP_PLUGIN_URL', WP_CONTENT_URL. '/plugins' );
+if ( ! defined( 'WP_PLUGIN_DIR' ) )
+      define( 'WP_PLUGIN_DIR', WP_CONTENT_DIR . '/plugins' );
+define ("OSM_PLUGIN_URL", WP_PLUGIN_URL."/Osm/");
+define ("URL_POST_MARKER", OSM_PLUGIN_URL.POST_MARKER_PNG);
+//define("URL_POST_MARKER","http://www.faktor.cc/Fotomobil/wp-content/plugins/Osm/Ol_icon_blue_dot.png");
+
+global $wp_version;
+if (version_compare($wp_version,"2.5.1","<")){
+  exit('[OSM plugin - ERROR]: At least Wordpress Version 2.5.1 is need for this plugin!');
+}
 
 // let's be unique ... 
 // with this namespace
@@ -93,7 +117,7 @@ class Osm
 		//show it in the settings page
 		echo '
 			<div class="wrap">
-			<h2>' . __('OpenStreetMap Plugin v0.3', 'Osm') . '</h2>
+			<h2>' . __('OpenStreetMap Plugin v0.4', 'Osm') . '</h2>
 			<form method="post">
 				<table width="100%" cellspacing="2" cellpadding="5" class="editform">
 					<tr valign="top">
@@ -106,7 +130,6 @@ class Osm
 							<dd><input type="text" name="zoom_level" value="' . $zoom_level . '" /></dd>
 							</dl>
 						</td>
-
 					</tr>
 				</table>
 				<div class="submit"><input type="submit" name="Options" value="' . __('Update Options', 'Osm') . ' &raquo;" /></div>
@@ -126,12 +149,13 @@ class Osm
 		global $wp_query;
 
 		$CustomField = get_option('custom_field');
-
 		list($lat, $lon) = split(',', get_post_meta($wp_query->post->ID, $CustomField, true));
 		if(is_single() && ($lat != '') && ($lon != '')){
 			$title = convert_chars(strip_tags(get_bloginfo("name")))." - ".$wp_query->post->post_title;
+      echo "<!-- OSM plugin v0.4: adding geo meta tags: -->\n";
 		}
 		else{
+      echo "<!-- OSM plugin v0.4: no geo data for this page / post set -->";
 			return;
 		}
 
@@ -141,7 +165,26 @@ class Osm
     echo "<meta name=\"geo.placename\" content=\"{$wp_query->post->post_title}\"/>\n"; 
 		echo "<meta name=\"geo.position\"  content=\"{$lat};{$lon}\" />\n";
 	}
-  
+
+  // support different types of GML Layers
+  function addGmlLayer($a_LayerName, $a_FileName, $a_Colour, $a_Type){
+    $Layer .= '  var lgml = new OpenLayers.Layer.GML("'.$a_LayerName.'", "'.$a_FileName.'", {';
+    $Layer .= '    format: OpenLayers.Format.'.$a_Type.',';
+    $Layer .= '    style: {strokeColor: "'.$a_Colour.'", strokeWidth: 5, strokeOpacity: 0.5},';
+    $Layer .= '    projection: new OpenLayers.Projection("EPSG:4326")';
+    $Layer .= '  });';
+    $Layer .= '  map.addLayer(lgml);';
+    return $Layer;
+  }
+
+  // if you miss a colour, just add it
+  function checkStyleColour($a_colour){
+    if ($a_colour != 'red' && $a_colour != 'blue' && $a_colour != 'black' && $a_colour != 'green'){
+      return "blue";
+    }
+    return $a_colour;
+  }
+
   // execute the java script to display 
   // the OpenStreetMap
   function sc_showMap($atts) {
@@ -154,9 +197,10 @@ class Osm
     // the zoomlevel of the map 
     'zoom'      => '10',                
     // track info
-    //like http://MyDomain.com/Track.gpx
     'gpx_file'  => 'NoFile',                  
-    'gpx_colour'  => 'red',
+    'gpx_colour'  => 'NoColour',
+    'kml_file'  => 'NoFile',                  
+    'kml_colour'  => 'NoColour',
     // are there markers in the map wished loaded from a file
     'marker_file'         => 'NoFile', // 'y' or 'Y'
     // are there markers in the map wished loaded from post tags
@@ -178,12 +222,17 @@ class Osm
      return "[OSM plugin - ERROR]: width or height is too small!";
     }
 
+    // if there is an invalid colour, just use the default one
+    $gpx_colour = Osm::checkStyleColour($gpx_colour); 
+    $kml_colour = Osm::checkStyleColour($kml_colour);
+
     // to manage several maps on the same page
     // create names with index
     static  $MapCounter = 0;
     $MapCounter += 1;
     $MapName = 'map_'.$MapCounter;
-    $GpxName = 'track_'.$MapCounter;
+    $GpxName = 'GPX_'.$MapCounter;
+    $KmlName = 'KML_'.$MapCounter;
 
     // if we came up to here, let's load the map
     $output = '';
@@ -213,12 +262,12 @@ class Osm
 
     // Add the Layer with GPX Track
     if ($gpx_file != 'NoFile'){ 
-    $output .= '  var lgpx = new OpenLayers.Layer.GML("'.$GpxName.'", "'.$gpx_file.'", {';
-    $output .= '    format: OpenLayers.Format.GPX,';
-    $output .= '    style: {strokeColor: "blue", strokeWidth: 5, strokeOpacity: 0.5},';
-    $output .= '    projection: new OpenLayers.Projection("EPSG:4326")';
-    $output .= '  });';
-    $output .= '  map.addLayer(lgpx);';
+        $output .= Osm::addGmlLayer($GpxName, $gpx_file,$gpx_colour,'GPX');
+    }
+
+    // Add the Layer with KML Track
+    if ($kml_file != 'NoFile'){ 
+        $output .= Osm::addGmlLayer($KmlName, $kml_file,$kml_colour,'KML');
     }
 
     // Add the marker here which we get from the file
@@ -237,13 +286,12 @@ class Osm
      $CustomFieldName = get_settings('custom_field');
       
      $recentPosts = new WP_Query();
-     $recentPosts->query('showposts=5000');
-     $Zaehler = 0;
+     $recentPosts->query('showposts=1590');
 
-     $output .= 'var Post_Markers = new OpenLayers.Layer.Markers( "Post_Markers",{"calculateInRange": function() { return true; }});';
+     $output .= 'var Post_Markers = new OpenLayers.Layer.Markers( "Post_Markers", {projection: map.displayProjection});';
      $output .= 'var size = new OpenLayers.Size(2,2);';
      $output .= 'var offset = new OpenLayers.Pixel(0, 0);';
-     $output .= 'var icon = new OpenLayers.Icon("http://localhost/Fotomobil271/wp-content/plugins/Osm/Ol_icon_blue_dot.png",size,offset);';
+     $output .= 'var icon = new OpenLayers.Icon("'.URL_POST_MARKER.'",size,offset);';
 
      // make a dummymarker to you use icon.clone later
      $output .= 'var Marker_LonLat = new OpenLayers.LonLat(47.0679158,15.4417229).transform(map.displayProjection,  map.projection);';
@@ -251,11 +299,16 @@ class Osm
 
      // let's see which posts are using our geo data ...
      while ($recentPosts->have_posts()) : $recentPosts->the_post();
-	      list($temp_lat, $temp_lon) = split(',', get_post_meta($post->ID, $CustomFieldName, true));
+	      list($temp_lat, $temp_lon) = split(',', get_post_meta($post->ID, $CustomFieldName, true)); 
 	      if ($temp_lat != '' && $temp_lon != '') {
-          $output .= 'var Marker_LonLat = new OpenLayers.LonLat('.$temp_lon.','.$temp_lat.').transform(map.displayProjection,  map.projection);';
-          $output .= 'Post_Markers.addMarker(new OpenLayers.Marker(Marker_LonLat,icon.clone()));';
-          $Zaehler += 1;
+          if ($temp_lat > -90 && $temp_lat < 90 && $temp_lon > -180 && $temp_lon < 180 &&
+                      preg_match('!^[^0-9]+$!', $temp_lat) != 1 && preg_match('!^[^0-9]+$!', $temp_lon) != 1){
+            $output .= 'var Marker_LonLat = new OpenLayers.LonLat('.$temp_lon.','.$temp_lat.').transform(map.displayProjection,  map.projection);';
+            $output .= 'Post_Markers.addMarker(new OpenLayers.Marker(Marker_LonLat,icon.clone()));';
+          }
+          else{
+            echo the_permalink()." has got wrong Osm geo data [Custom Field: ".$CustomFieldName."]!";
+          }
 	      } 
      endwhile;
      $output .= 'map.addLayer(Post_Markers);';
