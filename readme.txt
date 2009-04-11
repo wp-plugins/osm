@@ -38,14 +38,6 @@ Just use as many shortcodes as you want to, even within one post.
 Yes, the format has to be Lat,Long. The name of the customfield has to be configured.
 
 == Screenshots ==
-
 1. Showing a track added with a GPX file
-Osm_Plugin_02.png
 2. Showing all places or blog has got tagged posts/pages
-Osm_Plugin_01.png
-
-== Arbitrary section ==
-
-== A brief Markdown Example ==
-
 
