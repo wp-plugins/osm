@@ -40,8 +40,11 @@ Minimum WordPress Version Required: 2.5.1
 */
 load_plugin_textdomain('Osm');
 
-// modify the name of the markes for the posts if needed 
-define ("POST_MARKER_PNG", "Ol_icon_blue_dot.png");
+// modify anything about the marker for tagged posts here
+// instead of the coding!
+define ("POST_MARKER_PNG", "tagged_posts_marker.png");
+define (POST_MARKER_PNG_HEIGHT, 2);
+define (POST_MARKER_PNG_WIDTH, 2);
 
 // these defines are given by OpenStreetMap.org
 define ("URL_INDEX", "http://www.openstreetmap.org/index.html?");
@@ -289,7 +292,7 @@ class Osm
      $recentPosts->query('showposts=1590');
 
      $output .= 'var Post_Markers = new OpenLayers.Layer.Markers( "Post_Markers", {projection: map.displayProjection});';
-     $output .= 'var size = new OpenLayers.Size(2,2);';
+     $output .= 'var size = new OpenLayers.Size('.POST_MARKER_PNG_WIDTH.','.POST_MARKER_PNG_HEIGHT.');';
      $output .= 'var offset = new OpenLayers.Pixel(0, 0);';
      $output .= 'var icon = new OpenLayers.Icon("'.URL_POST_MARKER.'",size,offset);';
 
