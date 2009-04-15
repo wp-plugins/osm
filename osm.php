@@ -3,7 +3,7 @@
 Plugin Name: OSM
 Plugin URI: http://www.Fotomobil.at/wp-osm-plugin
 Description: Embeds <a href="http://www.OpenStreetMap.org">OpenStreetMap</a> maps in your blog and adds geo data to your posts. Get the latest version on the <a href="http://www.Fotomobil.at/wp-osm-plugin">OSM plugin page</a>.
-Version: 0.4
+Version: 0.5
 Author: Michael Kang
 Author URI: http://www.Fotomobil.at
 Minimum WordPress Version Required: 2.5.1
@@ -27,16 +27,19 @@ Minimum WordPress Version Required: 2.5.1
 */
 
 /* 
-    Versions 0.2 - features added bugs fixed
+    Version 0.2 - features added bugs fixed
      + loading GPX files with shortcode from one file
-     + java scripts are not loaded in wp-admin
+     + java scripts are not loaded in wp-admin anymore
 
-    Versions 0.3 - features added bugs fixed
+    Version 0.3 - features added bugs fixed
      + added shortcode marker_all_posts to get markes of meta geo data
     
-    Versions 0.4 - features added bugs fixed
-     + added KML support and colour interface
+    Version 0.4 - features added bugs fixed
+     + added KML support and colour interface for tracks
 
+    Version 0.5 - features added bugs fixed
+     + added type (Mapnik, Osmarender, CycleMap, All)
+     + add overview map shortcode
 */
 load_plugin_textdomain('Osm');
 
@@ -55,6 +58,12 @@ define ("URL_ZOOM_02","]");
 define (ZOOM_LEVEL_MAX,17);
 define (ZOOM_LEVEL_MIN,1);
 
+// some general defines
+define (LAT_MIN,-90);
+define (LAT_MAX,90);
+define (LON_MIN,-180);
+define (LON_MAX,180);
+
 if ( ! defined( 'WP_CONTENT_URL' ) )
       define( 'WP_CONTENT_URL', get_option( 'siteurl' ) . '/wp-content' );
 if ( ! defined( 'WP_CONTENT_DIR' ) )
@@ -65,7 +74,6 @@ if ( ! defined( 'WP_PLUGIN_DIR' ) )
       define( 'WP_PLUGIN_DIR', WP_CONTENT_DIR . '/plugins' );
 define ("OSM_PLUGIN_URL", WP_PLUGIN_URL."/Osm/");
 define ("URL_POST_MARKER", OSM_PLUGIN_URL.POST_MARKER_PNG);
-//define("URL_POST_MARKER","http://www.faktor.cc/Fotomobil/wp-content/plugins/Osm/Ol_icon_blue_dot.png");
 
 global $wp_version;
 if (version_compare($wp_version,"2.5.1","<")){
@@ -120,7 +128,7 @@ class Osm
 		//show it in the settings page
 		echo '
 			<div class="wrap">
-			<h2>' . __('OpenStreetMap Plugin v0.4', 'Osm') . '</h2>
+			<h2>' . __('OpenStreetMap Plugin v0.5', 'Osm') . '</h2>
 			<form method="post">
 				<table width="100%" cellspacing="2" cellpadding="5" class="editform">
 					<tr valign="top">
@@ -155,10 +163,10 @@ class Osm
 		list($lat, $lon) = split(',', get_post_meta($wp_query->post->ID, $CustomField, true));
 		if(is_single() && ($lat != '') && ($lon != '')){
 			$title = convert_chars(strip_tags(get_bloginfo("name")))." - ".$wp_query->post->post_title;
-      echo "<!-- OSM plugin v0.4: adding geo meta tags: -->\n";
+      echo "<!-- OSM plugin v0.5: adding geo meta tags: -->\n";
 		}
 		else{
-      echo "<!-- OSM plugin v0.4: no geo data for this page / post set -->";
+      echo "<!-- OSM plugin v0.5: no geo data for this page / post set -->";
 			return;
 		}
 
@@ -180,12 +188,117 @@ class Osm
     return $Layer;
   }
 
+
+  // support different types of GML Layers
+  function addTaggedPostsMarkerLayer(){
+	   global $post;
+     $CustomFieldName = get_settings('custom_field');
+      
+     $recentPosts = new WP_Query();
+     $recentPosts->query('showposts=1590');
+
+     $Layer .= 'var Post_Markers = new OpenLayers.Layer.Markers( "Post_Markers", {projection: map.displayProjection});';
+     $Layer .= 'var size = new OpenLayers.Size('.POST_MARKER_PNG_WIDTH.','.POST_MARKER_PNG_HEIGHT.');';
+     $Layer .= 'var offset = new OpenLayers.Pixel(0, 0);';
+     $Layer .= 'var icon = new OpenLayers.Icon("'.URL_POST_MARKER.'",size,offset);';
+
+     // make a dummymarker to you use icon.clone later
+     $Layer .= 'var Marker_LonLat = new OpenLayers.LonLat(47.0679158,15.4417229).transform(map.displayProjection,  map.projection);';
+     $Layer .= 'Post_Markers.addMarker(new OpenLayers.Marker(Marker_LonLat,icon.clone()));';
+
+     // let's see which posts are using our geo data ...
+     while ($recentPosts->have_posts()) : $recentPosts->the_post();
+	      list($temp_lat, $temp_lon) = split(',', get_post_meta($post->ID, $CustomFieldName, true)); 
+	      if ($temp_lat != '' && $temp_lon != '') {
+          // is long and lat within the range and is it a number?
+          if ($temp_lat >= LAT_MIN && $temp_lat <= LAT_MAX && $temp_lon >= LON_MIN && $temp_lon <= LON_MAX &&
+                      preg_match('!^[^0-9]+$!', $temp_lat) != 1 && preg_match('!^[^0-9]+$!', $temp_lon) != 1){
+            $Layer .= 'var Marker_LonLat = new OpenLayers.LonLat('.$temp_lon.','.$temp_lat.').transform(map.displayProjection,  map.projection);';
+            $Layer .= 'Post_Markers.addMarker(new OpenLayers.Marker(Marker_LonLat,icon.clone()));';
+          }
+          else{// inform the user which post has got a wrong long or lat value
+            echo the_permalink()." has got wrong Osm geo data [Custom Field: ".$CustomFieldName."]!";
+          }
+	      } 
+     endwhile;
+     $Layer .= 'map.addLayer(Post_Markers);';
+    return $Layer;
+  }
+ 
+  // support different types of GML Layers
+  function addOsmLayer($a_LayerName, $a_Type, $a_OverviewMapZoom){
+    $Layer .= ' map = new OpenLayers.Map ("'.$a_LayerName.'", {';
+    $Layer .= '            controls:[';
+    $Layer .= '              new OpenLayers.Control.Navigation(),';
+    $Layer .= '              new OpenLayers.Control.PanZoomBar(),';
+    $Layer .= '              new OpenLayers.Control.Attribution()],';
+    $Layer .= '          maxExtent: new OpenLayers.Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34),';
+    $Layer .= '          maxResolution: 156543.0399,';
+    $Layer .= '          numZoomLevels: 19,';
+    $Layer .= '          units: "m",';
+    $Layer .= '          projection: new OpenLayers.Projection("EPSG:900913"),';
+    $Layer .= '           displayProjection: new OpenLayers.Projection("EPSG:4326")';
+    $Layer .= '      } );';
+    if ($a_Type == 'All'){
+      $Layer .= 'var layerMapnik = new OpenLayers.Layer.OSM.Mapnik("Mapnik");';
+      $Layer .= 'var layerTah    = new OpenLayers.Layer.OSM.Osmarender("Osmarender");';
+      $Layer .= 'var layerCycle  = new OpenLayers.Layer.OSM.CycleMap("CycleMap");';
+      $Layer .= 'map.addLayers([layerMapnik, layerTah, layerCycle]);';
+      $Layer .= 'map.addControl(new OpenLayers.Control.LayerSwitcher());';
+    }
+    else{
+      if ($a_Type == 'Mapnik'){
+        $Layer .= 'var lmap = new OpenLayers.Layer.OSM.Mapnik("Mapnik");';
+      }
+      else if ($a_Type == 'Osmarender'){
+        $Layer .= 'var lmap = new OpenLayers.Layer.OSM.Osmarender("Osmarender");';
+      } 
+      else if ($a_Type == 'CycleMap'){
+        $Layer .= 'var lmap = new OpenLayers.Layer.OSM.CycleMap("CycleMap");';
+      }
+      $Layer .= 'map.addLayer(lmap);';
+    }
+
+    // add the overview map
+    if ($a_OverviewMapZoom >= 0){  
+      $Layer .= 'layer_ov = new OpenLayers.Layer.OSM.Mapnik("Mapnik");';
+      if ($a_OverviewMapZoom > 0 && $a_OverviewMapZoom < 18 ){
+        $Layer .= 'var options = {
+                      layers: [layer_ov],
+                      mapOptions: {numZoomLevels: '.$a_OverviewMapZoom.'}
+                      };';
+      }
+      else{
+        $Layer .= 'var options = {layers: [layer_ov]};';
+      }
+      $Layer .= 'map.addControl(new OpenLayers.Control.OverviewMap(options));';
+    }
+    return $Layer;
+  }
+
+
   // if you miss a colour, just add it
   function checkStyleColour($a_colour){
     if ($a_colour != 'red' && $a_colour != 'blue' && $a_colour != 'black' && $a_colour != 'green'){
       return "blue";
     }
     return $a_colour;
+  }
+
+  // if you miss a MapType, just add it
+  function checkMapType($a_type){
+    if ($a_type != 'Mapnik' && $a_type != 'Osmarender' && $a_type != 'CycleMap' && $a_type != 'All'){
+      return "All";
+    }
+    return $a_type;
+  }
+
+  // check the num of zoomlevels
+  function checkOverviewMapZoomlevels($a_Zoomlevels){
+    if ( $a_Zoomlevels > 17){
+      return 0;
+    }
+    return $a_Zoomlevels;
   }
 
   // execute the java script to display 
@@ -198,36 +311,42 @@ class Osm
     // address of the center in the map
 		'lat'       => '35', 'long'  => '35',    
     // the zoomlevel of the map 
-    'zoom'      => '10',                
+    'zoom'      => '10',     
+    // Osmarender, Mapnik, CycleMap, ...           
+    'type'      => 'All',
     // track info
-    'gpx_file'  => 'NoFile',                  
-    'gpx_colour'  => 'NoColour',
-    'kml_file'  => 'NoFile',                  
-    'kml_colour'  => 'NoColour',
+    'gpx_file'  => 'NoFile',        // 'absolut address'          
+    'gpx_colour'=> 'NoColour',
+    'kml_file'  => 'NoFile',        // 'absolut address'          
+    'kml_colour'=> 'NoColour',
     // are there markers in the map wished loaded from a file
-    'marker_file'         => 'NoFile', // 'y' or 'Y'
+    'marker_file'         => 'NoFile', // 'absolut address'
     // are there markers in the map wished loaded from post tags
-    'marker_all_posts'    => 'n', // 'y' or 'Y'
+    'marker_all_posts'    => 'n',      // 'y' or 'Y'
+    // overviewmap
+    'ov_map'    => '-1',               // zoomlevel of overviewmap
 	  ), $atts));
 
     // there is no need to continue if
     // if arguments are out of range.
-    if ($lat < -90 || $lat > 90 || $long < -180 || $long > 180){
+    if ($lat < LAT_MIN || $lat > LAT_MAX || $long < LON_MIN || $long > LON_MAX){
      echo $Lat; echo $Long;
      return "[OSM plugin - ERROR]: Lat(-90 to 90) or Long(-180 to 180) is out of range!";
     }
     if ($zoom < ZOOM_LEVEL_MIN || $zoom > ZOOM_LEVEL_MAX){
-     echo $Lat; echo $Long;
+     echo $zoom; echo $zoom;
      return "[OSM plugin - ERROR]: zoom level is out of range!";
     }
     if ($width < 1 || $height < 1){
-     echo $Lat; echo $Long;
+     echo $width; echo $height;
      return "[OSM plugin - ERROR]: width or height is too small!";
     }
 
     // if there is an invalid colour, just use the default one
     $gpx_colour = Osm::checkStyleColour($gpx_colour); 
     $kml_colour = Osm::checkStyleColour($kml_colour);
+    $type       = Osm::checkMapType($type);
+    $ov_map     = Osm::checkOverviewMapZoomlevels($ov_map);
 
     // to manage several maps on the same page
     // create names with index
@@ -244,22 +363,9 @@ class Osm
     $output .= '/* <![CDATA[ */';
     $output .= 'jQuery(document).ready(';
     $output .= 'function($) {';
-    $output .= ' map = new OpenLayers.Map ("'.$MapName.'", {';
-    $output .= '            controls:[';
-    $output .= '              new OpenLayers.Control.Navigation(),';
-    $output .= '              new OpenLayers.Control.PanZoomBar(),';
-    $output .= '              new OpenLayers.Control.Attribution()],';
-    $output .= '          maxExtent: new OpenLayers.Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34),';
-    $output .= '          maxResolution: 156543.0399,';
-    $output .= '          numZoomLevels: 19,';
-    $output .= '          units: "m",';
-    $output .= '          projection: new OpenLayers.Projection("EPSG:900913"),';
-    $output .= '           displayProjection: new OpenLayers.Projection("EPSG:4326")';
-    $output .= '      } );';
-    $output .= 'var layerMapnik = new OpenLayers.Layer.OSM.Mapnik("Mapnik");';
-    $output .= 'var layerTah = new OpenLayers.Layer.OSM.Osmarender("Osmarender");';
-    $output .= 'map.addLayers([layerMapnik, layerTah]);';
-    $output .= 'map.addControl(new OpenLayers.Control.LayerSwitcher());';// Karte ausrichten
+
+    $output .= Osm::addOsmLayer($MapName, $type, $ov_map);
+
     $output .= 'var lonLat = new OpenLayers.LonLat('.$long.','.$lat.').transform(map.displayProjection,  map.projection);';
     $output .= 'map.setCenter (lonLat,'.$zoom.');'; // Zoomstufe einstellen
 
@@ -284,37 +390,7 @@ class Osm
 
     // Add the marker from the posts with geo data
     if ($marker_all_posts == 'y' || $marker_all_posts =='Y'){
-
-	   global $post;
-     $CustomFieldName = get_settings('custom_field');
-      
-     $recentPosts = new WP_Query();
-     $recentPosts->query('showposts=1590');
-
-     $output .= 'var Post_Markers = new OpenLayers.Layer.Markers( "Post_Markers", {projection: map.displayProjection});';
-     $output .= 'var size = new OpenLayers.Size('.POST_MARKER_PNG_WIDTH.','.POST_MARKER_PNG_HEIGHT.');';
-     $output .= 'var offset = new OpenLayers.Pixel(0, 0);';
-     $output .= 'var icon = new OpenLayers.Icon("'.URL_POST_MARKER.'",size,offset);';
-
-     // make a dummymarker to you use icon.clone later
-     $output .= 'var Marker_LonLat = new OpenLayers.LonLat(47.0679158,15.4417229).transform(map.displayProjection,  map.projection);';
-     $output .= 'Post_Markers.addMarker(new OpenLayers.Marker(Marker_LonLat,icon.clone()));';
-
-     // let's see which posts are using our geo data ...
-     while ($recentPosts->have_posts()) : $recentPosts->the_post();
-	      list($temp_lat, $temp_lon) = split(',', get_post_meta($post->ID, $CustomFieldName, true)); 
-	      if ($temp_lat != '' && $temp_lon != '') {
-          if ($temp_lat > -90 && $temp_lat < 90 && $temp_lon > -180 && $temp_lon < 180 &&
-                      preg_match('!^[^0-9]+$!', $temp_lat) != 1 && preg_match('!^[^0-9]+$!', $temp_lon) != 1){
-            $output .= 'var Marker_LonLat = new OpenLayers.LonLat('.$temp_lon.','.$temp_lat.').transform(map.displayProjection,  map.projection);';
-            $output .= 'Post_Markers.addMarker(new OpenLayers.Marker(Marker_LonLat,icon.clone()));';
-          }
-          else{
-            echo the_permalink()." has got wrong Osm geo data [Custom Field: ".$CustomFieldName."]!";
-          }
-	      } 
-     endwhile;
-     $output .= 'map.addLayer(Post_Markers);';
+      $output .= Osm::addTaggedPostsMarkerLayer();
     }
 
     $output .= '}';
