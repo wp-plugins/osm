@@ -42,7 +42,7 @@ Yes, the format has to be Lat,Long. The name of the customfield has to be config
 
 Yes, up to now WPGMG (google-maps-geocoder) plugin is supported, others will follow on request.
 
-= Why is ther no map in the "Edit post" page ? =
+= Why is there no map in the "Edit post" page ? =
 
 Since most people do not add a map in every post I decided to put it in the settings page. If 
 there are some requests to put it in the Edit post I will make it configureable.
