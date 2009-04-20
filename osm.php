@@ -3,7 +3,7 @@
 Plugin Name: OSM
 Plugin URI: http://www.Fotomobil.at/wp-osm-plugin
 Description: Embeds <a href="http://www.OpenStreetMap.org">OpenStreetMap</a> maps in your blog and adds geo data to your posts. Get the latest version on the <a href="http://www.Fotomobil.at/wp-osm-plugin">OSM plugin page</a>.
-Version: 0.6
+Version: 0.7
 Author: Michael Kang
 Author URI: http://www.Fotomobil.at
 Minimum WordPress Version Required: 2.5.1
@@ -31,27 +31,28 @@ Minimum WordPress Version Required: 2.5.1
     whenever you update your plugin. If you need any general
     feature contact me to make a standard of OSM plugin!
 
-    Version 0.2 - features added bugs fixed
-     + loading GPX files with shortcode from one file
-     + java scripts are not loaded in wp-admin anymore
 
-    Version 0.3 - features added bugs fixed
-     + added shortcode marker_all_posts to get markes of meta geo data
-    
-    Version 0.4 - features added bugs fixed
-     + added KML support and colour interface for tracks
-
-    Version 0.5 - features added bugs fixed
-     + added type (Mapnik, Osmarender, CycleMap, All)
-     + add overview map shortcode
+    Version 0.7 - features added bugs fixed
+     + shortcode generator added
 
     Version 0.6 - features added bugs fixed
      + options got prefix "osm_", therefore the settings have to be made again at upgrade
      + import data from google-maps-geocoder plugin
      + lat,long ist optional if geo data is set for the post
 
-    next features:
-     + add a single marker in the shortcode
+    Version 0.5 - features added bugs fixed
+     + added type (Mapnik, Osmarender, CycleMap, All)
+     + add overview map shortcode
+
+    Version 0.4 - features added bugs fixed
+     + added KML support and colour interface for tracks
+
+    Version 0.3 - features added bugs fixed
+     + added shortcode marker_all_posts to get markes of meta geo data
+
+    Version 0.2 - features added bugs fixed
+     + loading GPX files with shortcode from one file
+     + java scripts are not loaded in wp-admin anymore
 
 */
 load_plugin_textdomain('Osm');
@@ -101,10 +102,12 @@ if (version_compare($wp_version,"2.5.1","<")){
 // let's be unique ... 
 // with this namespace
 class Osm
-{  
+{ 
+
 	// add it to the Settings page
 	function options_page_osm()
 	{
+
 		if(isset($_POST['Options'])){
 
       // 0 = no error; 
@@ -112,8 +115,9 @@ class Osm
       $Option_Error = 0; 
 			
       // get the zoomlevel for the external link
-      // and inform the user if the level was out of range
+      // and inform the user if the level was out of range     
       update_option('osm_custom_field',$_POST['osm_custom_field']);
+     
       if ($_POST['osm_zoom_level'] >= ZOOM_LEVEL_MIN && $_POST['osm_zoom_level'] <= ZOOM_LEVEL_MAX){
         update_option('osm_zoom_level',$_POST['osm_zoom_level']);
       }
@@ -121,7 +125,8 @@ class Osm
         $Option_Error = 1;
         echo '<div class="updated"><p><strong>' . __('Map Zoomlevel out of range!'.'</p>', 'Osm');
       }
-      
+
+
       // Let the user know whether all was fine or not
       if ($Option_Error  == 0){ 
         echo '<div class="updated"><p><strong>' . __('Options updated.', 'Osm') . '</strong></p></div>';
@@ -138,33 +143,37 @@ class Osm
 	
     // name of the custom field to store Long and Lat
     // for the geodata of the post
+
 		$osm_custom_field  = get_option('osm_custom_field');                                                  
 
     // zoomlevel for the link the OSM page
     $osm_zoom_level    = get_option('osm_zoom_level');
 			
 		//show it in the settings page
-		echo '
-			<div class="wrap">
-			<h2>' . __('OpenStreetMap Plugin v0.6', 'Osm') . '</h2>
-			<form method="post">
-				<table width="100%" cellspacing="2" cellpadding="5" class="editform">
-					<tr valign="top">
-						<th width="33%" scope="row">' . __('Add Geo info to your posts', 'Osm') . ':</th>
-						<td>
-							<dl>
-							<dt><label for="osm_custom_field">' . __('Custom Field Name', 'Osm') . ':</label></dt>
-							<dd><input type="text" name="osm_custom_field" value="' . $osm_custom_field . '" /></dd>
-							<dt><label for="osm_zoom_level">' . __('Map Zoomlevel (1-17)', 'Osm') . ':</label></dt>
-							<dd><input type="text" name="osm_zoom_level" value="' . $osm_zoom_level . '" /></dd>
-							</dl>
-						</td>
-					</tr>
-				</table>
-				<div class="submit"><input type="submit" name="Options" value="' . __('Update Options', 'Osm') . ' &raquo;" /></div>
-			</form>
-			</div>
-		';
+		
+		echo '	<div class="wrap">';
+    echo ' <form method="post">';
+    echo ' <table border="0">';
+    echo '     <tr>';
+    echo '       <td><p><img src="'.OSM_PLUGIN_URL.'/OSM_Logo_01.png" alt="Osm Logo"></p></td>';
+    echo '       <td><h2>OpenStreetMap Plugin v0.7</h2></td>';
+    echo '     </tr>';
+    echo '     <tr>';
+    echo '       <td><label for="osm_custom_field">' . __('Custom Field Name', 'Osm') . ':</label></td>';
+    echo '       <td><input type="text" name="osm_custom_field" value="' . $osm_custom_field . '" /></td>';
+    echo '     </tr>';
+    echo '     <tr>';
+		echo '       <td><label for="osm_zoom_level">' . __('Map Zoomlevel for the PHP Link (1-17)', 'Osm') . ':</label></td>';
+		echo '       <td><input type="text" name="osm_zoom_level" value="' . $osm_zoom_level . '" /></td>';
+    echo '     </tr>';
+    echo '   </table>';
+
+		echo ' 		<div class="submit"><input type="submit" name="Options" value="' . __('Update Options', 'Osm') . ' &raquo;" /></div>';
+    echo '   <p> Click on the map to get OSM shortcode for the chosen view:</p>';
+    echo Osm::sc_showMap(array('msg_box'=>'y','lat'=>'50','long'=>'18.5','zoom'=>'3'));
+		echo ' 	</form>';
+		echo ' 	</div>';
+		
 	?>
 	</form>
 	
@@ -181,10 +190,10 @@ class Osm
 		list($lat, $lon) = split(',', get_post_meta($wp_query->post->ID, $CustomField, true));
 		if(is_single() && ($lat != '') && ($lon != '')){
 			$title = convert_chars(strip_tags(get_bloginfo("name")))." - ".$wp_query->post->post_title;
-      echo "<!-- OSM plugin v0.6: adding geo meta tags: -->\n";
+      echo "<!-- OSM plugin v0.7: adding geo meta tags: -->\n";
 		}
 		else{
-      echo "<!-- OSM plugin v0.6: no geo data for this page / post set -->";
+      echo "<!-- OSM plugin v0.7: no geo data for this page / post set -->";
 			return;
 		}
 
@@ -253,7 +262,7 @@ class Osm
     $Layer .= ' map = new OpenLayers.Map ("'.$a_LayerName.'", {';
     $Layer .= '            controls:[';
     $Layer .= '              new OpenLayers.Control.Navigation(),';
-    $Layer .= '              new OpenLayers.Control.PanZoomBar(),';
+    $Layer .= '              new OpenLayers.Control.PanZoom(),';
     $Layer .= '              new OpenLayers.Control.Attribution()],';
     $Layer .= '          maxExtent: new OpenLayers.Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34),';
     $Layer .= '          maxResolution: 156543.0399,';
@@ -296,6 +305,53 @@ class Osm
       }
       $Layer .= 'map.addControl(new OpenLayers.Control.OverviewMap(options));';
     }
+    return $Layer;
+  }
+
+function AddClickHandler($a_msgBox){
+
+    // add the click feature
+
+    $Layer .= 'OpenLayers.Control.Click = OpenLayers.Class(OpenLayers.Control, {';               
+    $Layer .= ' 	                defaultHandlerOptions: {';
+    $Layer .= ' 	                    "single": true,';
+    $Layer .= ' 	                    "double": false,';
+    $Layer .= ' 	                    "pixelTolerance": 0,';
+    $Layer .= ' 	                    "stopSingle": false,';
+    $Layer .= ' 	                    "stopDouble": false';
+    $Layer .= ' 	                },';
+    $Layer .= ' 	';
+    $Layer .= ' 	                initialize: function(options) {';
+    $Layer .= ' 	                    this.handlerOptions = OpenLayers.Util.extend(';
+    $Layer .= ' 	                        {}, this.defaultHandlerOptions';
+    $Layer .= ' 	                    );';
+    $Layer .= ' 	                    OpenLayers.Control.prototype.initialize.apply(';
+    $Layer .= ' 	                        this, arguments';
+    $Layer .= ' 	                    );';
+    $Layer .= ' 	                    this.handler = new OpenLayers.Handler.Click(';
+    $Layer .= ' 	                        this, {';
+    $Layer .= ' 	                            "click": this.trigger';
+    $Layer .= ' 	                        }, this.handlerOptions';
+    $Layer .= ' 	                    );';
+    $Layer .= ' 	                },';
+
+    $Layer .= ' 	                trigger: function(e) {';
+    $Layer .= ' 	                    var lonlat = map.getCenter(e.xy).clone();';
+    $Layer .= ' 	                    var zoom = map.getZoom(e.xy);';
+    $Layer .= '                       lonlat.transform(map.getProjectionObject(), new OpenLayers.Projection("EPSG:4326"));';
+    // trace a message box if click
+    if ($a_msgBox == 'y' || $a_msgBox == 'Y'){  
+     $Layer .= '                       lonlat.lat = Math.round( lonlat.lat * 1000. ) / 1000.;';
+     $Layer .= '                       lonlat.lon = Math.round( lonlat.lon * 1000. ) / 1000.;';
+     $Layer .= ' 	                    alert("Insert the Osm shortcode to your post:\n \n  [osm_map lat=\"" + lonlat.lat + "\" long=\"" + lonlat.lon + "\" zoom=\"" + zoom + "\"]");';
+    }
+    $Layer .= ' 	                }';
+    $Layer .= ' 	';
+    $Layer .= ' 	            });';
+    $Layer .= 'var click = new OpenLayers.Control.Click();';
+    $Layer .= 'map.addControl(click);';
+    $Layer .= 'click.activate();';
+
     return $Layer;
   }
 
@@ -357,9 +413,9 @@ class Osm
     // Osmarender, Mapnik, CycleMap, ...           
     'type'      => 'All',
     // track info
-    'gpx_file'  => 'NoFile',        // 'absolut address'          
+    'gpx_file'  => 'NoFile',           // 'absolut address'          
     'gpx_colour'=> 'NoColour',
-    'kml_file'  => 'NoFile',        // 'absolut address'          
+    'kml_file'  => 'NoFile',           // 'absolut address'          
     'kml_colour'=> 'NoColour',
     // are there markers in the map wished loaded from a file
     'marker_file'         => 'NoFile', // 'absolut address'
@@ -369,8 +425,10 @@ class Osm
     'marker_height'   => '0',
     'marker_width'    => '0',
     // overviewmap
-    'ov_map'          => '-1',       // zoomlevel of overviewmap
+    'ov_map'          => '-1',         // zoomlevel of overviewmap
     'import'          => 'No',
+    'click'           => 'No',
+    'msg_box' => 'No',
 	  ), $atts));
 
     // if there is no info about the marker
@@ -419,6 +477,11 @@ class Osm
 
     $output .= Osm::addOsmLayer($MapName, $type, $ov_map);
 
+    // add a clickhandler if needed
+    if ( $click == 'y' || $click == 'Y' || $msg_box == 'y' || $msg_box == 'Y'){
+      $output .= Osm::AddClickHandler($msg_box);
+    }
+
     $output .= 'var lonLat = new OpenLayers.LonLat('.$long.','.$lat.').transform(map.displayProjection,  map.projection);';
     $output .= 'map.setCenter (lonLat,'.$zoom.');'; // Zoomstufe einstellen
 
@@ -458,17 +521,18 @@ class Osm
 
 	// add OSM-config page to Settings
 	function admin_menu($not_used){
+    // place the info in the plugin settings page
 		add_options_page(__('OpenStreetMap Manager', 'Osm'), __('OSM', 'Osm'), 5, basename(__FILE__), array('Osm', 'options_page_osm'));
 	}
   
   // ask WP to handle the loading of scripts
   // if it is not admin area
   function show_enqueue_script() {
-    if (!is_admin()){
+    //if (!is_admin()){
         wp_enqueue_script(array ('jquery'));
         wp_enqueue_script('OlScript', 'http://www.openlayers.org/api/OpenLayers.js');
         wp_enqueue_script('OsnScript', 'http://www.openstreetmap.org/openlayers/OpenStreetMap.js');
-	  }
+	  //}
   }
 }	// End class Osm
 
