@@ -3,7 +3,7 @@
 Plugin Name: OSM
 Plugin URI: http://www.Fotomobil.at/wp-osm-plugin
 Description: Embeds <a href="http://www.OpenStreetMap.org">OpenStreetMap</a> maps in your blog and adds geo data to your posts. Get the latest version on the <a href="http://www.Fotomobil.at/wp-osm-plugin">OSM plugin page</a>.
-Version: 0.8
+Version: 0.8.1
 Author: Michael Kang
 Author URI: http://www.Fotomobil.at
 Minimum WordPress Version Required: 2.5.1
@@ -30,6 +30,9 @@ Minimum WordPress Version Required: 2.5.1
     Keep in mind, all changes you do by your own are lost 
     whenever you update your plugin. If you need any general
     feature contact me to make a standard of OSM plugin!
+
+    Version 0.8.1
+    + check corrected whehter gcstats is active or not  
 
     Version 0.8 - features added bugs fixed
      + separete file for option page and import interfaces
@@ -172,10 +175,10 @@ class Osm
 		list($lat, $lon) = split(',', get_post_meta($wp_query->post->ID, $CustomField, true));
 		if(is_single() && ($lat != '') && ($lon != '')){
 			$title = convert_chars(strip_tags(get_bloginfo("name")))." - ".$wp_query->post->post_title;
-      echo "<!-- OSM plugin v0.8: adding geo meta tags: -->\n";
+      echo "<!-- OSM plugin v0.8.1: adding geo meta tags: -->\n";
 		}
 		else{
-      echo "<!-- OSM plugin v0.8: no geo data for this page / post set -->";
+      echo "<!-- OSM plugin v0.8.1: no geo data for this page / post set -->";
 			return;
 		}
 
@@ -380,10 +383,14 @@ function AddClickHandler($a_msgBox){
       $a_Long = OSM_getCoordinateLong($a_import);
     }
     else if ($a_import == 'gcstats'){
-      $Val = gcStats__getMinMaxLat($a_import_UserName);
-      $a_Lat = ($Val[min] + $Val[max]) / 2;
-      $Val = gcStats__getMinMaxLon($a_import_UserName);
-      $a_Long = ($Val[min] + $Val[max]) / 2;
+      if (function_exists('gcStats__getInterfaceVersion')) {
+        $Val = gcStats__getMinMaxLat($a_import_UserName);
+        $a_Lat = ($Val[min] + $Val[max]) / 2;
+        $Val = gcStats__getMinMaxLon($a_import_UserName);
+        $a_Long = ($Val[min] + $Val[max]) / 2;
+      }
+       $a_Lat  = 0;
+       $a_Long = 0;
     }
     else if ($a_Lat == '' || $a_Long == ''){
       $a_Lat  = OSM_getCoordinateLat('osm');
