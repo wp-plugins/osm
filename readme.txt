@@ -1,18 +1,20 @@
 === OSM ===
-Tags: map, OpenStreetMap, geo, KML, GPX
+Tags: map, OpenStreetMap, geo, KML, GPX, geocache, geocaching, OSM
 Requires at least: 2.5.1
 Tested up to: 2.7.1
-Stable tag: 0.7
+Stable tag: 0.8
 
-Embeds OpenStreetMap maps with personal markers and routes in your blog. In addition to it geo meta data are added to posts and pages.
+OpenStreetMap plugin to embed maps with personal markers and routes in your blog. In addition to it geo meta data are added to posts and pages.
 
 == Description ==
 
 OSM is a plugin the focuses on OpenstreetMap and geo data in your blog.
 
-* NEW! Shortcode generator in plugin settings
+* NEW! Add your marker in the shortcode generator
+* NEW! Import your geocaches from [gcstats plugin](http://michael.josi.de/projects/gcstats/ "Link to gcstats plugin") to the map
+* Shortcode generator in plugin settings
 * using shortcode to add OSM maps in your blog
-* visualize your marks in the map 
+* visualize a list of markers in the map 
 * visualize your route in the map (KML and GPX format)
 * visualize geo data of all posts in one map
 * use custom field to add geodata to your blog
@@ -46,6 +48,10 @@ Yes, up to now WPGMG (google-maps-geocoder) plugin is supported, others will fol
 
 Since most people do not add a map in every post I decided to put it in the settings page. If 
 there are some requests to put it in the Edit post I will make it configureable.
+
+= How can I use this plugin for my geocache posts ? =
+
+You have to install [gcstats plugin](http://michael.josi.de/projects/gcstats/ "Link to gcstats plugin") to use geocaching feature of OSM-plugin.
 
 == Screenshots ==
 1. Shortcode generator in the plugin settings page
