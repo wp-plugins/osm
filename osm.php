@@ -3,7 +3,7 @@
 Plugin Name: OSM
 Plugin URI: http://www.Fotomobil.at/wp-osm-plugin
 Description: Embeds <a href="http://www.OpenStreetMap.org">OpenStreetMap</a> maps in your blog and adds geo data to your posts. Get the latest version on the <a href="http://www.Fotomobil.at/wp-osm-plugin">OSM plugin page</a>.
-Version: 0.8.1
+Version: 0.8.2
 Author: Michael Kang
 Author URI: http://www.Fotomobil.at
 Minimum WordPress Version Required: 2.5.1
@@ -30,6 +30,9 @@ Minimum WordPress Version Required: 2.5.1
     Keep in mind, all changes you do by your own are lost 
     whenever you update your plugin. If you need any general
     feature contact me to make a standard of OSM plugin!
+
+    Version 0.8.2
+    + correct offset at marker
 
     Version 0.8.1
     + check corrected whehter gcstats is active or not  
@@ -175,10 +178,10 @@ class Osm
 		list($lat, $lon) = split(',', get_post_meta($wp_query->post->ID, $CustomField, true));
 		if(is_single() && ($lat != '') && ($lon != '')){
 			$title = convert_chars(strip_tags(get_bloginfo("name")))." - ".$wp_query->post->post_title;
-      echo "<!-- OSM plugin v0.8.1: adding geo meta tags: -->\n";
+      echo "<!-- OSM plugin v0.8.2: adding geo meta tags: -->\n";
 		}
 		else{
-      echo "<!-- OSM plugin v0.8.1: no geo data for this page / post set -->";
+      echo "<!-- OSM plugin v0.8.2: no geo data for this page / post set -->";
 			return;
 		}
 
@@ -238,10 +241,10 @@ class Osm
   }
 
   // support different types of GML Layers
-  function addMarkerListLayer($LayerName_01, $marker_name, $marker_width, $marker_height,$MarkerArray){
+  function addMarkerListLayer($LayerName_01, $marker_name, $marker_width, $marker_height,$MarkerArray,$OffsetW,$OffsetH){
      $Layer .= 'var Post_Markers = new OpenLayers.Layer.Markers( "'.$LayerName_01.'", {projection: map.displayProjection});';
      $Layer .= 'var size = new OpenLayers.Size('.$marker_width.','.$marker_height.');';
-     $Layer .= 'var offset = new OpenLayers.Pixel(0, 0);';
+     $Layer .= 'var offset = new OpenLayers.Pixel('.$OffsetW.', '.$OffsetH.');';
      $Layer .= 'var icon = new OpenLayers.Icon("'.OSM_PLUGIN_URL.$marker_name.'",size,offset);';
      for ($row = 0; $row < count($MarkerArray); $row++){
          $Layer .= 'var Marker_LonLat = new OpenLayers.LonLat('.$MarkerArray[$row][lon].','.$MarkerArray[$row][lat].').transform(map.displayProjection,  map.projection);';
@@ -525,23 +528,23 @@ function AddClickHandler($a_msgBox){
 
     if ($marker_all_posts == 'wpgmg'){
       $MarkerArray = Osm::createMarkerList($marker_all_posts, $import_UserName,'Empty');
-      $output .= Osm::addMarkerListLayer($LayerName_01, $marker_name, $marker_width, $marker_height,$MarkerArray);
+      $output .= Osm::addMarkerListLayer($LayerName_01, $marker_name, $marker_width, $marker_height,$MarkerArray,0,0);
     }
     else if ($marker_all_posts == 'y' || $marker_all_posts =='Y'){
       $MarkerArray = Osm::createMarkerList('osm', $import_UserName,'Empty');
-      $output .= Osm::addMarkerListLayer($LayerName_01, $marker_name, $marker_width, $marker_height,$MarkerArray);
+      $output .= Osm::addMarkerListLayer($LayerName_01, $marker_name, $marker_width, $marker_height,$MarkerArray,0,0);
     }
     // import data from gcstats
     else if ($import == 'gcstats'){
       $MarkerArray = Osm::createMarkerList('gcstats', $import_UserName,'Empty');
-      $output .= Osm::addMarkerListLayer($LayerName_01, GCSTATS_MARKER_PNG, GCSTATS_MARKER_PNG_WIDTH, GCSTATS_MARKER_PNG_HEIGHT,$MarkerArray);
+      $output .= Osm::addMarkerListLayer($LayerName_01, GCSTATS_MARKER_PNG, GCSTATS_MARKER_PNG_WIDTH, GCSTATS_MARKER_PNG_HEIGHT,$MarkerArray,-12,-12);
     }
     if ($marker != 'No'){
       list($temp_lat, $temp_lon) = split(',', $marker);
       if ($temp_lat >= LAT_MIN && $temp_lat <= LAT_MAX && $temp_lon >= LON_MIN && $temp_lon <= LON_MAX &&
                   preg_match('!^[^0-9]+$!', $temp_lat) != 1 && preg_match('!^[^0-9]+$!', $temp_lon) != 1){
         $MarkerArray[] = array('lat'=> $temp_lat,'lon'=>$temp_lon,'marker'=>$marker_name);
-        $output .= Osm::addMarkerListLayer('Ol_icon_blue_example.png', INDIV_MARKER, INDIV_MARKER_PNG_WIDTH, INDIV_MARKER_PNG_HEIGHT,$MarkerArray);
+        $output .= Osm::addMarkerListLayer('Ol_icon_blue_example.png', INDIV_MARKER, INDIV_MARKER_PNG_WIDTH, INDIV_MARKER_PNG_HEIGHT,$MarkerArray,0,-24);
       }
       else{
         echo "[OSM plugin - ERROR]: marker address is invalid or out of range!";
