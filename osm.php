@@ -3,7 +3,7 @@
 Plugin Name: OSM
 Plugin URI: http://www.Fotomobil.at/wp-osm-plugin
 Description: Embeds <a href="http://www.OpenStreetMap.org">OpenStreetMap</a> maps in your blog and adds geo data to your posts. Get the latest version on the <a href="http://www.Fotomobil.at/wp-osm-plugin">OSM plugin page</a>.
-Version: 0.8.2
+Version: 0.8.3
 Author: Michael Kang
 Author URI: http://www.Fotomobil.at
 Minimum WordPress Version Required: 2.5.1
@@ -178,10 +178,10 @@ class Osm
 		list($lat, $lon) = split(',', get_post_meta($wp_query->post->ID, $CustomField, true));
 		if(is_single() && ($lat != '') && ($lon != '')){
 			$title = convert_chars(strip_tags(get_bloginfo("name")))." - ".$wp_query->post->post_title;
-      echo "<!-- OSM plugin v0.8.2: adding geo meta tags: -->\n";
+      echo "<!-- OSM plugin v0.8.3: adding geo meta tags: -->\n";
 		}
 		else{
-      echo "<!-- OSM plugin v0.8.2: no geo data for this page / post set -->";
+      echo "<!-- OSM plugin v0.8.3: no geo data for this page / post set -->";
 			return;
 		}
 
@@ -392,8 +392,10 @@ function AddClickHandler($a_msgBox){
         $Val = gcStats__getMinMaxLon($a_import_UserName);
         $a_Long = ($Val[min] + $Val[max]) / 2;
       }
+      else{
        $a_Lat  = 0;
        $a_Long = 0;
+      }
     }
     else if ($a_Lat == '' || $a_Long == ''){
       $a_Lat  = OSM_getCoordinateLat('osm');

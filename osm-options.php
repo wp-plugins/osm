@@ -11,7 +11,7 @@
 <table border="0">
  <tr>
   <td><p><img src="<?php echo OSM_PLUGIN_URL ?>/OSM_Logo_01.png" alt="Osm Logo"></p></td>
-  <td><h2>OpenStreetMap Plugin v0.8.2</h2></td>
+  <td><h2>OpenStreetMap Plugin v0.8.3</h2></td>
  </tr>
  <tr>
   <td><label for="osm_custom_field"><?php echo __('Custom Field Name', 'Osm') ?>:</label></td>
