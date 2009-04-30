@@ -2,7 +2,7 @@
 Tags: map, OpenStreetMap, geo, KML, GPX, geocache, geocaching, OSM
 Requires at least: 2.5.1
 Tested up to: 2.7.1
-Stable tag: 0.8
+Stable tag: 0.8.3
 
 OpenStreetMap plugin to embed maps with personal markers and routes in your blog. In addition to it geo meta data are added to posts and pages.
 
