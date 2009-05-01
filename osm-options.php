@@ -11,7 +11,7 @@
 <table border="0">
  <tr>
   <td><p><img src="<?php echo OSM_PLUGIN_URL ?>/OSM_Logo_01.png" alt="Osm Logo"></p></td>
-  <td><h2>OpenStreetMap Plugin v0.8.3</h2></td>
+  <td><h2>OpenStreetMap Plugin <?php echo PLUGIN_VER ?> </h2></td>
  </tr>
  <tr>
   <td><label for="osm_custom_field"><?php echo __('Custom Field Name', 'Osm') ?>:</label></td>
@@ -26,13 +26,13 @@
 </form>
 <h3>How to add a map to your post/article</h3>
 <ol>
-  <li>1.) select the area and zoomlevel of your map</li>
-  <li>2.) click on the map where you want to place a marker</li>
-  <li>3.) copy the shortcode from the massage window</li>
-  <li>4.) paste the shortcode in your post / article.</li>
-  <li>5.) if you do not want to place a marker delete the marker argument</li>
-  <li>6.) add other arguments to insert tracks, points ... or modify mapsize ... if needed</li>
+  <li>select the area and zoomlevel of your map</li>
+  <li>click on the map where you want to place a marker</li>
+  <li>copy the shortcode from the massage window</li>
+  <li>paste the shortcode in your post / article.</li>
+  <li>if you do not want to place a marker delete the marker argument</li>
+  <li>add other arguments to insert tracks, points ... or modify mapsize ... if needed</li>
 </ol>
 <br>
-<?php echo Osm::sc_showMap(array('msg_box'=>'y','lat'=>'50','long'=>'18.5','zoom'=>'3', 'width'=>'600','height'=>'450')); ?>
+<?php echo Osm::sc_showMap(array('msg_box'=>'sc_gen','lat'=>'50','long'=>'18.5','zoom'=>'3', 'width'=>'600','height'=>'450')); ?>
 </div>

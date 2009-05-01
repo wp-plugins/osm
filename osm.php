@@ -3,7 +3,7 @@
 Plugin Name: OSM
 Plugin URI: http://www.Fotomobil.at/wp-osm-plugin
 Description: Embeds <a href="http://www.OpenStreetMap.org">OpenStreetMap</a> maps in your blog and adds geo data to your posts. Get the latest version on the <a href="http://www.Fotomobil.at/wp-osm-plugin">OSM plugin page</a>.
-Version: 0.8.3
+Version: 0.8.4
 Author: Michael Kang
 Author URI: http://www.Fotomobil.at
 Minimum WordPress Version Required: 2.5.1
@@ -31,6 +31,9 @@ Minimum WordPress Version Required: 2.5.1
     whenever you update your plugin. If you need any general
     feature contact me to make a standard of OSM plugin!
 
+     Version 0.8.4
+    + plugin URL was "OSM" instead of "osm"
+    
     Version 0.8.2
     + correct offset at marker
 
@@ -67,6 +70,8 @@ Minimum WordPress Version Required: 2.5.1
 */
 load_plugin_textdomain('Osm');
 
+define ("PLUGIN_VER", "v0.8.4");
+
 // modify anything about the marker for tagged posts here
 // instead of the coding.
 define ("POST_MARKER_PNG", "tagged_posts_marker.png");
@@ -101,6 +106,13 @@ define (LAT_MAX,90);
 define (LON_MIN,-180);
 define (LON_MAX,180);
 
+// tracelevels
+define (DEBUG_OFF, 0);
+define (DEBUG_ERROR, 1);
+define (DEBUG_WARNING, 2);
+define (DEBUG_INFO, 3);
+define (HTML_COMMENT, 10);
+
 if ( ! defined( 'WP_CONTENT_URL' ) )
       define( 'WP_CONTENT_URL', get_option( 'siteurl' ) . '/wp-content' );
 if ( ! defined( 'WP_CONTENT_DIR' ) )
@@ -109,7 +121,7 @@ if ( ! defined( 'WP_PLUGIN_URL' ) )
       define( 'WP_PLUGIN_URL', WP_CONTENT_URL. '/plugins' );
 if ( ! defined( 'WP_PLUGIN_DIR' ) )
       define( 'WP_PLUGIN_DIR', WP_CONTENT_DIR . '/plugins' );
-define ("OSM_PLUGIN_URL", WP_PLUGIN_URL."/Osm/");
+define ("OSM_PLUGIN_URL", WP_PLUGIN_URL."/osm/");
 define ("URL_POST_MARKER", OSM_PLUGIN_URL.POST_MARKER_PNG);
 
 global $wp_version;
@@ -121,6 +133,25 @@ if (version_compare($wp_version,"2.5.1","<")){
 // with this namespace
 class Osm
 { 
+
+  //var $g_TraceLevel = DEBUG_ERROR;
+
+  function traceText($a_Level, $a_String)
+  {
+    $g_TraceLevel = DEBUG_ERROR;
+    $TracePrefix = array(
+      DEBUG_ERROR =>'[OSM-Plugin-Error]:',
+      DEBUG_WARNING=>'[OSM-Plugin-Warning]:',
+      DEBUG_INFO=>'[OSM-Plugin-Info]:');
+      
+    if ($a_Level <= $g_TraceLevel){
+      echo $TracePrefix[$a_Level].$a_String.'<br>';
+    }
+    else if ($a_Level == HTML_COMMENT){
+      echo "<!-- ".$a_String." --> \n";
+    }
+  }
+
 
 	// add it to the Settings page
 	function options_page_osm()
@@ -178,10 +209,10 @@ class Osm
 		list($lat, $lon) = split(',', get_post_meta($wp_query->post->ID, $CustomField, true));
 		if(is_single() && ($lat != '') && ($lon != '')){
 			$title = convert_chars(strip_tags(get_bloginfo("name")))." - ".$wp_query->post->post_title;
-      echo "<!-- OSM plugin v0.8.3: adding geo meta tags: -->\n";
+      Osm::traceText(HTML_COMMENT, 'OSM plugin '.PLUGIN_VER.': adding geo meta tags:');
 		}
 		else{
-      echo "<!-- OSM plugin v0.8.3: no geo data for this page / post set -->";
+      Osm::traceText(HTML_COMMENT, 'OSM plugin '.PLUGIN_VER.': adding geo meta tags:');
 			return;
 		}
 
@@ -193,7 +224,9 @@ class Osm
 	}
 
   // support different types of GML Layers
-  function addGmlLayer($a_LayerName, $a_FileName, $a_Colour, $a_Type){
+  function addGmlLayer($a_LayerName, $a_FileName, $a_Colour, $a_Type)
+  {
+    Osm::traceText(DEBUG_INFO, "addGmlLayer(".$a_LayerName.",".$a_FileName.",".$a_Colour.",".$a_Type.")");
     $Layer .= '  var lgml = new OpenLayers.Layer.GML("'.$a_LayerName.'", "'.$a_FileName.'", {';
     $Layer .= '    format: OpenLayers.Format.'.$a_Type.',';
     $Layer .= '    style: {strokeColor: "'.$a_Colour.'", strokeWidth: 5, strokeOpacity: 0.5},';
@@ -205,6 +238,7 @@ class Osm
 
   function createMarkerList($a_import, $a_import_UserName, $a_Customfield)
   {
+     Osm::traceText(DEBUG_INFO, "createMarkerList(".$a_import.",".$a_import_UserName.",".$a_Customfield.")");
 	   global $post;
      $CustomFieldName = get_settings('osm_custom_field');
       
@@ -213,10 +247,12 @@ class Osm
 
      // make a dummymarker to you use icon.clone later
      if ($a_import == 'gcstats'){
-         include('osm-import.php');
+       Osm::traceText(DEBUG_INFO, "Requesting data from gcStats-plugin");
+       include('osm-import.php');
      }
      else{
        // let's see which posts are using our geo data ...
+       Osm::traceText(DEBUG_INFO, "check all posts for geo custom fields");
        while ($recentPosts->have_posts()) : $recentPosts->the_post();
           if ($a_import == 'osm'){
     	      list($temp_lat, $temp_lon) = split(',', get_post_meta($post->ID, $CustomFieldName, true)); 
@@ -224,17 +260,11 @@ class Osm
           // add all pluginnames which are imported here
           else if ($a_import == 'wpgmg'){
             include('osm-import.php');
-          }
-	        if ($temp_lat != '' && $temp_lon != '') {
-            // is long and lat within the range and is it a number?
-            if ($temp_lat >= LAT_MIN && $temp_lat <= LAT_MAX && $temp_lon >= LON_MIN && $temp_lon <= LON_MAX &&
-                        preg_match('!^[^0-9]+$!', $temp_lat) != 1 && preg_match('!^[^0-9]+$!', $temp_lon) != 1){
-                        $MarkerArray[] = array('lat'=> $temp_lat,'lon'=>$temp_lon,'marker'=>$marker_name);
-            }
-            else{// inform the user which post has got a wrong long or lat value
-              echo the_permalink()." has got wrong Osm geo data [Custom Field: ".$CustomFieldName."]!";
-            }
-	        } 
+          }	
+          if ($temp_lat != '' && $temp_lon != '') {
+            list($temp_lat, $temp_lon) = Osm::checkLatLongRange('$marker_all_posts',$temp_lat, $temp_lon);          
+            $MarkerArray[] = array('lat'=> $temp_lat,'lon'=>$temp_lon,'marker'=>$marker_name);
+	        }  
        endwhile;
      }
      return $MarkerArray;
@@ -242,6 +272,7 @@ class Osm
 
   // support different types of GML Layers
   function addMarkerListLayer($LayerName_01, $marker_name, $marker_width, $marker_height,$MarkerArray,$OffsetW,$OffsetH){
+     Osm::traceText(DEBUG_INFO, "addMarkerListLayer(".$a_LayerName.",".$a_marker_name.",".$a_marker_width.",".$a_marker_height.",".$a_MarkerArray.",".$a_OffsetW.",".$a_OffsetH.")");
      $Layer .= 'var Post_Markers = new OpenLayers.Layer.Markers( "'.$LayerName_01.'", {projection: map.displayProjection});';
      $Layer .= 'var size = new OpenLayers.Size('.$marker_width.','.$marker_height.');';
      $Layer .= 'var offset = new OpenLayers.Pixel('.$OffsetW.', '.$OffsetH.');';
@@ -256,6 +287,7 @@ class Osm
  
   // support different types of GML Layers
   function addOsmLayer($a_LayerName, $a_Type, $a_OverviewMapZoom){
+    Osm::traceText(DEBUG_INFO, "addOsmLayer(".$a_LayerName.",".$a_Type.",".$a_OverviewMapZoom.")");
     $Layer .= ' map = new OpenLayers.Map ("'.$a_LayerName.'", {';
     $Layer .= '            controls:[';
     $Layer .= '              new OpenLayers.Control.Navigation(),';
@@ -306,8 +338,8 @@ class Osm
   }
 
 function AddClickHandler($a_msgBox){
-    // add the click feature
-    // dummy test
+    Osm::traceText(DEBUG_INFO, "AddClickHandler(".$a_msgBox.")");
+    $a_msgBox = strtolower($a_msgBox);
     $Layer .= 'OpenLayers.Control.Click = OpenLayers.Class(OpenLayers.Control, {';               
     $Layer .= ' 	                defaultHandlerOptions: {';
     $Layer .= ' 	                    "single": true,';
@@ -338,12 +370,19 @@ function AddClickHandler($a_msgBox){
     $Layer .= '                       Centerlonlat.transform(map.getProjectionObject(), new OpenLayers.Projection("EPSG:4326"));';
     $Layer .= '                       Clicklonlat.transform(map.getProjectionObject(), new OpenLayers.Projection("EPSG:4326"));';
     // trace a message box if click
-    if ($a_msgBox == 'y' || $a_msgBox == 'Y'){  
-     $Layer .= '                       Centerlonlat.lat = Math.round( Centerlonlat.lat * 1000. ) / 1000.;';
-     $Layer .= '                       Centerlonlat.lon = Math.round( Centerlonlat.lon * 1000. ) / 1000.;';
-     $Layer .= '                       Clicklonlat.lat = Math.round( Clicklonlat.lat * 1000. ) / 1000.;';
-     $Layer .= '                       Clicklonlat.lon = Math.round( Clicklonlat.lon * 1000. ) / 1000.;';
+    // this is used to generate the short code
+    if ($a_msgBox == 'sc_gen'){  
+     $Layer .= '                      Centerlonlat.lat = Math.round( Centerlonlat.lat * 1000. ) / 1000.;'; // get the center of the map
+     $Layer .= '                      Centerlonlat.lon = Math.round( Centerlonlat.lon * 1000. ) / 1000.;';
+     $Layer .= '                      Clicklonlat.lat = Math.round( Clicklonlat.lat * 1000. ) / 1000.;';   // get the position for the marker
+     $Layer .= '                      Clicklonlat.lon = Math.round( Clicklonlat.lon * 1000. ) / 1000.;';
      $Layer .= ' 	                    alert("Insert the Osm shortcode to your post:\n \n  [osm_map lat=\"" + Centerlonlat.lat + "\" long=\"" + Centerlonlat.lon + "\" zoom=\"" + zoom + "\" width=\"600\" height=\"450\" marker=\""+Clicklonlat.lat+","+Clicklonlat.lon+"\"]");';
+    }
+    // this is used to generat just Lat and Long
+    else if( $a_msgBox == 'lat_long'){
+     $Layer .= '                      Clicklonlat.lat = Math.round( Clicklonlat.lat * 1000. ) / 1000.;';
+     $Layer .= '                      Clicklonlat.lon = Math.round( Clicklonlat.lon * 1000. ) / 1000.;';
+     $Layer .= ' 	                    alert("Lat=" + Clicklonlat.lat + " Long=" + Clicklonlat.lon);';   
     }
     $Layer .= ' 	                }';
     $Layer .= ' 	';
@@ -374,13 +413,14 @@ function AddClickHandler($a_msgBox){
   // check the num of zoomlevels
   function checkOverviewMapZoomlevels($a_Zoomlevels){
     if ( $a_Zoomlevels > 17){
+      Osm::traceText(DEBUG_ERROR, "Zoomlevel out of range!");
       return 0;
     }
     return $a_Zoomlevels;
   }
 
-  // check Lat and Long
-  function checkLatLong($a_Lat, $a_Long, $a_import, $a_import_UserName){
+ // check Lat and Long
+  function getLatLong($a_Lat, $a_Long, $a_import, $a_import_UserName){
     if ($a_import == 'wpgmg'){
       $a_Lat  = OSM_getCoordinateLat($a_import);
       $a_Long = OSM_getCoordinateLong($a_import);
@@ -393,22 +433,31 @@ function AddClickHandler($a_msgBox){
         $a_Long = ($Val[min] + $Val[max]) / 2;
       }
       else{
-       $a_Lat  = 0;
-       $a_Long = 0;
+       Osm::traceText(DEBUG_WARNING, "getLatLong() could not connect to gcStats plugin");
+       $a_Lat  = 0;$a_Long = 0;
       }
     }
     else if ($a_Lat == '' || $a_Long == ''){
       $a_Lat  = OSM_getCoordinateLat('osm');
       $a_Long = OSM_getCoordinateLong('osm');
     }
-    else if ($a_Lat < LAT_MIN || $a_Lat > LAT_MAX || $a_Long < LON_MIN || $a_Long > LON_MAX){
-     echo $a_Lat; echo $a_Long;
-     return "[OSM plugin - ERROR]: Lat(-90 to 90) or Long(-180 to 180) is out of range!";
-     $a_Lat  = 0;
-     $a_Long = 0;
-    }
     return array($a_Lat,$a_Long);
   }
+  
+  
+  // check Lat and Long
+  function checkLatLongRange($a_CallingId, $a_Lat, $a_Long)
+  {
+    if ($a_Lat >= LAT_MIN && $a_Lat <= LAT_MAX && $a_Long >= LON_MIN && $a_Long <= LON_MAX &&
+                    preg_match('!^[^0-9]+$!', $a_Lat) != 1 && preg_match('!^[^0-9]+$!', $a_Long) != 1){
+      return array($a_Lat,$a_Long);              
+    }
+    else{
+       Osm::traceText(DEBUG_ERROR, $a_CallingId." Lat".$a_Lat." or Long".$a_Long."is out of range (Lat:-90to90; Long(-180 to 180)");
+       $a_Lat  = 0;$a_Long = 0;
+    }
+  }
+
 
   // execute the java script to display 
   // the OpenStreetMap
@@ -441,8 +490,9 @@ function AddClickHandler($a_msgBox){
     'click'           => 'No',
     'marker'          => 'No',
     'msg_box' => 'No',
+    'custom_field' => 'No',
 	  ), $atts));
-
+   
     // if there is no info about the marker
     // then set it to default values
     if ($marker_name == 'NoName'){
@@ -456,12 +506,12 @@ function AddClickHandler($a_msgBox){
     }
 
     if ($zoom < ZOOM_LEVEL_MIN || $zoom > ZOOM_LEVEL_MAX){
-     echo $zoom; echo $zoom;
-     return "[OSM plugin - ERROR]: zoom level is out of range!";
+     Osm::traceText(DEBUG_ERROR, "$zoom is invalid or out of range (".$zoom.")!");
+     $zoom = 0;   
     }
     if ($width < 1 || $height < 1){
-     echo $width; echo $height;
-     return "[OSM plugin - ERROR]: width or height is too small!";
+     Osm::traceText(DEBUG_ERROR, "$width or $height is invalid or out of range ($width:".$width." $height:".$height.")!");
+     $width = 450; $height = 300;
     }
 
     $import = strtolower($import);
@@ -469,7 +519,8 @@ function AddClickHandler($a_msgBox){
 		list($import, $import_UserName) = split(',', $import);
 
     // if there is an invalid colour, just use the default one
-    list($lat, $long) = Osm::checkLatLong($lat, $long, $import, $import_UserName);
+    list($lat, $long) = Osm::getLatLong($lat, $long, $import, $import_UserName);
+    list($lat, $long) = Osm::checkLatLongRange('MapCenter',$lat, $long);
     $gpx_colour       = Osm::checkStyleColour($gpx_colour); 
     $kml_colour       = Osm::checkStyleColour($kml_colour);
     $type             = Osm::checkMapType($type);
@@ -494,7 +545,8 @@ function AddClickHandler($a_msgBox){
     $output .= Osm::addOsmLayer($MapName, $type, $ov_map);
 
     // add a clickhandler if needed
-    if ( $click == 'y' || $click == 'Y' || $msg_box == 'y' || $msg_box == 'Y'){
+    $msg_box = strtolower($msg_box);
+    if ( $click == 'y' || $click == 'Y' || $msg_box == 'sc_gen' || $msg_box == 'lat_long'){
       $output .= Osm::AddClickHandler($msg_box);
     }
 
@@ -541,17 +593,14 @@ function AddClickHandler($a_msgBox){
       $MarkerArray = Osm::createMarkerList('gcstats', $import_UserName,'Empty');
       $output .= Osm::addMarkerListLayer($LayerName_01, GCSTATS_MARKER_PNG, GCSTATS_MARKER_PNG_WIDTH, GCSTATS_MARKER_PNG_HEIGHT,$MarkerArray,-12,-12);
     }
+    
     if ($marker != 'No'){
       list($temp_lat, $temp_lon) = split(',', $marker);
-      if ($temp_lat >= LAT_MIN && $temp_lat <= LAT_MAX && $temp_lon >= LON_MIN && $temp_lon <= LON_MAX &&
-                  preg_match('!^[^0-9]+$!', $temp_lat) != 1 && preg_match('!^[^0-9]+$!', $temp_lon) != 1){
-        $MarkerArray[] = array('lat'=> $temp_lat,'lon'=>$temp_lon,'marker'=>$marker_name);
-        $output .= Osm::addMarkerListLayer('Ol_icon_blue_example.png', INDIV_MARKER, INDIV_MARKER_PNG_WIDTH, INDIV_MARKER_PNG_HEIGHT,$MarkerArray,0,-24);
-      }
-      else{
-        echo "[OSM plugin - ERROR]: marker address is invalid or out of range!";
-      }
+      list($temp_lat, $temp_lon) = Osm::checkLatLongRange('$marker',$temp_lat, $temp_lon);
+      $MarkerArray[] = array('lat'=> $temp_lat,'lon'=>$temp_lon,'marker'=>$marker_name);
+      $output .= Osm::addMarkerListLayer('Marker', INDIV_MARKER, INDIV_MARKER_PNG_WIDTH, INDIV_MARKER_PNG_HEIGHT,$MarkerArray,0,-INDIV_MARKER_PNG_HEIGHT);
     }
+    
     $output .= '}';
     $output .= ');';
     $output .= '/* ]]> */';

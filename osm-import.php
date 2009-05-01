@@ -39,16 +39,8 @@ else if($a_import == 'gcstats'){
   // get the data from gcstats plugin, check it and add it to the marker-array
   $temp_caches = gcStats__getCachesData($a_import_UserName, $a_Customfield);
   foreach($temp_caches as $k => $CachesArray){
-    if ($CachesArray[lat] != '' && $CachesArray[lon] != '') {
-      // is long and lat within the range and is it a number?
-      if ($CachesArray[lat] >= LAT_MIN && $CachesArray[lat] <= LAT_MAX && $CachesArray[lon] >= LON_MIN && $CachesArray[lon] <= LON_MAX &&
-                  preg_match('!^[^0-9]+$!', $CachesArray[lat]) != 1 && preg_match('!^[^0-9]+$!', $CachesArray[lon]) != 1){
-        $MarkerArray[] = array('lat'=> $CachesArray[lat],'lon'=>$CachesArray[lon],'marker'=>GCSTATS_MARKER_PNG);
-      }
-      else{// inform the user which post has got a wrong long or lat value
-        echo '[OSM plugin - ERROR]: gcStats import (lat or long is out of range or not a number!';
-      }
-    } 
+    list($temp_lat, $temp_long) = Osm::checkLatLongRange('gcStats',$CachesArray[lat], $CachesArray[lon]);
+    $MarkerArray[] = array('lat'=> $temp_lat,'lon'=>$temp_long,'marker'=>GCSTATS_MARKER_PNG);
   }
 }
 ?>
