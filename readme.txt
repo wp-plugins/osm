@@ -22,7 +22,7 @@ OSM is a plugin the focuses on OpenstreetMap and geo data in your blog.
 
 == Installation ==
 
-1. Upload OSM folder to the `/wp-content/plugins/` directory
+1. Upload osm folder to the `/wp-content/plugins/` directory
 2. Activate the plugin through the 'Plugins' menu in WordPress
 3. No configuration is needed to add a map to your blog
 
