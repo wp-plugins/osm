@@ -18,7 +18,7 @@ OSM is a plugin the focuses on OpenstreetMap and geo data in your blog.
 * visitor can add marker by comments
 * use custom field to add geodata to your blog
 * geo data are written to html-meta tags of your blog
-* visit [the plugin page](http://www.Fotomobil.at/wp-osm-plugin/ "Link to gcstats plugin") to get detailled info and news!
+* VISIT [THE PLUGIN PAGE](http://www.Fotomobil.at/wp-osm-plugin/ "Link to osm plugin") TO GET DETAILLED INFO AND NEWS!
 
 == Installation ==
 
