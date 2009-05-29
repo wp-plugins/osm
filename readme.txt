@@ -1,8 +1,8 @@
 === OSM ===
-Tags: map, OpenStreetMap, geo, KML, GPX, geocache, geocaching, OSM
+Tags: map, OpenStreetMap, geo, KML, GPX, geocache, geocaching, OSM, comment
 Requires at least: 2.5.1
 Tested up to: 2.7.1
-Stable tag: 0.8.4
+Stable tag: 0.8.5
 
 OpenStreetMap plugin to embed maps with personal markers and routes in your blog. In addition to it geo meta data are added to posts and pages.
 
@@ -10,21 +10,23 @@ OpenStreetMap plugin to embed maps with personal markers and routes in your blog
 
 OSM is a plugin the focuses on OpenstreetMap and geo data in your blog.
 
-* NEW! Add your marker in the shortcode generator
-* NEW! Import your geocaches from [gcstats plugin](http://michael.josi.de/projects/gcstats/ "Link to gcstats plugin") to the map
-* Shortcode generator in plugin settings
-* using shortcode to add OSM maps in your blog
-* visualize a list of markers in the map 
-* visualize your route in the map (KML and GPX format)
-* visualize geo data of all posts in one map
+* embeds OpenStreetMap maps to your posts/pages
+* visualizes tracks / routs (gpx and kml)
+* visualizes geocaches with [gcstats plugin](http://michael.josi.de/projects/gcstats/ "Link to gcstats plugin")
+* visualizes popup-html-markers (list in txt-file or single in the shortcode)
+* visualize all geotagged posts of your blog in one map
+* visitor can add marker by comments
 * use custom field to add geodata to your blog
 * geo data are written to html-meta tags of your blog
+* visit [the plugin page](http://www.Fotomobil.at/wp-osm-plugin/ "Link to gcstats plugin") to get detailled info and news!
 
 == Installation ==
 
-1. Upload osm (lower-case!) folder to the `/wp-content/plugins/` directory
+1. Upload OSM folder to the `/wp-content/plugins/` directory
 2. Activate the plugin through the 'Plugins' menu in WordPress
 3. No configuration is needed to add a map to your blog
+
+note: plugindirectory has to be "osm" (lower-case)
 
 == Frequently Asked Questions ==
 
@@ -56,6 +58,6 @@ You have to install [gcstats plugin](http://michael.josi.de/projects/gcstats/ "L
 == Screenshots ==
 1. Shortcode generator in the plugin settings page
 2. Showing the geo data of all posts/pages within one map
-3. Showing a track added with a GPX file
+3. Showing a track added with a GPX file and popupmarker with photo
 
 
