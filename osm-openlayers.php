@@ -2,7 +2,6 @@
 
 class Osm_OpenLayers
 {
-
   //support different types of GML Layers
   function addGmlLayer($a_LayerName, $a_FileName, $a_Colour, $a_Type)
   {
@@ -17,7 +16,7 @@ class Osm_OpenLayers
   }
   
   // support different types of GML Layers
-  function addOsmLayer($a_LayerName, $a_Type, $a_OverviewMapZoom)
+  function addOsmLayer($a_LayerName, $a_Type, $a_OverviewMapZoom, $a_MapControl, $a_ExtType, $a_ExtName, $a_ExtAddress, $a_ExtInit)
   {
     Osm::traceText(DEBUG_INFO, "addOsmLayer(".$a_LayerName.",".$a_Type.",".$a_OverviewMapZoom.")");
     $Layer .= ' map = new OpenLayers.Map ("'.$a_LayerName.'", {';
@@ -50,8 +49,28 @@ class Osm_OpenLayers
       else if ($a_Type == 'CycleMap'){
         $Layer .= 'var lmap = new OpenLayers.Layer.OSM.CycleMap("CycleMap");';
       }
+      else if (($a_Type == 'Ext') || ($a_Type == 'ext')) {
+        $Layer .= 'var lmap = new OpenLayers.Layer.'.$a_ExtType.'("'.$a_ExtName.'","'.$a_ExtAddress.'",{'.$a_ExtInit.'});';
+      }
+  
       $Layer .= 'map.addLayer(lmap);';
     }
+	
+	if ($a_MapControl[0] != 'No'){
+	  foreach ( $a_MapControl as $MapControl ){
+	  	$MapControl = strtolower($MapControl);
+	    if ( $MapControl == 'scaleline'){
+	      $Layer .= 'map.addControl(new OpenLayers.Control.ScaleLine());';
+	    }
+	    elseif ($MapControl == 'scale'){
+		  $Layer .= 'map.addControl(new OpenLayers.Control.Scale());';
+		}
+		elseif ($MapControl == 'mouseposition'){
+		  $Layer .= 'map.addControl(new OpenLayers.Control.MousePosition({displayProjection: new OpenLayers.Projection("EPSG:4326")}));';
+		}
+		// add more if needed!
+	  }
+	}
 
     // add the overview map
     if ($a_OverviewMapZoom >= 0){  
@@ -67,6 +86,23 @@ class Osm_OpenLayers
       }
       $Layer .= 'map.addControl(new OpenLayers.Control.OverviewMap(options));';
     }
+	
+	// http://trac.openlayers.org/changeset/9023
+    $Layer .= '    function osm_getTileURL(bounds) {';
+    $Layer .= '        var res = this.map.getResolution();';
+    $Layer .= '        var x = Math.round((bounds.left - this.maxExtent.left) / (res * this.tileSize.w));';
+    $Layer .= '        var y = Math.round((this.maxExtent.top - bounds.top) / (res * this.tileSize.h));';
+    $Layer .= '        var z = this.map.getZoom();';
+    $Layer .= '        var limit = Math.pow(2, z);';
+
+    $Layer .= '        if (y < 0 || y >= limit) {';
+    $Layer .= '            return OpenLayers.Util.getImagesLocation() + "404.png";';
+    $Layer .= '        } else {';
+    $Layer .= '            x = ((x % limit) + limit) % limit;';
+    $Layer .= '            return this.url + z + "/" + x + "/" + y + "." + this.type;';
+    $Layer .= '        }';
+    $Layer .= '    }';
+	
     return $Layer;
   }
 
@@ -120,7 +156,6 @@ class Osm_OpenLayers
     $Layer .= 'var click = new OpenLayers.Control.Click();';
     $Layer .= 'map.addControl(click);';
     $Layer .= 'click.activate();';
-
     return $Layer;
   }
 
@@ -201,7 +236,7 @@ class Osm_OpenLayers
       
   // if you miss a MapType, just add it
   function checkMapType($a_type){
-    if ($a_type != 'Mapnik' && $a_type != 'Osmarender' && $a_type != 'CycleMap' && $a_type != 'All'){
+    if ($a_type != 'Mapnik' && $a_type != 'Osmarender' && $a_type != 'CycleMap' && $a_type != 'All' && $a_type != 'ext' && $a_type != 'Ext'){
       return "All";
     }
     return $a_type;
@@ -215,5 +250,18 @@ class Osm_OpenLayers
     }
     return $a_Zoomlevels;
   }     
+  
+  function checkControlType($a_MapControl){
+    foreach ( $a_MapControl as $MapControl ){
+	  Osm::traceText(DEBUG_INFO, "Checking the Map Control");
+	  $MapControl = strtolower($MapControl);
+	  if (( $MapControl != 'scaleline') && ($MapControl != 'scale') && ($MapControl != 'no') && ($MapControl != 'mouseposition')) {
+	    Osm::traceText(DEBUG_ERROR, "e_invalid_control");
+	    $a_MapControl[0]='No';
+	  }
+    }
+  return $a_MapControl;
+  }
+  
 }
 ?>

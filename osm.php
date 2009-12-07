@@ -3,9 +3,9 @@
 Plugin Name: OSM
 Plugin URI: http://www.Fotomobil.at/wp-osm-plugin
 Description: Embeds <a href="http://www.OpenStreetMap.org">OpenStreetMap</a> maps in your blog and adds geo data to your posts. Get the latest version on the <a href="http://www.Fotomobil.at/wp-osm-plugin">OSM plugin page</a>.
-Version: 0.8.5
+Version: 0.8.6
 Author: Michael Kang
-Author URI: http://www.Fotomobil.at
+Author URI: http://www.HanBlog.net
 Minimum WordPress Version Required: 2.5.1
 */
 
@@ -29,9 +29,12 @@ Minimum WordPress Version Required: 2.5.1
 /* 
     Keep in mind, all changes you do by your own are lost whenever you update this plugin. If you need any general
     feature contact me to make a standard of OSM plugin!
-  +---------+------------------------------------------------------------------------------------------------------------------------------
-  | Ver.    |   Feature - Bugfixing - Notes - ...
-  +---------+------------------------------------------------------------------------------------------------------------------------------
+  +--------+------------------------------------------------------------------------------------------------------------------------------
+  | Ver.   |   Feature - Bugfixing - Notes - ...
+  +--------+------------------------------------------------------------------------------------------------------------------------------
+  | 0.8.6  | configureable loading of OSM libraries
+  |        | control tag added
+  |        | adding map by external link
   | 0.8.5  | HTML-marker for PopUps added; using WP_Error class; create Osm object, Osm_Openlayers classs
   |               wpgmg-pluginn support changed from marker_all_posts to import argument
   | 0.8.4  | correct plugin folder to "osm" (lower case!)
@@ -49,7 +52,7 @@ Minimum WordPress Version Required: 2.5.1
 
 load_plugin_textdomain('Osm');
 
-define ("PLUGIN_VER", "v0.8.5");
+define ("PLUGIN_VER", "V0.8.6");
 
 // modify anything about the marker for tagged posts here
 // instead of the coding.
@@ -92,7 +95,11 @@ define (DEBUG_WARNING, 2);
 define (DEBUG_INFO, 3);
 define (HTML_COMMENT, 10);
 
-define ("Osm_TraceLevel", DEBUG_ERROR); 
+// Load OSM library mode
+define (SERVER_EMBEDDED, 1);
+define (SERVER_WP_ENQUEUE, 2);
+
+
 
 if ( ! defined( 'WP_CONTENT_URL' ) )
       define( 'WP_CONTENT_URL', get_option( 'siteurl' ) . '/wp-content' );
@@ -110,10 +117,18 @@ global $wp_version;
 if (version_compare($wp_version,"2.5.1","<")){
   exit('[OSM plugin - ERROR]: At least Wordpress Version 2.5.1 is needed for this plugin!');
 }
+	
+// get the configuratin by
+// default or costumer settings
+if (@(!include('osm-config.php'))){
+  include ('osm-config-sample.php');
+}
 
-// include the class to get openlayers script
-    include('osm-openlayers.php');	
+// do not edit this
+define ("Osm_TraceLevel", DEBUG_ERROR); 
 
+include('osm-openlayers.php');
+    	
 // let's be unique ... 
 // with this namespace
 class Osm
@@ -459,6 +474,11 @@ class Osm
     'marker'          => 'No',
     'msg_box'         => 'No',
     'custom_field'    => 'No',
+	'control'		  => 'No',
+	'extmap_type'     => 'No',
+	'extmap_name'     => 'No',
+	'extmap_address'  => 'No',
+	'extmap_init'     => 'No',
 	  ), $atts));
    
     if ($zoom < ZOOM_LEVEL_MIN || $zoom > ZOOM_LEVEL_MAX){
@@ -490,14 +510,13 @@ class Osm
       }
     }
 
-
-
-
-		list($import_type, $import_UserName) = split(',', $import);
+	list($import_type, $import_UserName) = split(',', $import);
     if ($import_UserName == ''){
       $import_UserName = 'DummyName';
     }
     $import_type = strtolower($import_type);
+	
+	$array_control = split ( ',', $control);
     
     list($lat, $long) = Osm::getMapCenter($lat, $long, $import_type, $import_UserName);
     list($lat, $long) = Osm::checkLatLongRange('MapCenter',$lat, $long);
@@ -505,6 +524,7 @@ class Osm
     $kml_colour       = Osm::checkStyleColour($kml_colour);
     $type             = Osm_OpenLayers::checkMapType($type);
     $ov_map           = Osm_OpenLayers::checkOverviewMapZoomlevels($ov_map);
+	$array_control    = Osm_OpenLayers::checkControlType($array_control);
 
     // to manage several maps on the same page
     // create names with index
@@ -513,16 +533,31 @@ class Osm
     $MapName = 'map_'.$MapCounter;
     $GpxName = 'GPX_'.$MapCounter;
     $KmlName = 'KML_'.$MapCounter;
-
+	
     // if we came up to here, let's load the map
-    $output = '';
-    $output .= '<div id="'.$MapName.'" class="Oms" style="width:'.$width.'px; height:'.$height.'px; overflow:hidden"></div>';
+    $output = '';	
+	$output .= '<style type="text/css">';
+	$output .= '#'.$MapName.' {padding: 0; margin: 0;}';
+	$output .= '</style>';
+
+    $output .= '<div id="'.$MapName.'" style="width:'.$width.'px; height:'.$height.'px; overflow:hidden; padding:0px;">';
+   
+	if (Osm_LoadLibraryMode == SERVER_EMBEDDED){
+	  $output .= '<script type="text/javascript" src="'.Osm_OL_LibraryLocation.'"></script>';
+	  $output .= '<script type="text/javascript" src="'.Osm_OSM_LibraryLocation.'"></script>';
+	}
+	elseif (Osm_LoadLibraryMode == SERVER_WP_ENQUEUE){
+	  // registered and loaded by WordPress
+	}
+	else{
+	  $this->traceText(DEBUG_ERROR, "e_library_config");
+	}
     $output .= '<script type="text/javascript">';
     $output .= '/* <![CDATA[ */';
     $output .= 'jQuery(document).ready(';
     $output .= 'function($) {';
 
-    $output .= Osm_OpenLayers::addOsmLayer($MapName, $type, $ov_map);
+    $output .= Osm_OpenLayers::addOsmLayer($MapName, $type, $ov_map, $array_control, $extmap_type, $extmap_name, $extmap_address, $extmap_init);
 
     // add a clickhandler if needed
     $msg_box = strtolower($msg_box);
@@ -572,9 +607,11 @@ class Osm
     $output .= ');';
     $output .= '/* ]]> */';
     $output .= ' </script>';
+	$output .= '</div>';
     return $output;
 	}
 
+	
 	// add OSM-config page to Settings
 	function admin_menu($not_used){
     // place the info in the plugin settings page
@@ -585,8 +622,19 @@ class Osm
   // if it is not admin area
   function show_enqueue_script() {
     wp_enqueue_script(array ('jquery'));
-    wp_enqueue_script('OlScript', 'http://www.openlayers.org/api/OpenLayers.js');
-    wp_enqueue_script('OsnScript', 'http://www.openstreetmap.org/openlayers/OpenStreetMap.js');
+	
+	if (Osm_LoadLibraryMode == SERVER_EMBEDDED){
+      // it is loaded when the map is displayed
+	}
+	elseif (Osm_LoadLibraryMode == SERVER_WP_ENQUEUE){
+      //wp_enqueue_script('OlScript', 'http://www.openlayers.org/api/OpenLayers.js');
+      //wp_enqueue_script('OsnScript', 'http://www.openstreetmap.org/openlayers/OpenStreetMap.js');
+	  wp_enqueue_script('OlScript',Osm_OL_LibraryLocation);
+      wp_enqueue_script('OsnScript',Osm_OSM_LibraryLocation);
+	}
+	else{
+	  // Errormsg is traced at another place
+	}	
   }
 }	// End class Osm
 

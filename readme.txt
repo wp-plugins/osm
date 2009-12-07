@@ -1,16 +1,17 @@
 === OSM ===
-Tags: map, OpenStreetMap, geo, KML, GPX, geocache, geocaching, OSM, comment
+Tags: map, OpenStreetMap, geo, KML, GPX, geocache, geocaching, OSM, comment, travelogue
 Requires at least: 2.5.1
-Tested up to: 2.7.1
-Stable tag: 0.8.5
+Tested up to: 2.8.6
+Stable tag: 0.8.6
 
 OpenStreetMap plugin to embed maps with personal markers and routes in your blog. In addition to it geo meta data are added to posts and pages.
 
 == Description ==
 
-OSM is a plugin the focuses on OpenstreetMap and geo data in your blog.
+OpenStreetMap plugin to visualize maps in various ways.
 
 * embeds OpenStreetMap maps to your posts/pages
+* embeds external maps to your posts/pages
 * visualizes tracks / routs (gpx and kml)
 * visualizes geocaches with [gcstats plugin](http://michael.josi.de/projects/gcstats/ "Link to gcstats plugin")
 * visualizes popup-html-markers (list in txt-file or single in the shortcode)
@@ -18,7 +19,8 @@ OSM is a plugin the focuses on OpenstreetMap and geo data in your blog.
 * visitor can add marker by comments
 * use custom field to add geodata to your blog
 * geo data are written to html-meta tags of your blog
-* VISIT [THE PLUGIN PAGE](http://www.Fotomobil.at/wp-osm-plugin/ "Link to osm plugin") TO GET DETAILLED INFO AND NEWS!
+* visit [THE PLUGIN PAGE](http://www.Fotomobil.at/wp-osm-plugin/ "Link to osm plugin") to see samples and read news!
+* visit [THE WIKI PAGE](http://wiki.openstreetmap.org/wiki/Wp-osm-plugin "Link to Wiki") to get details about the tags!
 
 == Installation ==
 
@@ -32,15 +34,15 @@ note: plugindirectory has to be "osm" (lower-case)
 
 = Do I need any key or registration to show OSM maps in my blog =
 
-No, OSM is under cc-license, you do not need any API-key!
+No, OSM is under cc-license and you do not need any API-key!
 
 = Can I use several maps in the same poost/page =
 
 Just use as many shortcodes as you want to, even within one post.
 
-= There are already geo data in customfields in my blog, can I reuse them? =
+= Can I use OSM-plugin at Wordpress MU? =
 
-Yes, the format has to be Lat,Long. The name of the customfield has to be configured.
+Yes.
 
 = I tagged my posts/pages with another plugin, can I use this tag wit OSM plugin ? =
 
@@ -60,4 +62,17 @@ You have to install [gcstats plugin](http://michael.josi.de/projects/gcstats/ "L
 2. Showing the geo data of all posts/pages within one map
 3. Showing a track added with a GPX file and popupmarker with photo
 
+== Changelog ==
+= 0.8.6 =
+* performance improvement: needed libraries are loaded only if maps are displayed - improves the whole blog!
+* external maps can be included instead of standard OSM-maps
+* controls (scale, scaleline, mouseposition) can be included by tag
+= 0.8.5 =
+* HTML marker for PopUps
+= 0.8.4 =
+* plugin folder changed
+* some internal stuff
+= 0.8.3 =
+* correct offset for indiv. marker
+* ...
 
