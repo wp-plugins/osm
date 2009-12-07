@@ -17,4 +17,7 @@
     $this->ErrorMsg->add('e_use_marker_all_posts',  __('Use the argument import instead of marker_all_posts!', $this->localizionName));    
     $this->ErrorMsg->add('e_import_unknwon',  __('Import type is unknown!', $this->localizionName));  
     $this->ErrorMsg->add('e_unknown_icon',  __('Invalid marker_name!', $this->localizionName));  
+	// these messages are related to the config file
+	$this->ErrorMsg->add('e_library_config',  __('Could not load OSM library, check LoadLibraryMode @ wp-content/plugins/osm/osm-config.php!', $this->localizionName));  
+	$this->ErrorMsg->add('e_invalid_control',  __('Invalid usage of control tag!', $this->localizionName));  
 ?>
