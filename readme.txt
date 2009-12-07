@@ -28,7 +28,8 @@ OpenStreetMap plugin to visualize maps in various ways.
 2. Activate the plugin through the 'Plugins' menu in WordPress
 3. No configuration is needed to add a map to your blog
 
-note: plugindirectory has to be "osm" (lower-case)
+IMPORTANT: 
+Do not use "upgrade automatically" if you stored any personal files (GPX, TXT, ...) or settings in the OSM-plugin folder as this directory will be deleted before installing the new version!!
 
 == Frequently Asked Questions ==
 

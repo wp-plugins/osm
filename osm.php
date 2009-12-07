@@ -2,7 +2,7 @@
 /*
 Plugin Name: OSM
 Plugin URI: http://www.Fotomobil.at/wp-osm-plugin
-Description: Embeds <a href="http://www.OpenStreetMap.org">OpenStreetMap</a> maps in your blog and adds geo data to your posts. Get the latest version on the <a href="http://www.Fotomobil.at/wp-osm-plugin">OSM plugin page</a>.
+Description: Embeds <a href="http://www.OpenStreetMap.org">OpenStreetMap</a> maps in your blog and adds geo data to your posts. Get the latest version on the <a href="http://www.Fotomobil.at/wp-osm-plugin">OSM plugin page</a>. DO NOT "upgrade automatically" if you made any personal settings or if you stored GPX or TXT files in the plugin folder!!
 Version: 0.8.6
 Author: Michael Kang
 Author URI: http://www.HanBlog.net
