@@ -22,6 +22,7 @@
   <li>paste the shortcode in your post / article.</li>
   <li>modify or delete the marker argument in the shortcode</li>
   <li>add other arguments to insert tracks, points ... or modify mapsize ... if needed</li>
+  <li>do not save any data in the plugins/osm folder but in the upload folder!</li>
   <li>for advanced usage of shortcodes visit the <a target="_new" href="http://www.Fotomobil.at/wp-osm-plugin">plugin page</a>.</li>
 </ol>
 <br>
