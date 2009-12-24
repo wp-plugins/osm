@@ -3,7 +3,7 @@
 Plugin Name: OSM
 Plugin URI: http://www.Fotomobil.at/wp-osm-plugin
 Description: Embeds <a href="http://www.OpenStreetMap.org">OpenStreetMap</a> maps in your blog and adds geo data to your posts. Get the latest version on the <a href="http://www.Fotomobil.at/wp-osm-plugin">OSM plugin page</a>. DO NOT "upgrade automatically" if you made any personal settings or if you stored GPX or TXT files in the plugin folder!!
-Version: 0.8.6
+Version: 0.8.7
 Author: Michael Kang
 Author URI: http://www.HanBlog.net
 Minimum WordPress Version Required: 2.5.1
@@ -32,6 +32,8 @@ Minimum WordPress Version Required: 2.5.1
   +--------+------------------------------------------------------------------------------------------------------------------------------
   | Ver.   |   Feature - Bugfixing - Notes - ...
   +--------+------------------------------------------------------------------------------------------------------------------------------
+  | 0.8.7  | bug: popupmarker without text @ customfield produced "Array" only at WP 2.9
+  |        |      bycicle-png had wrong size
   | 0.8.6  | configureable loading of OSM libraries
   |        | control tag added
   |        | adding map by external link
@@ -52,7 +54,7 @@ Minimum WordPress Version Required: 2.5.1
 
 load_plugin_textdomain('Osm');
 
-define ("PLUGIN_VER", "V0.8.6");
+define ("PLUGIN_VER", "V0.8.7");
 
 // modify anything about the marker for tagged posts here
 // instead of the coding.
@@ -410,7 +412,7 @@ class Osm
 
   $Icons = array(
     "airport.png"        => array("height"=>32,"width"=>"31"),
-    "bicycling.png"      => array("height"=>32,"width"=>"19"),
+    "bicycling.png"      => array("height"=>19,"width"=>"32"),
     "bus.png"            => array("height"=>32,"width"=>"26"),
     "camping.png"        => array("height"=>32,"width"=>"32"),
     "car.png"            => array("height"=>32,"width"=>"18"),
@@ -596,6 +598,9 @@ class Osm
    if ($marker  != 'No'){  
      global $post;  
      list($temp_lat, $temp_lon, $temp_popup_custom_field) = split(',', $marker);
+	 if ($temp_popup_custom_field == ''){
+		$temp_popup_custom_field = 'osm_dummy';
+	 }
      $temp_popup_custom_field = trim($temp_popup_custom_field);
      $temp_popup = get_post_meta($post->ID, $temp_popup_custom_field, true); 
      list($temp_lat, $temp_lon) = Osm::checkLatLongRange('Marker',$temp_lat, $temp_lon); 

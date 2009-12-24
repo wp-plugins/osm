@@ -1,8 +1,8 @@
 === OSM ===
 Tags: map, OpenStreetMap, geo, KML, GPX, geocache, geocaching, OSM, comment, travelogue
 Requires at least: 2.5.1
-Tested up to: 2.8.6
-Stable tag: 0.8.6
+Tested up to: 2.9
+Stable tag: 0.8.7
 
 OpenStreetMap plugin to embed maps with personal markers and routes in your blog. In addition to it geo meta data are added to posts and pages.
 
@@ -64,16 +64,19 @@ You have to install [gcstats plugin](http://michael.josi.de/projects/gcstats/ "L
 3. Showing a track added with a GPX file and popupmarker with photo
 
 == Changelog ==
+= 0.8.7 =
+* WP 2.9 Bugfix: HTML-PopUp-Marker without Customfield-Text produced 'Array'
+* Bugfix: size of bicycle icon
 = 0.8.6 =
-* performance improvement: needed libraries are loaded only if maps are displayed - improves the whole blog!
-* external maps can be included instead of standard OSM-maps
-* controls (scale, scaleline, mouseposition) can be included by tag
+* Feature: performance improvement: needed libraries are loaded only if maps are displayed - improves the whole blog!
+* Feature: external maps can be included instead of standard OSM-maps
+* Feature: controls (scale, scaleline, mouseposition) can be included by tag
 = 0.8.5 =
-* HTML marker for PopUps
+* Feature HTML marker for PopUps
 = 0.8.4 =
-* plugin folder changed
-* some internal stuff
+* Bugfix: plugin folder changed
+* Bugfix: some internal stuff
 = 0.8.3 =
-* correct offset for indiv. marker
+* Bufis: correct offset for indiv. marker
 * ...
 
