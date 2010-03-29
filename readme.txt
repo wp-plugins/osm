@@ -1,8 +1,8 @@
 === OSM ===
-Tags: map, OpenStreetMap, geo, KML, GPX, geocache, geocaching, OSM, comment, travelogue
+Tags: map, OpenStreetMap, geo, KML, GPX, geocache, geocaching, OSM, comment, travelogue, template tag, travelblog
 Requires at least: 2.5.1
-Tested up to: 2.9
-Stable tag: 0.8.7
+Tested up to: 2.9.2
+Stable tag: 0.9
 
 OpenStreetMap plugin to embed maps with personal markers and routes in your blog. In addition to it geo meta data are added to posts and pages.
 
@@ -12,7 +12,7 @@ OpenStreetMap plugin to visualize maps in various ways.
 
 * embeds OpenStreetMap maps to your posts/pages
 * embeds external maps to your posts/pages
-* visualizes tracks / routs (gpx and kml)
+* visualizes several tracks / routs in different colours (gpx and kml)
 * visualizes geocaches with [gcstats plugin](http://michael.josi.de/projects/gcstats/ "Link to gcstats plugin")
 * visualizes popup-html-markers (list in txt-file or single in the shortcode)
 * visualize all geotagged posts of your blog in one map
@@ -29,7 +29,7 @@ OpenStreetMap plugin to visualize maps in various ways.
 3. No configuration is needed to add a map to your blog
 
 IMPORTANT: 
-Do not use "upgrade automatically" if you stored any personal files (GPX, TXT, ...) or settings in the OSM-plugin folder as this directory will be deleted before installing the new version!!
+Personal data (eg. gpx files) must not be stored in the plugins/osm folder but in the upload folder!
 
 == Frequently Asked Questions ==
 
@@ -64,6 +64,10 @@ You have to install [gcstats plugin](http://michael.josi.de/projects/gcstats/ "L
 3. Showing a track added with a GPX file and popupmarker with photo
 
 == Changelog ==
+= 0.9 =
+* Feature: display several gpx files with diff. colours in one map
+* Feature: template tags to be used in your theme to show maps at geotagged posts
+* Feature: extend zoom level for mapnik to 18
 = 0.8.7 =
 * WP 2.9 Bugfix: HTML-PopUp-Marker without Customfield-Text produced 'Array'
 * Bugfix: size of bicycle icon
@@ -77,6 +81,5 @@ You have to install [gcstats plugin](http://michael.josi.de/projects/gcstats/ "L
 * Bugfix: plugin folder changed
 * Bugfix: some internal stuff
 = 0.8.3 =
-* Bufis: correct offset for indiv. marker
+* Bugfix: correct offset for indiv. marker
 * ...
-

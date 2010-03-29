@@ -3,7 +3,7 @@
 Plugin Name: OSM
 Plugin URI: http://www.Fotomobil.at/wp-osm-plugin
 Description: Embeds <a href="http://www.OpenStreetMap.org">OpenStreetMap</a> maps in your blog and adds geo data to your posts. Get the latest version on the <a href="http://www.Fotomobil.at/wp-osm-plugin">OSM plugin page</a>. DO NOT "upgrade automatically" if you made any personal settings or if you stored GPX or TXT files in the plugin folder!!
-Version: 0.8.7
+Version: 0.9
 Author: Michael Kang
 Author URI: http://www.HanBlog.net
 Minimum WordPress Version Required: 2.5.1
@@ -32,6 +32,9 @@ Minimum WordPress Version Required: 2.5.1
   +--------+------------------------------------------------------------------------------------------------------------------------------
   | Ver.   |   Feature - Bugfixing - Notes - ...
   +--------+------------------------------------------------------------------------------------------------------------------------------
+  | 0.9    | feature: function OSM_displayOpenStreetMap(...) as template tag added
+  |        | feature: zoomlevel extented to 18 (only supported by Mapnik-mapp) 
+  |        | feature: a list of gpx files can be given to the map
   | 0.8.7  | bug: popupmarker without text @ customfield produced "Array" only at WP 2.9
   |        |      bycicle-png had wrong size
   | 0.8.6  | configureable loading of OSM libraries
@@ -54,7 +57,7 @@ Minimum WordPress Version Required: 2.5.1
 
 load_plugin_textdomain('Osm');
 
-define ("PLUGIN_VER", "V0.8.7");
+define ("PLUGIN_VER", "V0.9");
 
 // modify anything about the marker for tagged posts here
 // instead of the coding.
@@ -76,7 +79,7 @@ define ("URL_LAT","&mlat=");
 define ("URL_LON","&mlon=");
 define ("URL_ZOOM_01","&zoom=[");
 define ("URL_ZOOM_02","]");
-define (ZOOM_LEVEL_MAX,17);
+define (ZOOM_LEVEL_MAX,18); // standard is 17, only mapnik is 18
 define (ZOOM_LEVEL_MIN,1);
 
 // other geo plugin defines
@@ -462,6 +465,8 @@ class Osm
     // track info
     'gpx_file'  => 'NoFile',           // 'absolut address'          
     'gpx_colour'=> 'NoColour',
+    'gpx_file_list'   => 'NoFileList',
+    'gpx_colour_list' => 'NoColourList',
     'kml_file'  => 'NoFile',           // 'absolut address'          
     'kml_colour'=> 'NoColour',
     // are there markers in the map wished loaded from a file
@@ -536,6 +541,8 @@ class Osm
     $GpxName = 'GPX_'.$MapCounter;
     $KmlName = 'KML_'.$MapCounter;
 	
+    Osm::traceText(DEBUG_INFO, "MapCounter = ".$MapCounter);
+
     // if we came up to here, let's load the map
     $output = '';	
 	$output .= '<style type="text/css">';
@@ -574,6 +581,21 @@ class Osm
       $output .= Osm_OpenLayers::addGmlLayer($GpxName, $gpx_file,$gpx_colour,'GPX');
     }
 
+    if ($gpx_file_list != 'NoFileList'){
+      $GpxFileListArray   = split ( ',', $gpx_file_list ); 
+      $GpxColourListArray = split ( ',', $gpx_colour_list);
+      $this->traceText(DEBUG_INFO, "(NumOfGpxFiles: ".sizeof($GpxFileListArray)." NumOfGpxColours: ".sizeof($GpxColourListArray).")!");
+      if (sizeof($GpxFileListArray) == sizeof($GpxColourListArray)){
+        for($x=0;$x<sizeof($GpxFileListArray);$x++){
+          $GpxName = 'GPX_LIST_'.$x;
+          $output .= Osm_OpenLayers::addGmlLayer($GpxName, $GpxFileListArray[$x],$GpxColourListArray[$x],'GPX');
+        }
+      }
+      else {
+        $this->traceText(DEBUG_ERROR, "e_gpx_list_error");
+      }
+    }
+
     // Add the Layer with KML Track
     if ($kml_file != 'NoFile'){ 
       $output .= Osm_OpenLayers::addGmlLayer($KmlName, $kml_file,$kml_colour,'KML');
@@ -598,21 +620,21 @@ class Osm
    if ($marker  != 'No'){  
      global $post;  
      list($temp_lat, $temp_lon, $temp_popup_custom_field) = split(',', $marker);
-	 if ($temp_popup_custom_field == ''){
-		$temp_popup_custom_field = 'osm_dummy';
-	 }
+	   if ($temp_popup_custom_field == ''){
+	  	$temp_popup_custom_field = 'osm_dummy';
+	   }
      $temp_popup_custom_field = trim($temp_popup_custom_field);
      $temp_popup = get_post_meta($post->ID, $temp_popup_custom_field, true); 
      list($temp_lat, $temp_lon) = Osm::checkLatLongRange('Marker',$temp_lat, $temp_lon); 
      $MarkerArray[] = array('lat'=> $temp_lat,'lon'=>$temp_lon,'marker'=>$marker_name, 'text'=>$temp_popup);
      $output .= Osm_OpenLayers::addMarkerListLayer('Marker', $marker_name, $marker_width, $marker_height,$MarkerArray,-12,-12,'true');
     }
-  
+
     $output .= '}';
     $output .= ');';
     $output .= '/* ]]> */';
     $output .= ' </script>';
-	$output .= '</div>';
+  	$output .= '</div>';
     return $output;
 	}
 
@@ -701,4 +723,38 @@ function OSM_getOpenStreetMapUrl() {
 function OSM_echoOpenStreetMapUrl(){
   echo OSM_getOpenStreetMapUrl() ;
 }
+
+// functions to display a map in your theme 
+// by using the custom fields
+// default values should be set only at sc_showMap()
+function OSM_displayOpenStreetMap($a_widht, $a_hight, $a_zoom, $a_type){
+
+  $atts = array ('width'        => $a_widht,
+                 'height'       => $a_hight,
+                 'type'         => $a_type,
+                 'zoom'         => $a_zoom,
+	               'control'		  => 'off');
+
+  if ((OSM_getCoordinateLong("osm"))&&(OSM_getCoordinateLat("osm"))) { 
+    echo OSM::sc_showMap($atts);
+  }
+}
+
+function OSM_displayOpenStreetMapExt($a_widht, $a_hight, $a_zoom, $a_type, $a_control, $a_marker_name, $a_marker_height, $a_marker_width, $a_marker){
+
+  $atts = array ('width'        => $a_widht,
+                 'height'       => $a_hight,
+                 'type'         => $a_type,
+                 'zoom'         => $a_zoom,
+                 'marker_name'  => $a_marker_name,
+                 'marker_height'=> $a_marker_height,
+                 'marker_width' => $a_marker_width,
+                 'marker'       => OSM_getCoordinateLat("osm") . ',' . OSM_getCoordinateLong("osm") . ',' . $a_marker_text,
+	               'control'		  => $a_control);
+
+  if ((OSM_getCoordinateLong("osm"))&&(OSM_getCoordinateLat("osm"))) { 
+    echo OSM::sc_showMap($atts);
+  }
+}
+
 ?>

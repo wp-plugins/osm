@@ -21,8 +21,10 @@ class Osm_OpenLayers
     Osm::traceText(DEBUG_INFO, "addOsmLayer(".$a_LayerName.",".$a_Type.",".$a_OverviewMapZoom.")");
     $Layer .= ' map = new OpenLayers.Map ("'.$a_LayerName.'", {';
     $Layer .= '            controls:[';
-    $Layer .= '              new OpenLayers.Control.Navigation(),';
-    $Layer .= '              new OpenLayers.Control.PanZoom(),';
+    if ($a_MapControl[0] != 'off'){
+      $Layer .= '              new OpenLayers.Control.Navigation(),';
+      $Layer .= '              new OpenLayers.Control.PanZoom(),';
+    }
     $Layer .= '              new OpenLayers.Control.Attribution()';
     $Layer .= '              ],';
     $Layer .= '          maxExtent: new OpenLayers.Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34),';
@@ -255,7 +257,7 @@ class Osm_OpenLayers
     foreach ( $a_MapControl as $MapControl ){
 	  Osm::traceText(DEBUG_INFO, "Checking the Map Control");
 	  $MapControl = strtolower($MapControl);
-	  if (( $MapControl != 'scaleline') && ($MapControl != 'scale') && ($MapControl != 'no') && ($MapControl != 'mouseposition')) {
+	  if (( $MapControl != 'scaleline') && ($MapControl != 'scale') && ($MapControl != 'no') && ($MapControl != 'mouseposition')&& ($MapControl != 'off')) {
 	    Osm::traceText(DEBUG_ERROR, "e_invalid_control");
 	    $a_MapControl[0]='No';
 	  }
