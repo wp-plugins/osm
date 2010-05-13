@@ -1,5 +1,5 @@
 === OSM ===
-Tags: map, OpenStreetMap, geo, KML, GPX, geocache, geocaching, OSM, comment, travelogue, template tag, travelblog
+Tags: map, OpenStreetMap, geo, KML, GPX, geotag, geolocation, geocache, geocaching, OSM, comment, travelogue, template tag, travelblog
 Requires at least: 2.5.1
 Tested up to: 2.9.2
 Stable tag: 0.9
@@ -17,7 +17,7 @@ OpenStreetMap plugin to visualize maps in various ways.
 * visualizes popup-html-markers (list in txt-file or single in the shortcode)
 * visualize all geotagged posts of your blog in one map
 * visitor can add marker by comments
-* use custom field to add geodata to your blog
+* use custom field to add geolocation to your blog
 * geo data are written to html-meta tags of your blog
 * visit [THE PLUGIN PAGE](http://www.Fotomobil.at/wp-osm-plugin/ "Link to osm plugin") to see samples and read news!
 * visit [THE WIKI PAGE](http://wiki.openstreetmap.org/wiki/Wp-osm-plugin "Link to Wiki") to get details about the tags!
@@ -35,7 +35,7 @@ Personal data (eg. gpx files) must not be stored in the plugins/osm folder but i
 
 = Do I need any key or registration to show OSM maps in my blog =
 
-No, OSM is under cc-license and you do not need any API-key!
+No, OSM is under [cc-license] (http://wiki.openstreetmap.org/wiki/OpenStreetMap_License) and you do not need any API-key!
 
 = Can I use several maps in the same poost/page =
 
