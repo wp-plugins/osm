@@ -299,7 +299,7 @@ class Osm
                 }
 	           }	 
            $Marker_Txt = '<a href="'.get_permalink($post->ID).'">'.$Category_Txt.get_the_title($post->ID).'  </a>';
-           $MarkerArray[] = array('lat'=> $temp_lat,'lon'=>$temp_lon,'popup_height'=>'50', 'popup_width'=>'150', 'marker'=>$Icon[name], 'text'=>$Marker_Txt);
+           $MarkerArray[] = array('lat'=> $temp_lat,'lon'=>$temp_lon,'popup_height'=>'100', 'popup_width'=>'150', 'marker'=>$Icon[name], 'text'=>$Marker_Txt);
 	        }  
        endwhile;
      }
