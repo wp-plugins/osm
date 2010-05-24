@@ -23,11 +23,11 @@ class Osm_OpenLayers
     $Layer .= '            controls:[';
     if (($a_MapControl[0] != 'off') && (strtolower($a_Type)!= 'ext')) {
       $Layer .= '              new OpenLayers.Control.Navigation(),';
-      $Layer .= '              new OpenLayers.Control.PanZoom()';
-     // $Layer .= '              new OpenLayers.Control.Attribution()';
+      $Layer .= '              new OpenLayers.Control.PanZoom(),';
+      $Layer .= '              new OpenLayers.Control.Attribution()';
     }
     else if (($a_MapControl[0] == 'off') && (strtolower($a_Type)!= 'ext')){
-      //$Layer .= '              new OpenLayers.Control.Attribution()';
+      $Layer .= '              new OpenLayers.Control.Attribution()';
     }
     else if (($a_MapControl[0] != 'off') && (strtolower($a_Type)== 'ext')){
       $Layer .= '              new OpenLayers.Control.Navigation(),';
