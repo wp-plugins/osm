@@ -16,14 +16,12 @@
 <table border="0">
 <h3>How to add a map to your post/article</h3>
 <ol>
-  <li>select the area and zoomlevel of your map</li>
+  <li>select the area and zoomlevel on the map</li>
   <li>click on the map where you want to place a marker</li>
-  <li>copy the shortcode from the massage window</li>
-  <li>paste the shortcode in your post / article.</li>
-  <li>modify or delete the marker argument in the shortcode</li>
+  <li>copy the shortcode from the massage window and paste it in your post / article</li>
+  <li>modify or delete the arguments <i>marker</i> and <i>marker_name</i> if you do not need a marker in your map</li>
   <li>add other arguments to insert tracks, points ... or modify mapsize ... if needed</li>
-  <li>do not save any data in the plugins/osm folder but in the upload folder!</li>
-  <li>for advanced usage of shortcodes visit the <a target="_new" href="http://www.Fotomobil.at/wp-osm-plugin">plugin page</a>.</li>
+  <li style="color:red"> do not save any of your personal data in the plugins/osm folder but in the upload folder!</li>
 </ol>
 <br>
 <table border="0">
@@ -81,7 +79,19 @@
 <br>
 <?php echo Osm::sc_showMap(array('msg_box'=>'sc_gen','lat'=>'50','long'=>'18.5','zoom'=>'3', 'width'=>'600','height'=>'450')); ?>
 <br>
-
+<h3>Some usefull sites for this plugin:</h3>
+<ol>
+  <li>for advanced samples visit the <a target="_new" href="http://www.Fotomobil.at/wp-osm-plugin">osm-plugin page</a>.</li>
+  <li>for detailed information about usage visit the <a target="_new" href="http://wiki.openstreetmap.org/wiki/Wp-osm-plugin">osm-wiki page</a>.</li>
+  <li>for questions, bugs and other feedback visit the <a target="_new" href="http://www.Fotomobil.at/wp-osm-plugin-forum">osm-plugin forum</a>.</li>
+  <li>find news and articles about the plugin at the <a target="_new" href="http://www.HanBlog.net">osm-author page</a>.</li>
+  <li>download the last version at WordPress.org <a target="_new" href="http://wordpress.org/extend/plugins/osm/">osm-plugin download</a>.</li>
+</ol>
+<h3>If you want to express thanks for this plubin ...</h3>
+<ol>
+  <li>do not donate money but submit a photo at the <a target="_new" href="http://www.Fotomobil.at">Fotomobil.at</a> project.</li>
+  <li>put a link to the osm-plugin page on your site <a target="_new" href="http://www.Fotomobil.at/wp-osm-plugin">www.Fotomobil.at/wp-osm-plugin</a>.</li>
+</ol>
 <form method="post">
  <tr> <h3>How to geotag your post/page </h3> </tr>
   <ol>
