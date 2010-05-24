@@ -2,7 +2,7 @@
 Tags: map, OpenStreetMap, geo, KML, GPX, geotag, geolocation, geocache, geocaching, OSM, comment, travelogue, template tag, travelblog
 Requires at least: 2.5.1
 Tested up to: 2.9.2
-Stable tag: 0.9
+Stable tag: 0.9.1
 
 OpenStreetMap plugin to embed maps with personal markers and routes in your blog. In addition to it geo meta data are added to posts and pages.
 
@@ -15,12 +15,14 @@ OpenStreetMap plugin to visualize maps in various ways.
 * visualizes several tracks / routs in different colours (gpx and kml)
 * visualizes geocaches with [gcstats plugin](http://michael.josi.de/projects/gcstats/ "Link to gcstats plugin")
 * visualizes popup-html-markers (list in txt-file or single in the shortcode)
-* visualize all geotagged posts of your blog in one map
+* visualize all geotagged posts of your blog in one map with a link to the post
 * visitor can add marker by comments
 * use custom field to add geolocation to your blog
 * geo data are written to html-meta tags of your blog
 * visit [THE PLUGIN PAGE](http://www.Fotomobil.at/wp-osm-plugin/ "Link to osm plugin") to see samples and read news!
 * visit [THE WIKI PAGE](http://wiki.openstreetmap.org/wiki/Wp-osm-plugin "Link to Wiki") to get details about the tags!
+
+Note: Feel free to delete the files screenshot-1.png to screenshot-4.png in the OSM-folder to save webspace.
 
 == Installation ==
 
@@ -33,21 +35,17 @@ Personal data (eg. gpx files) must not be stored in the plugins/osm folder but i
 
 == Frequently Asked Questions ==
 
-= Do I need any key or registration to show OSM maps in my blog =
+= Do I need any key or any registration to show OSM maps in my blog =
 
-No, OSM is under [cc-license] (http://wiki.openstreetmap.org/wiki/OpenStreetMap_License) and you do not need any API-key!
+No, OSM is under [cc-license](http://wiki.openstreetmap.org/wiki/OpenStreetMap_License) and you do not need any API-key!
 
-= Can I use several maps in the same poost/page =
+= I have limited webspace, why does this plugin use more than 500kB =
 
-Just use as many shortcodes as you want to, even within one post.
+Feel free to delete the files screenshot-1.png to screenshot-4.png.
 
 = Can I use OSM-plugin at Wordpress MU? =
 
 Yes.
-
-= I tagged my posts/pages with another plugin, can I use this tag wit OSM plugin ? =
-
-Yes, up to now WPGMG (google-maps-geocoder) plugin is supported, others will follow on request.
 
 = Why is there no map in the "Edit post" page ? =
 
@@ -62,8 +60,14 @@ You have to install [gcstats plugin](http://michael.josi.de/projects/gcstats/ "L
 1. Shortcode generator in the plugin settings page
 2. Showing the geo data of all posts/pages within one map
 3. Showing a track added with a GPX file and popupmarker with photo
+4. Use template-tags to show a map if your post/page has got a geolocation
 
 == Changelog ==
+= 0.9.1 =
+* Feature: popup marker with link for the map displaying all posts/pages of the blog
+* Bugfix: licenselink is not displayed if an external map is loaded
+* Bugfix: some WP-thems showed grids/lines in the map
+* Bugfix: bug if several maps were shown at the same time
 = 0.9 =
 * Feature: display several gpx files with diff. colours in one map
 * Feature: template tags to be used in your theme to show maps at geotagged posts

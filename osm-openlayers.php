@@ -21,11 +21,24 @@ class Osm_OpenLayers
     Osm::traceText(DEBUG_INFO, "addOsmLayer(".$a_LayerName.",".$a_Type.",".$a_OverviewMapZoom.")");
     $Layer .= ' map = new OpenLayers.Map ("'.$a_LayerName.'", {';
     $Layer .= '            controls:[';
-    if ($a_MapControl[0] != 'off'){
+    if (($a_MapControl[0] != 'off') && (strtolower($a_Type)!= 'ext')) {
       $Layer .= '              new OpenLayers.Control.Navigation(),';
-      $Layer .= '              new OpenLayers.Control.PanZoom(),';
+      $Layer .= '              new OpenLayers.Control.PanZoom()';
+     // $Layer .= '              new OpenLayers.Control.Attribution()';
     }
-    $Layer .= '              new OpenLayers.Control.Attribution()';
+    else if (($a_MapControl[0] == 'off') && (strtolower($a_Type)!= 'ext')){
+      //$Layer .= '              new OpenLayers.Control.Attribution()';
+    }
+    else if (($a_MapControl[0] != 'off') && (strtolower($a_Type)== 'ext')){
+      $Layer .= '              new OpenLayers.Control.Navigation(),';
+      $Layer .= '              new OpenLayers.Control.PanZoom()';
+    }
+    else if (($a_MapControl[0] == 'off') && (strtolower($a_Type)== 'ext')){
+      // there is nothing to do
+    }
+    else {
+      Osm::traceText(DEBUG_ERROR, "addOsmLayer(".$a_MapControl[0].",".$a_Type.")");
+    }
     $Layer .= '              ],';
     $Layer .= '          maxExtent: new OpenLayers.Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34),';
     $Layer .= '          maxResolution: 156543.0399,';
@@ -161,20 +174,17 @@ class Osm_OpenLayers
     return $Layer;
   }
 
-  function addMarkerListLayer($a_LayerName, $a_marker_name, $a_marker_width, $a_marker_height,$a_MarkerArray,$a_OffsetW,$a_OffsetH, $a_PopUp)
+  function addMarkerListLayer($a_LayerName, $Icon ,$a_MarkerArray, $a_PopUp)
   {
-    Osm::traceText(DEBUG_INFO, "addMarkerListLayer(".$a_LayerName.",".$a_marker_name.",".$a_marker_width.",".$a_marker_height.",".$a_MarkerArray.",".$a_OffsetW.",".$a_OffsetH.",".$a_PopUp.")");
-
-    $a_OffsetW = round(-$a_marker_width/2);
-    $a_OffsetH = round(-$a_marker_height/2);
+    Osm::traceText(DEBUG_INFO, "addMarkerListLayer(".$a_LayerName.",".$Icon[name].",".$Icon[width].",".$Icon[height].",".$a_MarkerArray.",".$Icon[offset_width].",".$Icon[offset_height].",".$a_PopUp.")");
 
     $Layer .= 'var markers = new OpenLayers.Layer.Markers( "'.$a_LayerName.'" );';
     $Layer .= 'map.addLayer(markers);';
     
     $Layer .= 'var data = {};';
-    $Layer .= 'data.icon = new OpenLayers.Icon("'.OSM_PLUGIN_ICONS_URL.$a_marker_name.'",';
-    $Layer .= '     new OpenLayers.Size('.$a_marker_width.','.$a_marker_height.'),';
-    $Layer .= '     new OpenLayers.Pixel('.$a_OffsetW.', '.$a_OffsetH.'));';   
+    $Layer .= 'data.icon = new OpenLayers.Icon("'.OSM_PLUGIN_ICONS_URL.$Icon[name].'",';
+    $Layer .= '     new OpenLayers.Size('.$Icon[width].','.$Icon[height].'),';
+    $Layer .= '     new OpenLayers.Pixel('.$Icon[offset_width].', '.$Icon[offset_height].'));';   
     
     $NumOfMarker = count($a_MarkerArray);
     for ($row = 0; $row < $NumOfMarker; $row++){
@@ -182,7 +192,7 @@ class Osm_OpenLayers
       $Layer .= '     var feature = new OpenLayers.Feature(markers, ll, data);';
          
       $Layer .= 'feature.closeBox = true;';
-      $Layer .= 'feature.popupClass = OpenLayers.Class(OpenLayers.Popup.FramedCloud, {minSize: new OpenLayers.Size(100,150) } );';
+      $Layer .= 'feature.popupClass = OpenLayers.Class(OpenLayers.Popup.FramedCloud, {minSize: new OpenLayers.Size('.$a_MarkerArray[$row][popup_width].','.$a_MarkerArray[$row][popup_height].') } );';
       
       // add the the backslashes
       $OSM_HTML_TEXT = addslashes($a_MarkerArray[$row][text]);
@@ -257,7 +267,7 @@ class Osm_OpenLayers
     foreach ( $a_MapControl as $MapControl ){
 	  Osm::traceText(DEBUG_INFO, "Checking the Map Control");
 	  $MapControl = strtolower($MapControl);
-	  if (( $MapControl != 'scaleline') && ($MapControl != 'scale') && ($MapControl != 'no') && ($MapControl != 'mouseposition')&& ($MapControl != 'off')) {
+	  if (( $MapControl != 'scaleline') && ($MapControl != 'scale') && ($MapControl != 'no') && ($MapControl != 'mouseposition') && ($MapControl != 'off')) {
 	    Osm::traceText(DEBUG_ERROR, "e_invalid_control");
 	    $a_MapControl[0]='No';
 	  }

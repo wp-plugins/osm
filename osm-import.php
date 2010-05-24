@@ -40,7 +40,7 @@ else if($a_import == 'gcstats'){
   $temp_caches = gcStats__getCachesData($a_import_UserName, $a_Customfield);
   foreach($temp_caches as $CachesArray){
     list($temp_lat, $temp_long) = Osm::checkLatLongRange('gcStats',$CachesArray[lat], $CachesArray[lon]);
-    $MarkerArray[] = array('lat'=> $temp_lat,'lon'=>$temp_long,'marker'=>GCSTATS_MARKER_PNG, 'text' => $CachesArray[text]);
+    $MarkerArray[] = array('lat'=> $temp_lat,'lon'=>$temp_long,'marker'=>GCSTATS_MARKER_PNG, 'text' => $CachesArray[text],'popup_height'=>'150', 'popup_width'=>'100');
   }
 }
 
@@ -80,7 +80,7 @@ else if($a_import == 'ecf'){
       //echo $ecf_txt;
       if ($ecf_lat != '' && $ecf_lon != ''){
         list($ecf_lat, $ecf_lon) = Osm::checkLatLongRange('ecf_'.$ecf_author,$ecf_lat, $ecf_lon);
-        $MarkerArray[] = array('lat'=> $ecf_lat,'lon'=>$ecf_lon,'marker'=>INDIV_MARKERG, 'text' => $ecf_txt);
+        $MarkerArray[] = array('lat'=> $ecf_lat,'lon'=>$ecf_lon,'marker'=>INDIV_MARKERG, 'text' => $ecf_txt,'popup_height'=>'150', 'popup_width'=>'100');
       }
     endforeach;
   } 

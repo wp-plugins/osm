@@ -3,7 +3,7 @@
 Plugin Name: OSM
 Plugin URI: http://www.Fotomobil.at/wp-osm-plugin
 Description: Embeds <a href="http://www.OpenStreetMap.org">OpenStreetMap</a> maps in your blog and adds geo data to your posts. Get the latest version on the <a href="http://www.Fotomobil.at/wp-osm-plugin">OSM plugin page</a>. DO NOT "upgrade automatically" if you made any personal settings or if you stored GPX or TXT files in the plugin folder!!
-Version: 0.9
+Version: 0.9.1
 Author: Michael Kang
 Author URI: http://www.HanBlog.net
 Minimum WordPress Version Required: 2.5.1
@@ -32,6 +32,10 @@ Minimum WordPress Version Required: 2.5.1
   +--------+------------------------------------------------------------------------------------------------------------------------------
   | Ver.   |   Feature - Bugfixing - Notes - ...
   +--------+------------------------------------------------------------------------------------------------------------------------------
+  | 0.9.1  | bugfix: grids in the map at some WP-themes fixed (padding, margin, ...)
+  |        | bugfix: do  not show license link if it is not OSM-map
+  |        | bugfix: if several maps were shown within one site  
+  |        | feature: pop-marker at all-posts map with link to the post
   | 0.9    | feature: function OSM_displayOpenStreetMap(...) as template tag added
   |        | feature: zoomlevel extented to 18 (only supported by Mapnik-mapp) 
   |        | feature: a list of gpx files can be given to the map
@@ -57,7 +61,7 @@ Minimum WordPress Version Required: 2.5.1
 
 load_plugin_textdomain('Osm');
 
-define ("PLUGIN_VER", "V0.9");
+define ("PLUGIN_VER", "V0.9.1");
 
 // modify anything about the marker for tagged posts here
 // instead of the coding.
@@ -140,7 +144,7 @@ class Osm
 { 
 	function Osm() {
 		$this->localizionName = 'Osm';
-    //$this->TraceLevel = DEBUG_ERROR;
+    //$this->TraceLevel = DEBUG_INFO;
 		$this->ErrorMsg = new WP_Error();
 		$this->initErrorMsg();
     
@@ -282,8 +286,20 @@ class Osm
   	     list($temp_lat, $temp_lon) = split(',', get_post_meta($post->ID, $CustomFieldName, true)); 
 //         echo $post->ID.'Lat: '.$temp_lat.'Long '.$temp_lon.'<br>';
          if ($temp_lat != '' && $temp_lon != '') {
-           list($temp_lat, $temp_lon) = $this->checkLatLongRange('$marker_all_posts',$temp_lat, $temp_lon);          
-           $MarkerArray[] = array('lat'=> $temp_lat,'lon'=>$temp_lon,'marker'=>$marker_name);
+           list($temp_lat, $temp_lon) = $this->checkLatLongRange('$marker_all_posts',$temp_lat, $temp_lon);   
+             $categories = wp_get_post_categories($post->ID);
+	           // take the last one but ignore those without a specific category
+             foreach( $categories as $catid ) {
+	              $cat = get_category($catid);
+                if ((strtolower($cat->name) == 'uncategorized') || (strtolower($cat->name) == 'allgemein')){
+                  $Category_Txt = '';
+                }
+                else{
+                  $Category_Txt = $cat->name.': ';
+                }
+	           }	 
+           $Marker_Txt = '<a href="'.get_permalink($post->ID).'">'.$Category_Txt.get_the_title($post->ID).'  </a>';
+           $MarkerArray[] = array('lat'=> $temp_lat,'lon'=>$temp_lon,'popup_height'=>'50', 'popup_width'=>'150', 'marker'=>$Icon[name], 'text'=>$Marker_Txt);
 	        }  
        endwhile;
      }
@@ -296,7 +312,7 @@ class Osm
          include('osm-import.php');
          if ($temp_lat != '' && $temp_lon != '') {
            list($temp_lat, $temp_lon) = $this->checkLatLongRange('$marker_all_posts',$temp_lat, $temp_lon);          
-           $MarkerArray[] = array('lat'=> $temp_lat,'lon'=>$temp_lon,'marker'=>$marker_name);
+           $MarkerArray[] = array('lat'=> $temp_lat,'lon'=>$temp_lon,'marker'=>$Icon[name],'popup_height'=>'150', 'popup_width'=>'150');
         }  
        endwhile;
      }
@@ -314,16 +330,19 @@ class Osm
   }
 
   // if you miss a colour, just add it
-  function getImportLayer($a_import_type, $a_import_UserName, $a_marker_name, $a_marker_height, $a_marker_width){
-    // import data from wpgmg
-      $Icon[Name]   = $a_marker_name;
-      $Icon[height] = $a_marker_height;
-      $Icon[width]  = $a_marker_width;
+  function getImportLayer($a_import_type, $a_import_UserName, $Icon){
 
     if ($a_import_type  == 'osm'){
       $LayerName = 'TaggedPosts';
-      $PopUp = 'false';
-    }
+      if ($Icon[name] != 'NoName'){ // <= ToDo
+        $PopUp = 'true';     
+      }
+      else {
+        $PopUp = 'false';
+      }
+      
+    }    
+    
     // import data from wpgmg
     else if ($a_import_type  == 'wpgmg'){
       $LayerName = 'TaggedPosts';
@@ -334,20 +353,20 @@ class Osm
       $LayerName     = 'GeoCaches';
       $PopUp = 'true';
       $Icon = Osm::getIconsize(GCSTATS_MARKER_PNG);
-      $Icon[Name] = GCSTATS_MARKER_PNG;
+      $Icon[name] = GCSTATS_MARKER_PNG;
     }
     // import data from ecf
     else if ($a_import_type == 'ecf'){
       $LayerName = 'Comments';
       $PopUp = 'true';
       $Icon = Osm::getIconsize(INDIV_MARKER);
-      $Icon[Name] = INDIV_MARKER;
+      $Icon[name] = INDIV_MARKER;
     }
     else{
       $this->traceText(DEBUG_ERROR, "e_import_unknwon");
     }
     $MarkerArray = $this->createMarkerList($a_import_type, $a_import_UserName,'Empty');
-    return Osm_OpenLayers::addMarkerListLayer($LayerName, $Icon[Name],$Icon[width], $Icon[height],$MarkerArray,-12,-12,$PopUp);
+    return Osm_OpenLayers::addMarkerListLayer($LayerName, $Icon, $MarkerArray, $PopUp);
   }
 
  // check Lat and Long
@@ -412,30 +431,29 @@ class Osm
 
  function getIconsize($a_IconName)
  {
-
   $Icons = array(
-    "airport.png"        => array("height"=>32,"width"=>"31"),
-    "bicycling.png"      => array("height"=>19,"width"=>"32"),
-    "bus.png"            => array("height"=>32,"width"=>"26"),
-    "camping.png"        => array("height"=>32,"width"=>"32"),
-    "car.png"            => array("height"=>32,"width"=>"18"),
-    "friends.png"        => array("height"=>32,"width"=>"32"),
-    "geocache.png"       => array("height"=>25,"width"=>"25"),
-    "guest_house.png"    => array("height"=>32,"width"=>"32"),
-    "home.png"           => array("height"=>32,"width"=>"32"),
-    "hostel.png"         => array("height"=>24,"width"=>"24"),
-    "hotel.png"          => array("height"=>32,"width"=>"32"),
-    "marker_blue.png"    => array("height"=>24,"width"=>"24"),
-    "motorbike.png"      => array("height"=>23,"width"=>"32"),
-    "restaurant.png"     => array("height"=>24,"width"=>"24"),
-    "services.png"       => array("height"=>28,"width"=>"32"),
-    "styria_linux.png"   => array("height"=>50,"width"=>"36"),
-    "marker_posts.png"   => array("height"=>2,"width"=>"2"),
-    "restaurant.png"     => array("height"=>24,"width"=>"24"),
-    "toilets.png"        => array("height"=>32,"width"=>"32"),
-    "wpttemp-yellow.png" => array("height"=>24,"width"=>"24"),
-    "wpttemp-green.png"  => array("height"=>24,"width"=>"24"),
-    "wpttemp-red.png"    => array("height"=>24,"width"=>"24"),
+    "airport.png"        => array("height"=>32,"width"=>"31","offset_height"=>"-16","offset_width"=>"-16"),
+    "bicycling.png"      => array("height"=>19,"width"=>"32","offset_height"=>"-9","offset_width"=>"-16"),
+    "bus.png"            => array("height"=>32,"width"=>"26","offset_height"=>"-16","offset_width"=>"-13"),
+    "camping.png"        => array("height"=>32,"width"=>"32","offset_height"=>"-16","offset_width"=>"-16"),
+    "car.png"            => array("height"=>32,"width"=>"18","offset_height"=>"-16","offset_width"=>"-9"),
+    "friends.png"        => array("height"=>32,"width"=>"32","offset_height"=>"-16","offset_width"=>"-16"),
+    "geocache.png"       => array("height"=>25,"width"=>"25","offset_height"=>"-12","offset_width"=>"-12"),
+    "guest_house.png"    => array("height"=>32,"width"=>"32","offset_height"=>"-16","offset_width"=>"-16"),
+    "home.png"           => array("height"=>32,"width"=>"32","offset_height"=>"-16","offset_width"=>"-16"),
+    "hostel.png"         => array("height"=>24,"width"=>"24","offset_height"=>"-12","offset_width"=>"-12"),
+    "hotel.png"          => array("height"=>32,"width"=>"32","offset_height"=>"-16","offset_width"=>"-16"),
+    "marker_blue.png"    => array("height"=>24,"width"=>"24","offset_height"=>"-12","offset_width"=>"-12"),
+    "motorbike.png"      => array("height"=>23,"width"=>"32","offset_height"=>"-12","offset_width"=>"-16"),
+    "restaurant.png"     => array("height"=>24,"width"=>"24","offset_height"=>"-12","offset_width"=>"-12"),
+    "services.png"       => array("height"=>28,"width"=>"32","offset_height"=>"-14","offset_width"=>"-16"),
+    "styria_linux.png"   => array("height"=>50,"width"=>"36","offset_height"=>"-25","offset_width"=>"-18"),
+    "marker_posts.png"   => array("height"=>2,"width"=>"2","offset_height"=>"-1","offset_width"=>"-1"),
+    "restaurant.png"     => array("height"=>24,"width"=>"24","offset_height"=>"-12","offset_width"=>"-12"),
+    "toilets.png"        => array("height"=>32,"width"=>"32","offset_height"=>"-16","offset_width"=>"-16"),
+    "wpttemp-yellow.png" => array("height"=>24,"width"=>"24","offset_height"=>"-24","offset_width"=>"-24"),
+    "wpttemp-green.png"  => array("height"=>24,"width"=>"24","offset_height"=>"-24","offset_width"=>"-24"),
+    "wpttemp-red.png"    => array("height"=>24,"width"=>"24","offset_height"=>"-24","offset_width"=>"-24"),
   );
 
   if ($Icons[$a_IconName][height] == ''){
@@ -481,11 +499,11 @@ class Osm
     'marker'          => 'No',
     'msg_box'         => 'No',
     'custom_field'    => 'No',
-	'control'		  => 'No',
-	'extmap_type'     => 'No',
-	'extmap_name'     => 'No',
-	'extmap_address'  => 'No',
-	'extmap_init'     => 'No',
+  	'control'		      => 'No',
+	  'extmap_type'     => 'No',
+	  'extmap_name'     => 'No',
+	  'extmap_address'  => 'No',
+	  'extmap_init'     => 'No',
 	  ), $atts));
    
     if ($zoom < ZOOM_LEVEL_MIN || $zoom > ZOOM_LEVEL_MAX){
@@ -500,20 +518,20 @@ class Osm
     }
 
     if ($marker_name == 'NoName'){
-      $marker_name   = POST_MARKER_PNG;
+      $marker_name  = POST_MARKER_PNG;
     }
+
     if (Osm::isOsmIcon($marker_name) == 1){
-        $Icon = Osm::getIconsize($marker_name);
-        $Icon[Name] = $marker_name;
-        $marker_height = $Icon[height];
-        $marker_width  = $Icon[width];
+       $Icon = Osm::getIconsize($marker_name);
+       $Icon[name]  = $marker_name;
     }
     else  {
-      $Icon[Name] = $marker_name;
-      if ($marker_height == 0 || $marker_width == 0){
-        $this->traceText(DEBUG_ERROR, "e_marker_size");
-        $marker_height = 24;
-        $marker_width  = 24;
+      $Icon[height] = $marker_height;
+      $Icon[width]  = $marker_width; 
+     if ($Icon[height] == 0 || $Icon[width] == 0){
+        $this->traceText(DEBUG_ERROR, "e_marker_size"); //<= ToDo
+        $Icon[height] = 24;
+        $Icon[width]  = 24;
       }
     }
 
@@ -522,16 +540,16 @@ class Osm
       $import_UserName = 'DummyName';
     }
     $import_type = strtolower($import_type);
-	
-	$array_control = split ( ',', $control);
-    
+	  $array_control = split ( ',', $control);
+   
     list($lat, $long) = Osm::getMapCenter($lat, $long, $import_type, $import_UserName);
     list($lat, $long) = Osm::checkLatLongRange('MapCenter',$lat, $long);
     $gpx_colour       = Osm::checkStyleColour($gpx_colour); 
     $kml_colour       = Osm::checkStyleColour($kml_colour);
     $type             = Osm_OpenLayers::checkMapType($type);
     $ov_map           = Osm_OpenLayers::checkOverviewMapZoomlevels($ov_map);
-	$array_control    = Osm_OpenLayers::checkControlType($array_control);
+	  
+    $array_control    = Osm_OpenLayers::checkControlType($array_control);
 
     // to manage several maps on the same page
     // create names with index
@@ -542,12 +560,13 @@ class Osm
     $KmlName = 'KML_'.$MapCounter;
 	
     Osm::traceText(DEBUG_INFO, "MapCounter = ".$MapCounter);
-
+      
     // if we came up to here, let's load the map
     $output = '';	
-	$output .= '<style type="text/css">';
-	$output .= '#'.$MapName.' {padding: 0; margin: 0;}';
-	$output .= '</style>';
+	  $output .= '<style type="text/css">';
+	  $output .= '#'.$MapName.' {padding: 0; margin: 0;}';
+    $output .= '#'.$MapName.' img{padding: 0; margin: 0;border:none}';
+	  $output .= '</style>';
 
     $output .= '<div id="'.$MapName.'" style="width:'.$width.'px; height:'.$height.'px; overflow:hidden; padding:0px;">';
    
@@ -563,9 +582,9 @@ class Osm
 	}
     $output .= '<script type="text/javascript">';
     $output .= '/* <![CDATA[ */';
-    $output .= 'jQuery(document).ready(';
-    $output .= 'function($) {';
-
+    //$output .= 'jQuery(document).ready(';
+    //$output .= 'function($) {';
+    $output .= '(function($) {';
     $output .= Osm_OpenLayers::addOsmLayer($MapName, $type, $ov_map, $array_control, $extmap_type, $extmap_name, $extmap_address, $extmap_init);
 
     // add a clickhandler if needed
@@ -595,7 +614,7 @@ class Osm
         $this->traceText(DEBUG_ERROR, "e_gpx_list_error");
       }
     }
-
+    
     // Add the Layer with KML Track
     if ($kml_file != 'NoFile'){ 
       $output .= Osm_OpenLayers::addGmlLayer($KmlName, $kml_file,$kml_colour,'KML');
@@ -613,7 +632,7 @@ class Osm
     }
 
     if ($import_type  != 'no'){
-      $output .= Osm::getImportLayer($import_type, $import_UserName, $marker_name, $marker_height, $marker_width);
+      $output .= Osm::getImportLayer($import_type, $import_UserName, $Icon);
     }
   
    // just add single marker 
@@ -621,20 +640,21 @@ class Osm
      global $post;  
      list($temp_lat, $temp_lon, $temp_popup_custom_field) = split(',', $marker);
 	   if ($temp_popup_custom_field == ''){
-	  	$temp_popup_custom_field = 'osm_dummy';
+		   $temp_popup_custom_field = 'osm_dummy';
 	   }
      $temp_popup_custom_field = trim($temp_popup_custom_field);
      $temp_popup = get_post_meta($post->ID, $temp_popup_custom_field, true); 
      list($temp_lat, $temp_lon) = Osm::checkLatLongRange('Marker',$temp_lat, $temp_lon); 
-     $MarkerArray[] = array('lat'=> $temp_lat,'lon'=>$temp_lon,'marker'=>$marker_name, 'text'=>$temp_popup);
-     $output .= Osm_OpenLayers::addMarkerListLayer('Marker', $marker_name, $marker_width, $marker_height,$MarkerArray,-12,-12,'true');
+     $MarkerArray[] = array('lat'=> $temp_lat,'lon'=>$temp_lon,'text'=>$temp_popup,'popup_height'=>'150', 'popup_width'=>'150');
+     $output .= Osm_OpenLayers::addMarkerListLayer('Marker', $Icon,$MarkerArray,'true');
     }
-
-    $output .= '}';
-    $output .= ');';
+  
+    //$output .= '}';
+    //$output .= ');';
+    $output .= '})(jQuery)';
     $output .= '/* ]]> */';
     $output .= ' </script>';
-  	$output .= '</div>';
+	$output .= '</div>';
     return $output;
 	}
 
@@ -723,7 +743,6 @@ function OSM_getOpenStreetMapUrl() {
 function OSM_echoOpenStreetMapUrl(){
   echo OSM_getOpenStreetMapUrl() ;
 }
-
 // functions to display a map in your theme 
 // by using the custom fields
 // default values should be set only at sc_showMap()
@@ -740,12 +759,13 @@ function OSM_displayOpenStreetMap($a_widht, $a_hight, $a_zoom, $a_type){
   }
 }
 
-function OSM_displayOpenStreetMapExt($a_widht, $a_hight, $a_zoom, $a_type, $a_control, $a_marker_name, $a_marker_height, $a_marker_width, $a_marker){
+function OSM_displayOpenStreetMapExt($a_widht, $a_hight, $a_zoom, $a_type, $a_control, $a_marker_name, $a_marker_height, $a_marker_width, $a_marker_text, $a_ov_map){
 
   $atts = array ('width'        => $a_widht,
                  'height'       => $a_hight,
                  'type'         => $a_type,
                  'zoom'         => $a_zoom,
+                 'ov_map'       => $a_ov_map,
                  'marker_name'  => $a_marker_name,
                  'marker_height'=> $a_marker_height,
                  'marker_width' => $a_marker_width,
@@ -756,5 +776,4 @@ function OSM_displayOpenStreetMapExt($a_widht, $a_hight, $a_zoom, $a_type, $a_co
     echo OSM::sc_showMap($atts);
   }
 }
-
 ?>
