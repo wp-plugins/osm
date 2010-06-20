@@ -1,7 +1,7 @@
 === OSM ===
 Tags: map, OpenStreetMap, geo, KML, GPX, geotag, geolocation, geocache, geocaching, OSM, comment, travelogue, template tag, travelblog
 Requires at least: 2.5.1
-Tested up to: 2.9.2
+Tested up to: 3.0
 Stable tag: 0.9.1
 
 OpenStreetMap plugin to embed maps with personal markers and routes in your blog. In addition to it geo meta data are added to posts and pages.
