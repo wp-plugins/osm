@@ -3,7 +3,7 @@
 Plugin Name: OSM
 Plugin URI: http://www.Fotomobil.at/wp-osm-plugin
 Description: Embeds <a href="http://www.OpenStreetMap.org">OpenStreetMap</a> maps in your blog and adds geo data to your posts. Get the latest version on the <a href="http://www.Fotomobil.at/wp-osm-plugin">OSM plugin page</a>. DO NOT "upgrade automatically" if you made any personal settings or if you stored GPX or TXT files in the plugin folder!!
-Version: 0.9.1
+Version: 0.9.2
 Author: Michael Kang
 Author URI: http://www.HanBlog.net
 Minimum WordPress Version Required: 2.5.1
@@ -32,6 +32,9 @@ Minimum WordPress Version Required: 2.5.1
   +--------+------------------------------------------------------------------------------------------------------------------------------
   | Ver.   |   Feature - Bugfixing - Notes - ...
   +--------+------------------------------------------------------------------------------------------------------------------------------
+  | 0.9.2  | bugfix: correct offset for pin-icons and non-osm-icons
+  |        | bugfix: style correction for some WP-themes
+  |        | feature: added osm_l tag for map with linked marker to the posts
   | 0.9.1  | bugfix: grids in the map at some WP-themes fixed (padding, margin, ...)
   |        | bugfix: do  not show license link if it is not OSM-map
   |        | bugfix: if several maps were shown within one site  
@@ -61,7 +64,7 @@ Minimum WordPress Version Required: 2.5.1
 
 load_plugin_textdomain('Osm');
 
-define ("PLUGIN_VER", "V0.9.1");
+define ("PLUGIN_VER", "V0.9.2");
 
 // modify anything about the marker for tagged posts here
 // instead of the coding.
@@ -239,7 +242,7 @@ class Osm
 	
   // put meta tags into the head section
 	function wp_head($not_used)
-	{
+	{ 
 		global $wp_query;
 
 		$CustomField = get_option('osm_custom_field');
@@ -275,7 +278,7 @@ class Osm
        $this->traceText(DEBUG_INFO, "Requesting data from comments");
        include('osm-import.php');
      }
-     else if ($a_import == 'osm'){
+     else if ($a_import == 'osm' || $a_import == 'osm_l'){
        // let's see which posts are using our geo data ...
        $this->traceText(DEBUG_INFO, "check all posts for osm geo custom fields");
        $CustomFieldName = get_settings('osm_custom_field');        
@@ -286,7 +289,8 @@ class Osm
   	     list($temp_lat, $temp_lon) = split(',', get_post_meta($post->ID, $CustomFieldName, true)); 
 //         echo $post->ID.'Lat: '.$temp_lat.'Long '.$temp_lon.'<br>';
          if ($temp_lat != '' && $temp_lon != '') {
-           list($temp_lat, $temp_lon) = $this->checkLatLongRange('$marker_all_posts',$temp_lat, $temp_lon);   
+           list($temp_lat, $temp_lon) = $this->checkLatLongRange('$marker_all_posts',$temp_lat, $temp_lon);
+           if ($a_import == 'osm_l' ){   
              $categories = wp_get_post_categories($post->ID);
 	           // take the last one but ignore those without a specific category
              foreach( $categories as $catid ) {
@@ -297,10 +301,15 @@ class Osm
                 else{
                   $Category_Txt = $cat->name.': ';
                 }
-	           }	 
+             }
            $Marker_Txt = '<a href="'.get_permalink($post->ID).'">'.$Category_Txt.get_the_title($post->ID).'  </a>';
            $MarkerArray[] = array('lat'=> $temp_lat,'lon'=>$temp_lon,'popup_height'=>'100', 'popup_width'=>'150', 'marker'=>$Icon[name], 'text'=>$Marker_Txt);
-	        }  
+           }	 
+           else{ // plain osm without link to the post
+             $Marker_Txt = ' ';
+             $MarkerArray[] = array('lat'=> $temp_lat,'lon'=>$temp_lon,'popup_height'=>'100', 'popup_width'=>'150', 'marker'=>$Icon[name], 'text'=>$Marker_Txt);
+           }
+	       }  
        endwhile;
      }
      else if ($a_import == 'wpgmg'){
@@ -312,7 +321,7 @@ class Osm
          include('osm-import.php');
          if ($temp_lat != '' && $temp_lon != '') {
            list($temp_lat, $temp_lon) = $this->checkLatLongRange('$marker_all_posts',$temp_lat, $temp_lon);          
-           $MarkerArray[] = array('lat'=> $temp_lat,'lon'=>$temp_lon,'marker'=>$Icon[name],'popup_height'=>'150', 'popup_width'=>'150');
+           $MarkerArray[] = array('lat'=> $temp_lat,'lon'=>$temp_lon,'marker'=>$Icon[name],'popup_height'=>'100', 'popup_width'=>'200');
         }  
        endwhile;
      }
@@ -332,7 +341,7 @@ class Osm
   // if you miss a colour, just add it
   function getImportLayer($a_import_type, $a_import_UserName, $Icon){
 
-    if ($a_import_type  == 'osm'){
+    if ($a_import_type  == 'osm_l'){
       $LayerName = 'TaggedPosts';
       if ($Icon[name] != 'NoName'){ // <= ToDo
         $PopUp = 'true';     
@@ -343,6 +352,12 @@ class Osm
       
     }    
     
+    // import data from tagged posts
+    else if ($a_import_type  == 'osm'){
+      $LayerName = 'TaggedPosts';
+      $PopUp = 'false';
+    }
+
     // import data from wpgmg
     else if ($a_import_type  == 'wpgmg'){
       $LayerName = 'TaggedPosts';
@@ -451,9 +466,9 @@ class Osm
     "marker_posts.png"   => array("height"=>2,"width"=>"2","offset_height"=>"-1","offset_width"=>"-1"),
     "restaurant.png"     => array("height"=>24,"width"=>"24","offset_height"=>"-12","offset_width"=>"-12"),
     "toilets.png"        => array("height"=>32,"width"=>"32","offset_height"=>"-16","offset_width"=>"-16"),
-    "wpttemp-yellow.png" => array("height"=>24,"width"=>"24","offset_height"=>"-24","offset_width"=>"-24"),
-    "wpttemp-green.png"  => array("height"=>24,"width"=>"24","offset_height"=>"-24","offset_width"=>"-24"),
-    "wpttemp-red.png"    => array("height"=>24,"width"=>"24","offset_height"=>"-24","offset_width"=>"-24"),
+    "wpttemp-yellow.png" => array("height"=>24,"width"=>"24","offset_height"=>"-24","offset_width"=>"0"),
+    "wpttemp-green.png"  => array("height"=>24,"width"=>"24","offset_height"=>"-24","offset_width"=>"0"),
+    "wpttemp-red.png"    => array("height"=>24,"width"=>"24","offset_height"=>"-24","offset_width"=>"0"),
   );
 
   if ($Icons[$a_IconName][height] == ''){
@@ -512,8 +527,8 @@ class Osm
       $zoom = 0;   
     }
     if ($width < 1 || $height < 1){
-      $this->traceText(DEBUG_ERROR, "e_map_size");
-      $this->traceText(DEBUG_INFO, "Error: ($width: ".$width." $height: ".$height.")!");
+      Osm::traceText(DEBUG_ERROR, "e_map_size");
+      Osm::traceText(DEBUG_INFO, "Error: ($width: ".$width." $height: ".$height.")!");
       $width = 450; $height = 300;
     }
 
@@ -526,10 +541,14 @@ class Osm
        $Icon[name]  = $marker_name;
     }
     else  {
+
       $Icon[height] = $marker_height;
       $Icon[width]  = $marker_width; 
+      $Icon[name]  = $marker_name;
+      $Icon[offset_height] = round(-$marker_height/2);
+      $Icon[offset_width] = round(-$marker_width/2);
      if ($Icon[height] == 0 || $Icon[width] == 0){
-        $this->traceText(DEBUG_ERROR, "e_marker_size"); //<= ToDo
+        Osm::traceText(DEBUG_ERROR, "e_marker_size"); //<= ToDo
         $Icon[height] = 24;
         $Icon[width]  = 24;
       }
@@ -565,10 +584,10 @@ class Osm
     $output = '';	
 	  $output .= '<style type="text/css">';
 	  $output .= '#'.$MapName.' {padding: 0; margin: 0;}';
-    $output .= '#'.$MapName.' img{padding: 0; margin: 0;border:none}';
+    $output .= '#'.$MapName.' img{padding: 0; margin: 0;border:none;margin-top:0px;margin-right:0px;margin-left:0px;margin-bottom:0px;}';
 	  $output .= '</style>';
 
-    $output .= '<div id="'.$MapName.'" style="width:'.$width.'px; height:'.$height.'px; overflow:hidden; padding:0px;">';
+    $output .= '<div id="'.$MapName.'" style="width:'.$width.'px; height:'.$height.'px; overflow:hidden;padding:0px;">';
    
 	if (Osm_LoadLibraryMode == SERVER_EMBEDDED){
 	  $output .= '<script type="text/javascript" src="'.Osm_OL_LibraryLocation.'"></script>';
@@ -695,7 +714,7 @@ function OSM_getCoordinateLat($a_import)
 	global $post;
 
   $a_import = strtolower($a_import);
-  if ($a_import == 'osm'){
+  if ($a_import == 'osm' || $a_import == 'osm_l'){
 	  list($lat, $lon) = split(',', get_post_meta($post->ID, get_settings('osm_custom_field'), true));
   }
   else if ($a_import == 'wpgmg'){
@@ -717,7 +736,7 @@ function OSM_getCoordinateLong($a_import)
 	global $post;
   
   $a_import = strtolower($a_import);
-  if ($a_import == 'osm'){
+  if ($a_import == 'osm' || $a_import == 'osm_l'){
 	  list($lat, $lon) = split(',', get_post_meta($post->ID, get_settings('osm_custom_field'), true));
   }
   else if ($a_import == 'wpgmg'){

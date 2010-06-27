@@ -23,11 +23,11 @@ class Osm_OpenLayers
     $Layer .= '            controls:[';
     if (($a_MapControl[0] != 'off') && (strtolower($a_Type)!= 'ext')) {
       $Layer .= '              new OpenLayers.Control.Navigation(),';
-      $Layer .= '              new OpenLayers.Control.PanZoom(),';
-      $Layer .= '              new OpenLayers.Control.Attribution()';
+      $Layer .= '              new OpenLayers.Control.PanZoom()';
+//      $Layer .= '              new OpenLayers.Control.Attribution()';
     }
     else if (($a_MapControl[0] == 'off') && (strtolower($a_Type)!= 'ext')){
-      $Layer .= '              new OpenLayers.Control.Attribution()';
+//      $Layer .= '              new OpenLayers.Control.Attribution()';
     }
     else if (($a_MapControl[0] != 'off') && (strtolower($a_Type)== 'ext')){
       $Layer .= '              new OpenLayers.Control.Navigation(),';
@@ -214,8 +214,9 @@ class Osm_OpenLayers
       $Layer .= '  }';
       $Layer .= '  OpenLayers.Event.stop(evt);';
       $Layer .= '};';
-      
-      $Layer .= 'marker.events.register("mousedown", feature, markerClick);';
+      if ($a_PopUp == 'true'){
+        $Layer .= 'marker.events.register("mousedown", feature, markerClick);';
+      }
       $Layer .= 'markers.addMarker(marker);';
       if ($a_PopUp == 'true'){
         $Layer .= 'map.addPopup(feature.createPopup(feature.closeBox));';   // maybe there is a better way to do 

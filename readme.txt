@@ -2,7 +2,7 @@
 Tags: map, OpenStreetMap, geo, KML, GPX, geotag, geolocation, geocache, geocaching, OSM, comment, travelogue, template tag, travelblog
 Requires at least: 2.5.1
 Tested up to: 3.0
-Stable tag: 0.9.1
+Stable tag: 0.9.2
 
 OpenStreetMap plugin to embed maps with personal markers and routes in your blog. In addition to it geo meta data are added to posts and pages.
 
@@ -15,8 +15,7 @@ OpenStreetMap plugin to visualize maps in various ways.
 * visualizes several tracks / routs in different colours (gpx and kml)
 * visualizes geocaches with [gcstats plugin](http://michael.josi.de/projects/gcstats/ "Link to gcstats plugin")
 * visualizes popup-html-markers (list in txt-file or single in the shortcode)
-* visualize all geotagged posts of your blog in one map with a link to the post
-* visitor can add marker by comments
+* visualize all geotagged posts of your blog in one map with/without a link to the post
 * use custom field to add geolocation to your blog
 * geo data are written to html-meta tags of your blog
 * visit [THE PLUGIN PAGE](http://www.Fotomobil.at/wp-osm-plugin/ "Link to osm plugin") to see samples and read news!
@@ -63,6 +62,10 @@ You have to install [gcstats plugin](http://michael.josi.de/projects/gcstats/ "L
 4. Use template-tags to show a map if your post/page has got a geolocation
 
 == Changelog ==
+= 0.9.2 =
+* Feature: added osm_l tag for map with linked marker to tagged posts.
+* Bugfix: correct offset for pin-icons and non-osm-icons
+* Bugfix: style correction for some WP-themes
 = 0.9.1 =
 * Feature: popup marker with link for the map displaying all posts/pages of the blog
 * Bugfix: licenselink is not displayed if an external map is loaded
@@ -86,4 +89,19 @@ You have to install [gcstats plugin](http://michael.josi.de/projects/gcstats/ "L
 * Bugfix: some internal stuff
 = 0.8.3 =
 * Bugfix: correct offset for indiv. marker
-* ...
+= 0.8.1  = 
+* check whether gcstats is activated or not
+= 0.8.0  = 
+* separate file for option and import; gcstats support; add marker in option page
+= 0.7.0  = 
+* shortcode generator in option page added
+= 0.6.0  = 
+* options got prefix "osm_", therefore settings have to be made again at upgrade
+= 0.5.0  = 
+* added type at shortcode (Mapnik, Osmarender, CycleMap, All) ; overviewmap in shortcode
+= 0.4.0  = 
+* added KML support and colour interface for tracks
+= 0.3.0  = 
+* added "marker_all_posts" at shortcode to set a marker for all posts
+= 0.2.0  = 
+* loading GPX files with shortcode
