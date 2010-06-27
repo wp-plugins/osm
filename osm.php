@@ -25,43 +25,6 @@ Minimum WordPress Version Required: 2.5.1
     along with this program; if not, write to the Free Software
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-
-/* 
-    Keep in mind, all changes you do by your own are lost whenever you update this plugin. If you need any general
-    feature contact me to make a standard of OSM plugin!
-  +--------+------------------------------------------------------------------------------------------------------------------------------
-  | Ver.   |   Feature - Bugfixing - Notes - ...
-  +--------+------------------------------------------------------------------------------------------------------------------------------
-  | 0.9.2  | bugfix: correct offset for pin-icons and non-osm-icons
-  |        | bugfix: style correction for some WP-themes
-  |        | feature: added osm_l tag for map with linked marker to the posts
-  | 0.9.1  | bugfix: grids in the map at some WP-themes fixed (padding, margin, ...)
-  |        | bugfix: do  not show license link if it is not OSM-map
-  |        | bugfix: if several maps were shown within one site  
-  |        | feature: pop-marker at all-posts map with link to the post
-  | 0.9    | feature: function OSM_displayOpenStreetMap(...) as template tag added
-  |        | feature: zoomlevel extented to 18 (only supported by Mapnik-mapp) 
-  |        | feature: a list of gpx files can be given to the map
-  | 0.8.7  | bug: popupmarker without text @ customfield produced "Array" only at WP 2.9
-  |        |      bycicle-png had wrong size
-  | 0.8.6  | configureable loading of OSM libraries
-  |        | control tag added
-  |        | adding map by external link
-  | 0.8.5  | HTML-marker for PopUps added; using WP_Error class; create Osm object, Osm_Openlayers classs
-  |               wpgmg-pluginn support changed from marker_all_posts to import argument
-  | 0.8.4  | correct plugin folder to "osm" (lower case!)
-  | 0.8.3  | correct offset of indiv. marker
-  | 0.8.1  | check whether gcstats is activated or not
-  | 0.8.0  | separate file for option and import; gcstats support; add marker in option page
-  | 0.7.0  | shortcode generator in option page added
-  | 0.6.0  | options got prefix "osm_", therefore settings have to be made again at upgrade
-  | 0.5.0  | added type at shortcode (Mapnik, Osmarender, CycleMap, All) ; overviewmap in shortcode
-  | 0.4.0  | added KML support and colour interface for tracks
-  | 0.3.0  | added "marker_all_posts" at shortcode to set a marker for all posts
-  | 0.2.0  | loading GPX files with shortcode
-  +--------+------------------------------------------------------------------------------------------------------------------------------
-*/
-
 load_plugin_textdomain('Osm');
 
 define ("PLUGIN_VER", "V0.9.2");
