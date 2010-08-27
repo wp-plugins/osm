@@ -13,12 +13,14 @@ OpenStreetMap plugin to visualize maps in various ways.
 If you want to download the OSM-plugin you are right here!
 
 If you want to get detailed information about the OSM-plugin visit these pages:
+
 * OSM-plugin: [www.Fotomobil.at/wp-osm-plugin](http://www.Fotomobil.at/wp-osm-plugin/ "OSM-plugin")
 * OSM-plugin Forum: [www.Fotomobil.at/wp-osm-plugin-forum](http://www.Fotomobil.at/wp-osm-plugin-forum/ "OSM-plugin forum")
 * OSM-plugin Wiki: [wiki.OpenStreetMap.org](http://wiki.openstreetmap.org/wiki/Wp-osm-plugin/ "OSM-plugin Wiki")
 * Author blog: [www.HanBlog.net](http://www.HanBlog.net/ "HanBlog.net")
 
 Features of the OSM-plugin:
+
 * embeds OpenStreetMap maps to your posts/pages
 * embeds external maps to your posts/pages
 * visualizes several tracks / routs in different colours (gpx and kml)
