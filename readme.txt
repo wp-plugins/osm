@@ -29,8 +29,8 @@ Features of the OSM-plugin:
 
 Licenses of the maps:
 
-* OpenStreetMap: [OpenStreetMap License] (http://wiki.openstreetmap.org/wiki/OpenStreetMap_License "OSM License")
-* Google Maps: [Google Maps Terms of Service] (http://code.google.com/intl/de-DE/apis/maps/terms.html "Google Maps License")
+* OpenStreetMap: [OpenStreetMap License](http://wiki.openstreetmap.org/wiki/OpenStreetMap_License "OSM License")
+* Google Maps: [Google Maps Terms of Service](http://code.google.com/intl/de-DE/apis/maps/terms.html "Google Maps License")
 
 == Installation ==
 
