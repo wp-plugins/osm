@@ -51,7 +51,26 @@ class Osm_OpenLayers
       $Layer .= 'var layerMapnik = new OpenLayers.Layer.OSM.Mapnik("Mapnik");';
       $Layer .= 'var layerTah    = new OpenLayers.Layer.OSM.Osmarender("Osmarender");';
       $Layer .= 'var layerCycle  = new OpenLayers.Layer.OSM.CycleMap("CycleMap");';
+      $Layer .= 'var layerGooglePhysical   = new OpenLayers.Layer.Google("Google Physical", {type: google.maps.MapTypeId.TERRAIN} );';
+      $Layer .= 'var layerGoogleStreet     = new OpenLayers.Layer.Google("Google Street", {type: google.maps.MapTypeId.ROADMAP} );';
+      $Layer .= 'var layerGoogleHybrid     = new OpenLayers.Layer.Google("Google Hybrid", {type: google.maps.MapTypeId.HYBRID} );';
+      $Layer .= 'var layerGoogleSatellite  = new OpenLayers.Layer.Google("Google Satellite", {type: google.maps.MapTypeId.SATELLITE} );';
+      $Layer .= 'map.addLayers([layerMapnik, layerTah, layerCycle, layerGooglePhysical, layerGoogleStreet, layerGoogleHybrid, layerGoogleSatellite]);';
+      $Layer .= 'map.addControl(new OpenLayers.Control.LayerSwitcher());';
+    }
+    else if ($a_Type == 'AllOsm'){
+      $Layer .= 'var layerMapnik = new OpenLayers.Layer.OSM.Mapnik("Mapnik");';
+      $Layer .= 'var layerTah    = new OpenLayers.Layer.OSM.Osmarender("Osmarender");';
+      $Layer .= 'var layerCycle  = new OpenLayers.Layer.OSM.CycleMap("CycleMap");';
       $Layer .= 'map.addLayers([layerMapnik, layerTah, layerCycle]);';
+      $Layer .= 'map.addControl(new OpenLayers.Control.LayerSwitcher());';
+    }
+    else if ($a_Type == 'AllGoogle'){
+      $Layer .= 'var layerGooglePhysical   = new OpenLayers.Layer.Google("Google Physical", {type: google.maps.MapTypeId.TERRAIN} );';
+      $Layer .= 'var layerGoogleStreet     = new OpenLayers.Layer.Google("Google Street", {type: google.maps.MapTypeId.ROADMAP} );';
+      $Layer .= 'var layerGoogleHybrid     = new OpenLayers.Layer.Google("Google Hybrid", {type: google.maps.MapTypeId.HYBRID} );';
+      $Layer .= 'var layerGoogleSatellite  = new OpenLayers.Layer.Google("Google Satellite", {type: google.maps.MapTypeId.SATELLITE} );';
+      $Layer .= 'map.addLayers([layerGooglePhysical, layerGoogleStreet, layerGoogleHybrid, layerGoogleSatellite]);';
       $Layer .= 'map.addControl(new OpenLayers.Control.LayerSwitcher());';
     }
     else{
@@ -64,10 +83,21 @@ class Osm_OpenLayers
       else if ($a_Type == 'CycleMap'){
         $Layer .= 'var lmap = new OpenLayers.Layer.OSM.CycleMap("CycleMap");';
       }
+      else if ($a_Type == 'GooglePhysical'){
+        $Layer .= 'var lmap = new OpenLayers.Layer.Google("Google Physical", {type: google.maps.MapTypeId.TERRAIN} );';
+      }
+      else if ($a_Type == 'GoogleStreet'){
+        $Layer .= 'var lmap = new OpenLayers.Layer.Google("Google Physical", {type: google.maps.MapTypeId.ROADMAP} );';
+      }
+      else if ($a_Type == 'GoogleHybrid'){
+        $Layer .= 'var lmap = new OpenLayers.Layer.Google("Google Physical", {type: google.maps.MapTypeId.HYBRID} );';
+      }
+      else if ($a_Type == 'GoogleSatellite'){
+        $Layer .= 'var lmap = new OpenLayers.Layer.Google("Google Physical", {type: google.maps.MapTypeId.SATELLITE} );';
+      }
       else if (($a_Type == 'Ext') || ($a_Type == 'ext')) {
         $Layer .= 'var lmap = new OpenLayers.Layer.'.$a_ExtType.'("'.$a_ExtName.'","'.$a_ExtAddress.'",{'.$a_ExtInit.'});';
       }
-  
       $Layer .= 'map.addLayer(lmap);';
     }
 	
@@ -160,7 +190,7 @@ class Osm_OpenLayers
     $Layer .= '                     Clicklonlat.lon = Math.round( Clicklonlat.lon * 1000. ) / 1000.;';    
     if ($a_msgBox == 'sc_gen'){  
      $Layer .= ' 	                  alert("Insert the Osm shortcode to your post:\n \n  [osm_map lat=\"" + Centerlonlat.lat + "\" long=\"" + Centerlonlat.lon + "\" zoom=\"" + zoom + "\" width=\"600\" height=\"450\" marker=\""+Clicklonlat.lat+","+Clicklonlat.lon+
-"\" marker_name=\"marker_blue.png\"]");';
+"\" marker_name=\"marker_blue.png\" type=\"All\"]");';
     }
     else if( $a_msgBox == 'lat_long'){
      $Layer .= ' 	                  alert("Lat= " + Clicklonlat.lat + " Long= " + Clicklonlat.lon);';   
@@ -249,7 +279,7 @@ class Osm_OpenLayers
       
   // if you miss a MapType, just add it
   function checkMapType($a_type){
-    if ($a_type != 'Mapnik' && $a_type != 'Osmarender' && $a_type != 'CycleMap' && $a_type != 'All' && $a_type != 'ext' && $a_type != 'Ext'){
+    if ($a_type != 'Mapnik' && $a_type != 'Osmarender' && $a_type != 'CycleMap' && $a_type != 'Google' && $a_type != 'All' && $a_type != 'AllGoogle' && $a_type != 'AllOsm' && $a_type != 'ext' && $a_type != 'GooglePhysical' && $a_type != 'GoogleStreet' && $a_type != 'GoogleHybrid' && $a_type != 'GoogleSatellite' && $a_type != 'Ext'){
       return "All";
     }
     return $a_type;

@@ -3,7 +3,7 @@
 Plugin Name: OSM
 Plugin URI: http://www.Fotomobil.at/wp-osm-plugin
 Description: Embeds <a href="http://www.OpenStreetMap.org">OpenStreetMap</a> maps in your blog and adds geo data to your posts. Get the latest version on the <a href="http://www.Fotomobil.at/wp-osm-plugin">OSM plugin page</a>. DO NOT "upgrade automatically" if you made any personal settings or if you stored GPX or TXT files in the plugin folder!!
-Version: 0.9.2
+Version: 0.9.3
 Author: Michael Kang
 Author URI: http://www.HanBlog.net
 Minimum WordPress Version Required: 2.5.1
@@ -27,7 +27,7 @@ Minimum WordPress Version Required: 2.5.1
 */
 load_plugin_textdomain('Osm');
 
-define ("PLUGIN_VER", "V0.9.2");
+define ("PLUGIN_VER", "V0.9.3");
 
 // modify anything about the marker for tagged posts here
 // instead of the coding.
@@ -551,17 +551,24 @@ class Osm
 	  $output .= '</style>';
 
     $output .= '<div id="'.$MapName.'" style="width:'.$width.'px; height:'.$height.'px; overflow:hidden;padding:0px;">';
-   
-	if (Osm_LoadLibraryMode == SERVER_EMBEDDED){
-	  $output .= '<script type="text/javascript" src="'.Osm_OL_LibraryLocation.'"></script>';
-	  $output .= '<script type="text/javascript" src="'.Osm_OSM_LibraryLocation.'"></script>';
-	}
-	elseif (Osm_LoadLibraryMode == SERVER_WP_ENQUEUE){
+
+	  if (Osm_LoadLibraryMode == SERVER_EMBEDDED){
+	    $output .= '<script type="text/javascript" src="'.Osm_OL_LibraryLocation.'"></script>';
+      
+  
+      if ($type == 'Mapnik' || $type == 'Osmarender' || $type == 'CycleMap' || $type == 'All' || $type == 'AllOsm' || $type == 'Ext'){
+	      $output .= '<script type="text/javascript" src="'.Osm_OSM_LibraryLocation.'"></script>';
+      }
+      if ($type == 'GooglePhysical' || $type == 'GoogleStreet' || $type == 'GoogleHybrid' || $type == 'GoogleSatellite' || $type == 'All' || $type == 'AllGoogle' || $a_type == 'Ext'){
+        $output .= '<script type="text/javascript" src="'.Osm_GOOGLE_LibraryLocation.'"></script>';
+      }
+	  }
+	  elseif (Osm_LoadLibraryMode == SERVER_WP_ENQUEUE){
 	  // registered and loaded by WordPress
-	}
-	else{
-	  $this->traceText(DEBUG_ERROR, "e_library_config");
-	}
+	  }
+	  else{
+	    $this->traceText(DEBUG_ERROR, "e_library_config");
+	  }
     $output .= '<script type="text/javascript">';
     $output .= '/* <![CDATA[ */';
     //$output .= 'jQuery(document).ready(';
@@ -658,8 +665,9 @@ class Osm
 	elseif (Osm_LoadLibraryMode == SERVER_WP_ENQUEUE){
       //wp_enqueue_script('OlScript', 'http://www.openlayers.org/api/OpenLayers.js');
       //wp_enqueue_script('OsnScript', 'http://www.openstreetmap.org/openlayers/OpenStreetMap.js');
-	  wp_enqueue_script('OlScript',Osm_OL_LibraryLocation);
+	    wp_enqueue_script('OlScript',Osm_OL_LibraryLocation);
       wp_enqueue_script('OsnScript',Osm_OSM_LibraryLocation);
+      wp_enqueue_script('OsnScript',Osm_GOOGLE_LibraryLocation);
 	}
 	else{
 	  // Errormsg is traced at another place
