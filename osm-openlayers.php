@@ -83,17 +83,17 @@ class Osm_OpenLayers
       else if ($a_Type == 'CycleMap'){
         $Layer .= 'var lmap = new OpenLayers.Layer.OSM.CycleMap("CycleMap");';
       }
-      else if ($a_Type == 'GooglePhysical'){
+      else if (($a_Type == 'GooglePhysical') || ($a_Type == 'Google Physical')){
         $Layer .= 'var lmap = new OpenLayers.Layer.Google("Google Physical", {type: google.maps.MapTypeId.TERRAIN} );';
       }
-      else if ($a_Type == 'GoogleStreet'){
-        $Layer .= 'var lmap = new OpenLayers.Layer.Google("Google Physical", {type: google.maps.MapTypeId.ROADMAP} );';
+      else if (($a_Type == 'GoogleStreet') || ($a_Type == 'Google Street')){
+        $Layer .= 'var lmap = new OpenLayers.Layer.Google("Google Street", {type: google.maps.MapTypeId.ROADMAP} );';
       }
-      else if ($a_Type == 'GoogleHybrid'){
-        $Layer .= 'var lmap = new OpenLayers.Layer.Google("Google Physical", {type: google.maps.MapTypeId.HYBRID} );';
+      else if (($a_Type == 'GoogleHybrid') || ($a_Type == 'Google Hybrid')){
+        $Layer .= 'var lmap = new OpenLayers.Layer.Google("Google Hybrid", {type: google.maps.MapTypeId.HYBRID} );';
       }
-      else if ($a_Type == 'GoogleSatellite'){
-        $Layer .= 'var lmap = new OpenLayers.Layer.Google("Google Physical", {type: google.maps.MapTypeId.SATELLITE} );';
+      else if (($a_Type == 'GoogleSatellite') || ($a_Type == 'Google Satellite')){
+        $Layer .= 'var lmap = new OpenLayers.Layer.Google("Google Satellite", {type: google.maps.MapTypeId.SATELLITE} );';
       }
       else if (($a_Type == 'Ext') || ($a_Type == 'ext')) {
         $Layer .= 'var lmap = new OpenLayers.Layer.'.$a_ExtType.'("'.$a_ExtName.'","'.$a_ExtAddress.'",{'.$a_ExtInit.'});';
@@ -179,6 +179,7 @@ class Osm_OpenLayers
     $Layer .= ' 	                },';
 
     $Layer .= ' 	                trigger: function(e) {';
+    $Layer .= '                     var LayerName =    map.baseLayer.name; ';  
     $Layer .= ' 	                  var Centerlonlat = map.getCenter(e.xy).clone();';
     $Layer .= ' 	                  var Clicklonlat = map.getLonLatFromViewPortPx(e.xy);';
     $Layer .= ' 	                  var zoom = map.getZoom(e.xy);';
@@ -190,7 +191,7 @@ class Osm_OpenLayers
     $Layer .= '                     Clicklonlat.lon = Math.round( Clicklonlat.lon * 1000. ) / 1000.;';    
     if ($a_msgBox == 'sc_gen'){  
      $Layer .= ' 	                  alert("Insert the Osm shortcode to your post:\n \n  [osm_map lat=\"" + Centerlonlat.lat + "\" long=\"" + Centerlonlat.lon + "\" zoom=\"" + zoom + "\" width=\"600\" height=\"450\" marker=\""+Clicklonlat.lat+","+Clicklonlat.lon+
-"\" marker_name=\"marker_blue.png\" type=\"All\"]");';
+"\" marker_name=\"marker_blue.png\" type=\""+LayerName+"\"]");';
     }
     else if( $a_msgBox == 'lat_long'){
      $Layer .= ' 	                  alert("Lat= " + Clicklonlat.lat + " Long= " + Clicklonlat.lon);';   
@@ -212,6 +213,7 @@ class Osm_OpenLayers
     $Layer .= 'map.addLayer(markers);';
     
     $Layer .= 'var data = {};';
+    $Layer .= 'var currentPopup;';
     $Layer .= 'data.icon = new OpenLayers.Icon("'.OSM_PLUGIN_ICONS_URL.$Icon[name].'",';
     $Layer .= '     new OpenLayers.Size('.$Icon[width].','.$Icon[height].'),';
     $Layer .= '     new OpenLayers.Pixel('.$Icon[offset_width].', '.$Icon[offset_height].'));';   
@@ -222,7 +224,7 @@ class Osm_OpenLayers
       $Layer .= '     var feature = new OpenLayers.Feature(markers, ll, data);';
          
       $Layer .= 'feature.closeBox = true;';
-      $Layer .= 'feature.popupClass = OpenLayers.Class(OpenLayers.Popup.FramedCloud, {minSize: new OpenLayers.Size('.$a_MarkerArray[$row][popup_width].','.$a_MarkerArray[$row][popup_height].') } );';
+      $Layer .= 'feature.popupClass = OpenLayers.Class(OpenLayers.Popup.FramedCloud, {"autoSize": true, minSize: new OpenLayers.Size('.$a_MarkerArray[$row][popup_width].','.$a_MarkerArray[$row][popup_height].'),"keepInMap": true } );';
       
       // add the the backslashes
       $OSM_HTML_TEXT = addslashes($a_MarkerArray[$row][text]);
@@ -279,7 +281,7 @@ class Osm_OpenLayers
       
   // if you miss a MapType, just add it
   function checkMapType($a_type){
-    if ($a_type != 'Mapnik' && $a_type != 'Osmarender' && $a_type != 'CycleMap' && $a_type != 'Google' && $a_type != 'All' && $a_type != 'AllGoogle' && $a_type != 'AllOsm' && $a_type != 'ext' && $a_type != 'GooglePhysical' && $a_type != 'GoogleStreet' && $a_type != 'GoogleHybrid' && $a_type != 'GoogleSatellite' && $a_type != 'Ext'){
+    if ($a_type != 'Mapnik' && $a_type != 'Osmarender' && $a_type != 'CycleMap' && $a_type != 'Google' && $a_type != 'All' && $a_type != 'AllGoogle' && $a_type != 'AllOsm' && $a_type != 'ext' && $a_type != 'GooglePhysical' && $a_type != 'GoogleStreet' && $a_type != 'GoogleHybrid' && $a_type != 'GoogleSatellite' && $a_type != 'Google Physical' && $a_type != 'Google Street' && $a_type != 'Google Hybrid' && $a_type != 'Google Satellite'&& $a_type != 'Ext'){
       return "All";
     }
     return $a_type;

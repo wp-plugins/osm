@@ -10,45 +10,24 @@
 <div class="wrap">
 <table border="0">
  <tr>
-  <td><p><img src="<?php echo OSM_PLUGIN_URL ?>/OSM_Logo_01.png" alt="Osm Logo"></p></td>
+  <td><p><img src="<?php echo OSM_PLUGIN_URL ?>/WP_OSM_Plugin_Logo.png" alt="Osm Logo"></p></td>
   <td><h2>OpenStreetMap Plugin <?php echo PLUGIN_VER ?> </h2></td>
  </tr>
 </table>
 <table border="0">
 <h3>How to add a map to your post/article</h3>
 <ol>
+  <li>choose your maptype with this icon <img src="http://www.openlayers.org/api/img/layer-switcher-maximize.png" alt="map type icon"> in the map</li>
   <li>select the area and zoomlevel on the map</li>
   <li>click on the map where you want to place a marker</li>
   <li>copy the shortcode from the massage window and paste it in your post / article</li>
   <li>modify or delete the arguments <i>marker</i> and <i>marker_name</i> if you do not need a marker in your map</li>
-  <li>modify the argument <i>type</i> if you need just one type of map to improve loading-time</li>
+  <li>delete the argument <i>type</i> if you want all maps to be available, which loads all libs as well</li>
   <li>add other arguments to insert tracks, points ... or modify mapsize ... if needed</li>
   <li style="color:red"> do not save any of your personal data in the plugins/osm folder but in the upload folder!</li>
 </ol>
 <br>
-<table border="0">
-<h3>These map types are supported</h3>
-  <colgroup>
-    <col width="200">
-    <col width="200">
-    <col width="200">
-  </colgroup>
- <tr>
-  <td align="center"><p><img src="<?php echo OSM_PLUGIN_URL ?>/map_pics/osm_osmarender.png" alt="Osmarender"><br>Osmarender</p></td>
-  <td align="center"><p><img src="<?php echo OSM_PLUGIN_URL ?>/map_pics/osm_mapnik.png" alt="Mapnik"><br>Mapnik</p></td>
-  <td align="center"><p><img src="<?php echo OSM_PLUGIN_URL ?>/map_pics/osm_cyclemap.png" alt="Cyclemap"><br>Cyclemap</p></td>
- </tr>
- <tr>
-  <td align="center"><p><img src="<?php echo OSM_PLUGIN_URL ?>/map_pics/google_street.png" alt="GoogleStreet"><br>GoogleStreet</p></td>
-  <td align="center"><p><img src="<?php echo OSM_PLUGIN_URL ?>/map_pics/google_physical.png" alt="GooglePhysical"><br>GooglePhysical</p></td>
-  <td align="center"><p><img src="<?php echo OSM_PLUGIN_URL ?>/map_pics/google_sattelite.png" alt="GoogleSatellite"><br>GoogleSatellite</p></td>
- </tr>
- <tr>
-  <td align="center"><p><img src="<?php echo OSM_PLUGIN_URL ?>/map_pics/google_hybrid.png" alt="GoogleHybrid"><br>GoogleHybrid</p></td>
- </tr>
-</table>
- <p> choose your type like <i>type="Mapnik"</i> - if you do not use type-tag all maps are loaded.</p>
-<br>
+
 <table border="0">
 <h3>These markers are supported</h3>
   <colgroup>
