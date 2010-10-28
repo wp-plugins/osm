@@ -2,8 +2,8 @@
 /*
 Plugin Name: OSM
 Plugin URI: http://www.Fotomobil.at/wp-osm-plugin
-Description: Embeds <a href="http://www.OpenStreetMap.org">OpenStreetMap</a> maps in your blog and adds geo data to your posts. Get the latest version on the <a href="http://www.Fotomobil.at/wp-osm-plugin">OSM plugin page</a>. DO NOT "upgrade automatically" if you made any personal settings or if you stored GPX or TXT files in the plugin folder!!
-Version: 0.9.3
+Description: Embeds maps in your blog and adds geo data to your posts.  Find samples and a forum on the <a href="http://www.Fotomobil.at/wp-osm-plugin">OSM plugin page</a>.  Simply create the shortcode to add it in your post at [<a href="options-general.php?page=osm.php">Settings</a>]
+Version: 0.9.4
 Author: Michael Kang
 Author URI: http://www.HanBlog.net
 Minimum WordPress Version Required: 2.5.1
@@ -27,7 +27,7 @@ Minimum WordPress Version Required: 2.5.1
 */
 load_plugin_textdomain('Osm');
 
-define ("PLUGIN_VER", "V0.9.3");
+define ("PLUGIN_VER", "V0.9.4");
 
 // modify anything about the marker for tagged posts here
 // instead of the coding.
@@ -73,7 +73,6 @@ define (HTML_COMMENT, 10);
 // Load OSM library mode
 define (SERVER_EMBEDDED, 1);
 define (SERVER_WP_ENQUEUE, 2);
-
 
 
 if ( ! defined( 'WP_CONTENT_URL' ) )
@@ -552,23 +551,34 @@ class Osm
 
     $output .= '<div id="'.$MapName.'" style="width:'.$width.'px; height:'.$height.'px; overflow:hidden;padding:0px;">';
 
-	  if (Osm_LoadLibraryMode == SERVER_EMBEDDED){
-	    $output .= '<script type="text/javascript" src="'.Osm_OL_LibraryLocation.'"></script>';
-      
+    
+	    if (Osm_LoadLibraryMode == SERVER_EMBEDDED){
+	      if (OL_LIBS_LOADED == 0) {
+    	    $output .= '<script type="text/javascript" src="'.Osm_OL_LibraryLocation.'"></script>';
+          define (OL_LIBS_LOADED, 1);
+        }
   
-      if ($type == 'Mapnik' || $type == 'Osmarender' || $type == 'CycleMap' || $type == 'All' || $type == 'AllOsm' || $type == 'Ext'){
-	      $output .= '<script type="text/javascript" src="'.Osm_OSM_LibraryLocation.'"></script>';
+        if ($type == 'Mapnik' || $type == 'Osmarender' || $type == 'CycleMap' || $type == 'All' || $type == 'AllOsm' || $type == 'Ext'){
+	        if (OSM_LIBS_LOADED == 0) {
+            $output .= '<script type="text/javascript" src="'.Osm_OSM_LibraryLocation.'"></script>';
+            define (OSM_LIBS_LOADED, 1);
+          }
+        }
+
+        if ($type == 'GooglePhysical' || $type == 'GoogleStreet' || $type == 'GoogleHybrid' || $type == 'GoogleSatellite' || $type == 'All' || $type == 'AllGoogle' || $a_type == 'Ext' || $type == 'Google Physical' || $type == 'Google Street' || $type == 'Google Hybrid' || $type == 'Google Satellite'){
+	        if (GOOGLE_LIBS_LOADED == 0) {
+            $output .= '<script type="text/javascript" src="'.Osm_GOOGLE_LibraryLocation.'"></script>';
+            define (GOOGLE_LIBS_LOADED, 1);
+          }
+        }
       }
-      if ($type == 'GooglePhysical' || $type == 'GoogleStreet' || $type == 'GoogleHybrid' || $type == 'GoogleSatellite' || $type == 'All' || $type == 'AllGoogle' || $a_type == 'Ext'){
-        $output .= '<script type="text/javascript" src="'.Osm_GOOGLE_LibraryLocation.'"></script>';
-      }
-	  }
-	  elseif (Osm_LoadLibraryMode == SERVER_WP_ENQUEUE){
-	  // registered and loaded by WordPress
-	  }
-	  else{
-	    $this->traceText(DEBUG_ERROR, "e_library_config");
-	  }
+	    elseif (Osm_LoadLibraryMode == SERVER_WP_ENQUEUE){
+	    // registered and loaded by WordPress
+	    }
+	    else{
+	      $this->traceText(DEBUG_ERROR, "e_library_config");
+	    }
+
     $output .= '<script type="text/javascript">';
     $output .= '/* <![CDATA[ */';
     //$output .= 'jQuery(document).ready(';
@@ -626,16 +636,18 @@ class Osm
   
    // just add single marker 
    if ($marker  != 'No'){  
-     global $post;  
+     global $post;
+     $DoPopUp = 'true';
      list($temp_lat, $temp_lon, $temp_popup_custom_field) = split(',', $marker);
 	   if ($temp_popup_custom_field == ''){
 		   $temp_popup_custom_field = 'osm_dummy';
+       $DoPopUp = 'false';
 	   }
      $temp_popup_custom_field = trim($temp_popup_custom_field);
      $temp_popup = get_post_meta($post->ID, $temp_popup_custom_field, true); 
      list($temp_lat, $temp_lon) = Osm::checkLatLongRange('Marker',$temp_lat, $temp_lon); 
      $MarkerArray[] = array('lat'=> $temp_lat,'lon'=>$temp_lon,'text'=>$temp_popup,'popup_height'=>'150', 'popup_width'=>'150');
-     $output .= Osm_OpenLayers::addMarkerListLayer('Marker', $Icon,$MarkerArray,'true');
+     $output .= Osm_OpenLayers::addMarkerListLayer('Marker', $Icon,$MarkerArray,$DoPopUp);
     }
   
     //$output .= '}';
@@ -668,6 +680,9 @@ class Osm
 	    wp_enqueue_script('OlScript',Osm_OL_LibraryLocation);
       wp_enqueue_script('OsnScript',Osm_OSM_LibraryLocation);
       wp_enqueue_script('OsnScript',Osm_GOOGLE_LibraryLocation);
+      define (OSM_LIBS_LOADED, 1);
+      define (OL_LIBS_LOADED, 1);
+      define (GOOGLE_LIBS_LOADED, 1);
 	}
 	else{
 	  // Errormsg is traced at another place
