@@ -2,8 +2,8 @@
 Contributors: Michael Kang
 Tags: map, OpenStreetMap, Google Maps, geo, KML, GPX, geotag, geolocation, geocache, geocaching, OSM, travelogue, template tag, travelblog
 Requires at least: 2.5.1
-Tested up to: 3.0.1
-Stable tag: 0.9.4
+Tested up to: 3.1
+Stable tag: 0.9.5
 
 OpenStreetMap plugin to embed maps (OpenStreetMap and Google Maps) with personal markers and routes in your blog. In addition to it geo meta data are added to posts and pages.
 
@@ -29,8 +29,8 @@ Features of the OSM-plugin:
 
 Licenses of the maps:
 
-* OpenStreetMap: [http://wiki.openstreetmap.org/wiki/OpenStreetMap_License OpenStreetMap License]
-* Google Maps: [http://code.google.com/intl/de-DE/apis/maps/terms.html Google Maps Terms of Service]
+* OpenStreetMap: [OpenStreetMap License](http://wiki.openstreetmap.org/wiki/OpenStreetMap_License) 
+* Google Maps: [Google Maps Terms of Service](http://code.google.com/intl/de-DE/apis/maps/terms.html)
 
 == Installation ==
 
@@ -74,6 +74,12 @@ You have to install [gcstats plugin](http://wordpress.org/extend/plugins/gcstats
 4. Use template-tags to show a map if your post/page has got a geolocation
 
 == Changelog ==
+= 0.9.5 =
+* NEW: mark all geotagged posts can be filtered by category
+* NEW: map_border tag added to set border around the OSM map
+* NEW: marker_focus tag added to adjust the marker
+* NEW: gpx filename is used for the map picker
+* FIX: style correction for some WP-themes (eg Suffusion)
 = 0.9.4 =
 * NEW: LIBS of diff. map types are loaded only when needed
 * NEW: Shortcodegenerator at backend extented to get the chosen maptype

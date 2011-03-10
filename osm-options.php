@@ -20,7 +20,7 @@
   <li>choose your maptype with this icon <img src="http://www.openlayers.org/api/img/layer-switcher-maximize.png" alt="map type icon"> in the map</li>
   <li>select the area and zoomlevel on the map</li>
   <li>click on the map where you want to place a marker</li>
-  <li>copy the shortcode from the massage window and paste it in your post / article</li>
+  <li>copy the shortcode from the top of the map and paste it in your post / article</li>
   <li>modify or delete the arguments <i>marker</i> and <i>marker_name</i> if you do not need a marker in your map</li>
   <li>delete the argument <i>type</i> if you want all maps to be available, which loads all libs as well</li>
   <li>add other arguments to insert tracks, points ... or modify mapsize ... if needed</li>
@@ -60,8 +60,9 @@
  </tr>
 </table>
 <br>
-<h3>Adjust the map and click to get your shortcode</h3>
-<?php echo Osm::sc_showMap(array('msg_box'=>'sc_gen','lat'=>'50','long'=>'18.5','zoom'=>'3', 'width'=>'600','height'=>'450')); ?>
+<h3>Adjust the map and click into the map to get your shortcode here:</h3>
+<div id="ShortCode_Div">Copy the shortcode and paste it into your post/article</div><br>
+<?php echo Osm::sc_showMap(array('msg_box'=>'sc_gen','lat'=>'50','long'=>'18.5','zoom'=>'3', 'type'=>'All', 'width'=>'600','height'=>'450', 'map_border'=>'thin solid blue')); ?>
 <br>
 <h3>Some usefull sites for this plugin:</h3>
 <ol>

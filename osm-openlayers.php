@@ -190,8 +190,9 @@ class Osm_OpenLayers
     $Layer .= '                     Clicklonlat.lat = Math.round( Clicklonlat.lat * 1000. ) / 1000.;';   // get the position for the marker
     $Layer .= '                     Clicklonlat.lon = Math.round( Clicklonlat.lon * 1000. ) / 1000.;';    
     if ($a_msgBox == 'sc_gen'){  
-     $Layer .= ' 	                  alert("Insert the Osm shortcode to your post:\n \n  [osm_map lat=\"" + Centerlonlat.lat + "\" long=\"" + Centerlonlat.lon + "\" zoom=\"" + zoom + "\" width=\"600\" height=\"450\" marker=\""+Clicklonlat.lat+","+Clicklonlat.lon+
-"\" marker_name=\"marker_blue.png\" type=\""+LayerName+"\"]");';
+    $Layer .= ' div = document.getElementById("ShortCode_Div");';
+    $Layer .= ' div.innerHTML = "[osm_map lat=\"" + Centerlonlat.lat + "\" long=\"" + Centerlonlat.lon + "\" zoom=\"" + zoom + "\" width=\"600\" height=\"450\" marker=\""+Clicklonlat.lat+","+Clicklonlat.lon+
+"\" marker_name=\"marker_blue.png\" type=\""+LayerName+"\"]";';
     }
     else if( $a_msgBox == 'lat_long'){
      $Layer .= ' 	                  alert("Lat= " + Clicklonlat.lat + " Long= " + Clicklonlat.lon);';   

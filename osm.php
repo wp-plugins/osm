@@ -3,7 +3,7 @@
 Plugin Name: OSM
 Plugin URI: http://www.Fotomobil.at/wp-osm-plugin
 Description: Embeds maps in your blog and adds geo data to your posts.  Find samples and a forum on the <a href="http://www.Fotomobil.at/wp-osm-plugin">OSM plugin page</a>.  Simply create the shortcode to add it in your post at [<a href="options-general.php?page=osm.php">Settings</a>]
-Version: 0.9.4
+Version: 0.9.5
 Author: Michael Kang
 Author URI: http://www.HanBlog.net
 Minimum WordPress Version Required: 2.5.1
@@ -27,7 +27,7 @@ Minimum WordPress Version Required: 2.5.1
 */
 load_plugin_textdomain('Osm');
 
-define ("PLUGIN_VER", "V0.9.4");
+define ("PLUGIN_VER", "V0.9.5");
 
 // modify anything about the marker for tagged posts here
 // instead of the coding.
@@ -225,7 +225,7 @@ class Osm
 		echo "<meta name=\"geo.position\"  content=\"{$lat};{$lon}\" />\n";
 	}
     
-  function createMarkerList($a_import, $a_import_UserName, $a_Customfield)
+  function createMarkerList($a_import, $a_import_UserName, $a_Customfield, $a_import_osm_cat_incl_name,  $a_import_osm_cat_excl_name)
   {
      $this->traceText(DEBUG_INFO, "createMarkerList(".$a_import.",".$a_import_UserName.",".$a_Customfield.")");
 	   global $post;
@@ -250,6 +250,25 @@ class Osm
        while ($recentPosts->have_posts()) : $recentPosts->the_post();
   	     list($temp_lat, $temp_lon) = split(',', get_post_meta($post->ID, $CustomFieldName, true)); 
 //         echo $post->ID.'Lat: '.$temp_lat.'Long '.$temp_lon.'<br>';
+
+         // check if a filter is set and geodata are set
+         // if filter is set and set then pretend there are no geodata
+         if (($a_import_osm_cat_incl_name  != 'Osm_All' || $a_import_osm_cat_excl_name  != 'Osm_None')&&($temp_lat != '' && $temp_lon != '')){
+           $categories = wp_get_post_categories($post->ID);
+           foreach( $categories as $catid ) {
+	            $cat = get_category($catid);
+              if (($a_import_osm_cat_incl_name  != 'Osm_All') && (strtolower($cat->name) != (strtolower($a_import_osm_cat_incl_name)))){
+                $temp_lat = '';
+                $temp_lon = '';
+              }
+              if (strtolower($cat->name) == (strtolower($a_import_osm_cat_excl_name))){
+                $temp_lat = '';
+                $temp_lon = '';
+              }
+           } 
+         }
+
+
          if ($temp_lat != '' && $temp_lon != '') {
            list($temp_lat, $temp_lon) = $this->checkLatLongRange('$marker_all_posts',$temp_lat, $temp_lon);
            if ($a_import == 'osm_l' ){   
@@ -301,7 +320,7 @@ class Osm
   }
 
   // if you miss a colour, just add it
-  function getImportLayer($a_import_type, $a_import_UserName, $Icon){
+  function getImportLayer($a_import_type, $a_import_UserName, $Icon, $a_import_osm_cat_incl_name,  $a_import_osm_cat_excl_name){
 
     if ($a_import_type  == 'osm_l'){
       $LayerName = 'TaggedPosts';
@@ -342,7 +361,7 @@ class Osm
     else{
       $this->traceText(DEBUG_ERROR, "e_import_unknwon");
     }
-    $MarkerArray = $this->createMarkerList($a_import_type, $a_import_UserName,'Empty');
+    $MarkerArray = $this->createMarkerList($a_import_type, $a_import_UserName,'Empty', $a_import_osm_cat_incl_name,  $a_import_osm_cat_excl_name);
     return Osm_OpenLayers::addMarkerListLayer($LayerName, $Icon, $MarkerArray, $PopUp);
   }
 
@@ -444,6 +463,11 @@ class Osm
   return $Icon;
  }
 
+  function getGPXName($filepath){
+    $file = basename($filepath, ".gpx"); // $file is set to "index"
+    return $file;
+  }
+
   // execute the java script to display 
   // the OpenStreetMap
   function sc_showMap($atts) {
@@ -456,7 +480,7 @@ class Osm
     // the zoomlevel of the map 
     'zoom'      => '7',     
     // Osmarender, Mapnik, CycleMap, ...           
-    'type'      => 'All',
+    'type'      => 'AllOsm',
     // track info
     'gpx_file'  => 'NoFile',           // 'absolut address'          
     'gpx_colour'=> 'NoColour',
@@ -471,8 +495,11 @@ class Osm
     'marker_name'     => 'NoName',
     'marker_height'   => '0',
     'marker_width'    => '0',
+    'marker_focus'    => '0',
     'ov_map'          => '-1',         // zoomlevel of overviewmap
     'import'          => 'No',
+    'import_osm_cat_incl_name'  => 'Osm_All',
+    'import_osm_cat_excl_name'  => 'Osm_None',
     'marker'          => 'No',
     'msg_box'         => 'No',
     'custom_field'    => 'No',
@@ -481,6 +508,7 @@ class Osm
 	  'extmap_name'     => 'No',
 	  'extmap_address'  => 'No',
 	  'extmap_init'     => 'No',
+    'map_border'      => 'none'
 	  ), $atts));
    
     if ($zoom < ZOOM_LEVEL_MIN || $zoom > ZOOM_LEVEL_MAX){
@@ -507,9 +535,27 @@ class Osm
       $Icon[height] = $marker_height;
       $Icon[width]  = $marker_width; 
       $Icon[name]  = $marker_name;
-      $Icon[offset_height] = round(-$marker_height/2);
-      $Icon[offset_width] = round(-$marker_width/2);
-     if ($Icon[height] == 0 || $Icon[width] == 0){
+      if ($marker_focus == 0){ // center is default
+        $Icon[offset_height] = round(-$marker_height/2);
+        $Icon[offset_width] = round(-$marker_width/2);
+      }
+      else if ($marker_focus == 1){ // left bottom
+        $Icon[offset_height] = -$marker_height;
+        $Icon[offset_width]  = 0;
+      }
+      else if ($marker_focus == 2){ // left top
+        $Icon[offset_height] = 0;
+        $Icon[offset_width]  = 0;
+      }
+      else if ($marker_focus == 3){ // right top
+        $Icon[offset_height] = 0;
+        $Icon[offset_width]  = -$marker_width;
+      }
+      else if ($marker_focus == 4){ // right bottom
+        $Icon[offset_height] = -$marker_height;
+        $Icon[offset_width]  = -$marker_width;
+      }
+      if ($Icon[height] == 0 || $Icon[width] == 0){
         Osm::traceText(DEBUG_ERROR, "e_marker_size"); //<= ToDo
         $Icon[height] = 24;
         $Icon[width]  = 24;
@@ -545,11 +591,12 @@ class Osm
     // if we came up to here, let's load the map
     $output = '';	
 	  $output .= '<style type="text/css">';
+    $output .= '.entry .olMapViewport img { max-width: none; }';
 	  $output .= '#'.$MapName.' {padding: 0; margin: 0;}';
     $output .= '#'.$MapName.' img{padding: 0; margin: 0;border:none;margin-top:0px;margin-right:0px;margin-left:0px;margin-bottom:0px;}';
 	  $output .= '</style>';
 
-    $output .= '<div id="'.$MapName.'" style="width:'.$width.'px; height:'.$height.'px; overflow:hidden;padding:0px;">';
+    $output .= '<div id="'.$MapName.'" style="width:'.$width.'px; height:'.$height.'px; overflow:hidden;padding:0px;border:'.$map_border.';">';
 
     
 	    if (Osm_LoadLibraryMode == SERVER_EMBEDDED){
@@ -596,6 +643,7 @@ class Osm
 
     // Add the Layer with GPX Track
     if ($gpx_file != 'NoFile'){ 
+      $GpxName = basename($gpx_file, ".gpx");
       $output .= Osm_OpenLayers::addGmlLayer($GpxName, $gpx_file,$gpx_colour,'GPX');
     }
 
@@ -605,7 +653,7 @@ class Osm
       $this->traceText(DEBUG_INFO, "(NumOfGpxFiles: ".sizeof($GpxFileListArray)." NumOfGpxColours: ".sizeof($GpxColourListArray).")!");
       if (sizeof($GpxFileListArray) == sizeof($GpxColourListArray)){
         for($x=0;$x<sizeof($GpxFileListArray);$x++){
-          $GpxName = 'GPX_LIST_'.$x;
+          $GpxName = basename($GpxFileListArray[$x], ".gpx");
           $output .= Osm_OpenLayers::addGmlLayer($GpxName, $GpxFileListArray[$x],$GpxColourListArray[$x],'GPX');
         }
       }
@@ -631,7 +679,7 @@ class Osm
     }
 
     if ($import_type  != 'no'){
-      $output .= Osm::getImportLayer($import_type, $import_UserName, $Icon);
+      $output .= Osm::getImportLayer($import_type, $import_UserName, $Icon, $import_osm_cat_incl_name,  $import_osm_cat_excl_name);
     }
   
    // just add single marker 
@@ -764,7 +812,7 @@ function OSM_displayOpenStreetMap($a_widht, $a_hight, $a_zoom, $a_type){
   }
 }
 
-function OSM_displayOpenStreetMapExt($a_widht, $a_hight, $a_zoom, $a_type, $a_control, $a_marker_name, $a_marker_height, $a_marker_width, $a_marker_text, $a_ov_map){
+function OSM_displayOpenStreetMapExt($a_widht, $a_hight, $a_zoom, $a_type, $a_control, $a_marker_name, $a_marker_height, $a_marker_width, $a_marker_text, $a_ov_map, $a_marker_focus = 0){
 
   $atts = array ('width'        => $a_widht,
                  'height'       => $a_hight,
@@ -775,7 +823,8 @@ function OSM_displayOpenStreetMapExt($a_widht, $a_hight, $a_zoom, $a_type, $a_co
                  'marker_height'=> $a_marker_height,
                  'marker_width' => $a_marker_width,
                  'marker'       => OSM_getCoordinateLat("osm") . ',' . OSM_getCoordinateLong("osm") . ',' . $a_marker_text,
-	               'control'		  => $a_control);
+	               'control'		  => $a_control,
+                 'marker_focus' => $a_marker_focus);
 
   if ((OSM_getCoordinateLong("osm"))&&(OSM_getCoordinateLat("osm"))) { 
     echo OSM::sc_showMap($atts);
