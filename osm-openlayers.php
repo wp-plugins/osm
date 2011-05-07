@@ -155,6 +155,37 @@ class Osm_OpenLayers
   {
     Osm::traceText(DEBUG_INFO, "AddClickHandler(".$a_msgBox.")");
     $a_msgBox = strtolower($a_msgBox);
+    
+    $Layer .= '    function get_radio_value(a_Form){';
+    $Layer .= '    if (a_Form == "Markerform"){';
+    $Layer .= '      for (var i=0; i < document.Markerform.Art.length; i++){';
+    $Layer .= '        if (document.Markerform.Art[i].checked){';
+    $Layer .= '          var rad_val = document.Markerform.Art[i].value;';
+    $Layer .= '          return rad_val;';
+    $Layer .= '        }';
+    $Layer .= '      }';
+    $Layer .= '      return "undefined";';
+    $Layer .= '    }';
+    $Layer .= '    else if (a_Form == "GPXcolourform"){';
+    $Layer .= '      for (var i=0; i < document.GPXcolourform.Gpx_colour.length; i++){';
+    $Layer .= '        if (document.GPXcolourform.Gpx_colour[i].checked){';
+    $Layer .= '          var rad_val = document.GPXcolourform.Gpx_colour[i].value;';
+    $Layer .= '          return rad_val;';
+    $Layer .= '        }';
+    $Layer .= '      }';
+    $Layer .= '      return "undefined";';
+    $Layer .= '    }';    
+    $Layer .= '    else if (a_Form == "Bordercolourform"){';
+    $Layer .= '      for (var i=0; i < document.Bordercolourform.Border_colour.length; i++){';
+    $Layer .= '        if (document.Bordercolourform.Border_colour[i].checked){';
+    $Layer .= '          var rad_val = document.Bordercolourform.Border_colour[i].value;';
+    $Layer .= '          return rad_val;';
+    $Layer .= '        }';
+    $Layer .= '      }';
+    $Layer .= '      return "undefined";';
+    $Layer .= '    }';    
+    $Layer .= '    }';
+    
     $Layer .= 'OpenLayers.Control.Click = OpenLayers.Class(OpenLayers.Control, {';               
     $Layer .= ' 	                defaultHandlerOptions: {';
     $Layer .= ' 	                    "single": true,';
@@ -191,8 +222,53 @@ class Osm_OpenLayers
     $Layer .= '                     Clicklonlat.lon = Math.round( Clicklonlat.lon * 1000. ) / 1000.;';    
     if ($a_msgBox == 'sc_gen'){  
     $Layer .= ' div = document.getElementById("ShortCode_Div");';
-    $Layer .= ' div.innerHTML = "[osm_map lat=\"" + Centerlonlat.lat + "\" long=\"" + Centerlonlat.lon + "\" zoom=\"" + zoom + "\" width=\"600\" height=\"450\" marker=\""+Clicklonlat.lat+","+Clicklonlat.lon+
-"\" marker_name=\"marker_blue.png\" type=\""+LayerName+"\"]";';
+    $Layer .= ' var MarkerName    = get_radio_value("Markerform");';
+    $Layer .= ' var GpxColour     = get_radio_value("GPXcolourform");';
+    $Layer .= ' var BorderColour  = get_radio_value("Bordercolourform");';
+    $Layer .= ' if (MarkerName != "undefined"){';
+    $Layer .= '   MarkerField = " marker=\""+Clicklonlat.lat+","+Clicklonlat.lon+
+"\" marker_name=\"" + MarkerName + "\"";';  
+    $Layer .= '  }';
+    $Layer .= '  else{';
+    $Layer .= '    MarkerField = "";';
+    $Layer .= '  }';
+    $Layer .= ' if (document.GPXfileform.GpxFile.value != "http://"){';
+    $Layer .= '   GpxFileField = " gpx_file=\""+ document.GPXfileform.GpxFile.value + "\"";';  
+    $Layer .= '  }';
+    $Layer .= '  else{';
+    $Layer .= '    GpxFileField = "";';
+    $Layer .= '  }';
+    $Layer .= ' if (GpxColour != "undefined"){';
+    $Layer .= '   GpxColourField = " gpx_colour=\""+ GpxColour + "\"";';  
+    $Layer .= '  }';
+    $Layer .= '  else{';
+    $Layer .= '    GpxColourField = "";';
+    $Layer .= '  }';
+    $Layer .= ' if (document.Markerfileform.MarkerFile.value != "http://"){';
+    $Layer .= '   MarkerFileField = " marker_file=\""+ document.Markerfileform.MarkerFile.value + "\"";';  
+    $Layer .= '  }';
+    $Layer .= '  else{';
+    $Layer .= '    MarkerFileField = "";';
+    $Layer .= '  }';    
+    
+    
+    
+    $Layer .= ' if (document.MapControlform.MapControl.checked){';
+    $Layer .= '   MapControlField = " control=\""+ document.MapControlform.MapControl.value + "\"";';  
+    $Layer .= '  }';
+    $Layer .= '  else{';
+    $Layer .= '    MapControlField = "";';
+    $Layer .= '  }';
+    
+    
+    
+    $Layer .= ' if (BorderColour != "undefined"){';
+    $Layer .= '   BorderColourField = " map_border=\"thin solid "+ BorderColour + "\"";';  
+    $Layer .= '  }';
+    $Layer .= '  else{';
+    $Layer .= '    BorderColourField = "";';
+    $Layer .= '  }';
+    $Layer .= ' div.innerHTML = "[osm_map lat=\"" + Centerlonlat.lat + "\" long=\"" + Centerlonlat.lon + "\" zoom=\"" + zoom + "\" width=\"600\" height=\"450\"" + MarkerField + GpxFileField + GpxColourField + BorderColourField + MarkerFileField + MapControlField + " type=\""+LayerName+"\"]";';
     }
     else if( $a_msgBox == 'lat_long'){
      $Layer .= ' 	                  alert("Lat= " + Clicklonlat.lat + " Long= " + Clicklonlat.lon);';   
@@ -261,10 +337,10 @@ class Osm_OpenLayers
     return $Layer;
   }
     
-  function addTextLayer($a_marker_file)
+  function addTextLayer($a_MarkerName, $a_marker_file)
   {
     Osm::traceText(DEBUG_INFO, "addTextLayer(".$a_marker_file.")");   
-    $Layer .= 'var pois = new OpenLayers.Layer.Text( "Markers",';
+    $Layer .= 'var pois = new OpenLayers.Layer.Text( "'.$a_MarkerName.'",';
     $Layer .= '        { location:"'.$a_marker_file.'",';
     $Layer .= '          projection: map.displayProjection';
     $Layer .= '        });';

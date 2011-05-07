@@ -3,8 +3,8 @@
 Plugin Name: OSM
 Plugin URI: http://www.Fotomobil.at/wp-osm-plugin
 Description: Embeds maps in your blog and adds geo data to your posts.  Find samples and a forum on the <a href="http://www.Fotomobil.at/wp-osm-plugin">OSM plugin page</a>.  Simply create the shortcode to add it in your post at [<a href="options-general.php?page=osm.php">Settings</a>]
-Version: 0.9.5
-Author: Michael Kang
+Version: 0.9.6
+Author: MiKa
 Author URI: http://www.HanBlog.net
 Minimum WordPress Version Required: 2.5.1
 */
@@ -27,7 +27,7 @@ Minimum WordPress Version Required: 2.5.1
 */
 load_plugin_textdomain('Osm');
 
-define ("PLUGIN_VER", "V0.9.5");
+define ("PLUGIN_VER", "V0.9.6");
 
 // modify anything about the marker for tagged posts here
 // instead of the coding.
@@ -206,9 +206,13 @@ class Osm
 	function wp_head($not_used)
 	{ 
 		global $wp_query;
+    
+    $CustomField = get_option('osm_custom_field');
 
-		$CustomField = get_option('osm_custom_field');
-		list($lat, $lon) = split(',', get_post_meta($wp_query->post->ID, $CustomField, true));
+    if (get_post_meta($wp_query->post->ID, $CustomField, true)){
+      $PostLatLon = get_post_meta($wp_query->post->ID, $CustomField, true);
+		  list($lat, $lon) = explode(',', $PostLatLon[0]);
+    }
 		if(is_single() && ($lat != '') && ($lon != '')){
 			$title = convert_chars(strip_tags(get_bloginfo("name")))." - ".$wp_query->post->post_title;
       $this->traceText(HTML_COMMENT, 'OSM plugin '.PLUGIN_VER.': adding geo meta tags:');
@@ -216,8 +220,8 @@ class Osm
 		else{
       $this->traceText(HTML_COMMENT, 'OSM plugin '.PLUGIN_VER.': did not add geo meta tags.');
 			return;
-		}
-
+		} 
+    
     // let's store geo data with W3 standard
 		echo "<meta name=\"ICBM\" content=\"{$lat}, {$lon}\" />\n";
 		echo "<meta name=\"DC.title\" content=\"{$wp_query->post->post_title}\" />\n";
@@ -248,7 +252,7 @@ class Osm
        $recentPosts->query('meta_key='.$CustomFieldName.'&post_status=publish'.'&showposts=-1');
 //     $recentPosts->query('meta_key='.$CustomFieldName.'&post_status=publish'.'&post_type=page');
        while ($recentPosts->have_posts()) : $recentPosts->the_post();
-  	     list($temp_lat, $temp_lon) = split(',', get_post_meta($post->ID, $CustomFieldName, true)); 
+  	     list($temp_lat, $temp_lon) = explode(',', get_post_meta($post->ID, $CustomFieldName, true)); 
 //         echo $post->ID.'Lat: '.$temp_lat.'Long '.$temp_lon.'<br>';
 
          // check if a filter is set and geodata are set
@@ -432,7 +436,7 @@ class Osm
     "bicycling.png"      => array("height"=>19,"width"=>"32","offset_height"=>"-9","offset_width"=>"-16"),
     "bus.png"            => array("height"=>32,"width"=>"26","offset_height"=>"-16","offset_width"=>"-13"),
     "camping.png"        => array("height"=>32,"width"=>"32","offset_height"=>"-16","offset_width"=>"-16"),
-    "car.png"            => array("height"=>32,"width"=>"18","offset_height"=>"-16","offset_width"=>"-9"),
+    "car.png"            => array("height"=>18,"width"=>"32","offset_height"=>"-16","offset_width"=>"-9"),
     "friends.png"        => array("height"=>32,"width"=>"32","offset_height"=>"-16","offset_width"=>"-16"),
     "geocache.png"       => array("height"=>25,"width"=>"25","offset_height"=>"-12","offset_width"=>"-12"),
     "guest_house.png"    => array("height"=>32,"width"=>"32","offset_height"=>"-16","offset_width"=>"-16"),
@@ -483,6 +487,7 @@ class Osm
     'type'      => 'AllOsm',
     // track info
     'gpx_file'  => 'NoFile',           // 'absolut address'          
+    'gpx_file_proxy'  => 'NoFile',           // 'absolut address'          
     'gpx_colour'=> 'NoColour',
     'gpx_file_list'   => 'NoFileList',
     'gpx_colour_list' => 'NoColourList',
@@ -490,6 +495,7 @@ class Osm
     'kml_colour'=> 'NoColour',
     // are there markers in the map wished loaded from a file
     'marker_file'     => 'NoFile', // 'absolut address'
+    'marker_file_proxy'     => 'NoFile', // 'absolut address'
     // are there markers in the map wished loaded from post tags
     'marker_all_posts'=> 'n',      // 'y' or 'Y'
     'marker_name'     => 'NoName',
@@ -562,12 +568,12 @@ class Osm
       }
     }
 
-	list($import_type, $import_UserName) = split(',', $import);
+	list($import_type, $import_UserName) = explode(',', $import);
     if ($import_UserName == ''){
       $import_UserName = 'DummyName';
     }
     $import_type = strtolower($import_type);
-	  $array_control = split ( ',', $control);
+	  $array_control = explode( ',', $control);
    
     list($lat, $long) = Osm::getMapCenter($lat, $long, $import_type, $import_UserName);
     list($lat, $long) = Osm::checkLatLongRange('MapCenter',$lat, $long);
@@ -642,14 +648,19 @@ class Osm
     $output .= Osm_OpenLayers::setMapCenterAndZoom($lat, $long, $zoom);
 
     // Add the Layer with GPX Track
+    if ($gpx_file_proxy != 'NoFile'){ 
+      $GpxName = basename($gpx_file_proxy, ".gpx");
+      $output .= Osm_OpenLayers::addGmlLayer($GpxName, OSM_PLUGIN_URL."osm-proxy.php?url=".$gpx_file_proxy, $gpx_colour,'GPX');
+    }
+
     if ($gpx_file != 'NoFile'){ 
       $GpxName = basename($gpx_file, ".gpx");
       $output .= Osm_OpenLayers::addGmlLayer($GpxName, $gpx_file,$gpx_colour,'GPX');
     }
 
     if ($gpx_file_list != 'NoFileList'){
-      $GpxFileListArray   = split ( ',', $gpx_file_list ); 
-      $GpxColourListArray = split ( ',', $gpx_colour_list);
+      $GpxFileListArray   = explode( ',', $gpx_file_list ); 
+      $GpxColourListArray = explode( ',', $gpx_colour_list);
       $this->traceText(DEBUG_INFO, "(NumOfGpxFiles: ".sizeof($GpxFileListArray)." NumOfGpxColours: ".sizeof($GpxColourListArray).")!");
       if (sizeof($GpxFileListArray) == sizeof($GpxColourListArray)){
         for($x=0;$x<sizeof($GpxFileListArray);$x++){
@@ -668,8 +679,14 @@ class Osm
     }
 
     // Add the marker here which we get from the file
+    if ($marker_file_proxy != 'NoFile'){
+      $MarkerName = basename($marker_file_proxy, ".txt");
+      $output .= Osm_OpenLayers::addTextLayer($MarkerName, OSM_PLUGIN_URL."osm-proxy.php?url=".$marker_file_proxy);
+    }  
+    
     if ($marker_file != 'NoFile'){    
-      $output .= Osm_OpenLayers::addTextLayer($marker_file);
+      $MarkerName = basename($marker_file, ".txt");
+      $output .= Osm_OpenLayers::addTextLayer($MarkerName, $marker_file);
     }  
 
     $marker_all_posts = strtolower($marker_all_posts);
@@ -686,7 +703,7 @@ class Osm
    if ($marker  != 'No'){  
      global $post;
      $DoPopUp = 'true';
-     list($temp_lat, $temp_lon, $temp_popup_custom_field) = split(',', $marker);
+     list($temp_lat, $temp_lon, $temp_popup_custom_field) = explode(',', $marker);
 	   if ($temp_popup_custom_field == ''){
 		   $temp_popup_custom_field = 'osm_dummy';
        $DoPopUp = 'false';
@@ -749,7 +766,7 @@ function OSM_getCoordinateLat($a_import)
 
   $a_import = strtolower($a_import);
   if ($a_import == 'osm' || $a_import == 'osm_l'){
-	  list($lat, $lon) = split(',', get_post_meta($post->ID, get_settings('osm_custom_field'), true));
+	  list($lat, $lon) = explode(',', get_post_meta($post->ID, get_settings('osm_custom_field'), true));
   }
   else if ($a_import == 'wpgmg'){
 	  $lat = get_post_meta($post->ID, WPGMG_LAT, true);
@@ -771,7 +788,7 @@ function OSM_getCoordinateLong($a_import)
   
   $a_import = strtolower($a_import);
   if ($a_import == 'osm' || $a_import == 'osm_l'){
-	  list($lat, $lon) = split(',', get_post_meta($post->ID, get_settings('osm_custom_field'), true));
+	  list($lat, $lon) = explode(',', get_post_meta($post->ID, get_settings('osm_custom_field'), true));
   }
   else if ($a_import == 'wpgmg'){
 	  list($lon) = get_post_meta($post->ID,WPGMG_LON, true);
