@@ -3,13 +3,13 @@
 Plugin Name: OSM
 Plugin URI: http://www.Fotomobil.at/wp-osm-plugin
 Description: Embeds maps in your blog and adds geo data to your posts.  Find samples and a forum on the <a href="http://www.Fotomobil.at/wp-osm-plugin">OSM plugin page</a>.  Simply create the shortcode to add it in your post at [<a href="options-general.php?page=osm.php">Settings</a>]
-Version: 0.9.6
+Version: 1.0
 Author: MiKa
 Author URI: http://www.HanBlog.net
 Minimum WordPress Version Required: 2.5.1
 */
 
-/*  (c) Copyright 2009  Michael Kang
+/*  (c) Copyright 2011  Michael Kang
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -25,9 +25,9 @@ Minimum WordPress Version Required: 2.5.1
     along with this program; if not, write to the Free Software
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-load_plugin_textdomain('Osm');
+load_plugin_textdomain('OSM-plugin', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/');
 
-define ("PLUGIN_VER", "V0.9.6");
+define ("PLUGIN_VER", "V1.0");
 
 // modify anything about the marker for tagged posts here
 // instead of the coding.
@@ -597,9 +597,15 @@ class Osm
     // if we came up to here, let's load the map
     $output = '';	
 	  $output .= '<style type="text/css">';
-    $output .= '.entry .olMapViewport img { max-width: none; }';
-	  $output .= '#'.$MapName.' {padding: 0; margin: 0;}';
-    $output .= '#'.$MapName.' img{padding: 0; margin: 0;border:none;margin-top:0px;margin-right:0px;margin-left:0px;margin-bottom:0px;}';
+    $output .= '.entry .olMapViewport img {max-width: none; max-height: none;}';
+    
+    $output .= '.entry-content img, .widget img {max-width: none; max-height: none;}';
+    
+    $output .= '.olControlAttribution {bottom: 0 !important;}';
+    $output .= 'div.olControlMousePosition {bottom: 1em !important;}';
+     
+	  $output .= '#'.$MapName.' {clear: both; padding: 0px; margin: 0px; border: 0px; width: 100%; height: 100%; margin-top:0px; margin-right:0px;margin-left:0px; margin-bottom:0px; left: 0px;}';
+    $output .= '#'.$MapName.' img{clear: both; padding: 0px; margin: 0px; border: 0px; width: 100%; height: 100%; position: absolute; margin-top:0px; margin-right:0px;margin-left:0px; margin-bottom:0px;}';
 	  $output .= '</style>';
 
     $output .= '<div id="'.$MapName.'" style="width:'.$width.'px; height:'.$height.'px; overflow:hidden;padding:0px;border:'.$map_border.';">';
@@ -631,7 +637,7 @@ class Osm
 	    else{
 	      $this->traceText(DEBUG_ERROR, "e_library_config");
 	    }
-
+      
     $output .= '<script type="text/javascript">';
     $output .= '/* <![CDATA[ */';
     //$output .= 'jQuery(document).ready(';

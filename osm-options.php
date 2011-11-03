@@ -15,24 +15,24 @@
  </tr>
 </table>
 <table border="0">
-<h3>How to add a map to your post/page</h3>
+<h3><?php _e('How to add a map to your post/page','OSM-plugin') ?></h3>
 <ol>
-  <li>choose a marker if you want to</li>
-  <li>add a gpx file and/or marker file if you want to</li>
-  <li>add a border around the map and or some controls if you want to</li>
-  <li>click on the map to generate the shortcode (if you chose a marker it's placed where you clicked)</li>
-  <li>copy the shortcode from below the map and paste it in your post/page</li>
-  <li>delete the argument <i>type</i> if you want all osm maps to be available</li>
-  <li>add other arguments to insert tracks, points ... or modify mapsize ... if needed</li>
-  <li style="color:red"> do not save any of your personal data in the plugins/osm folder but in the upload folder!</li>
+  <li><?php _e('choose a marker if you want to','OSM-plugin') ?></li>
+  <li><?php _e('add a gpx file and/or marker file if you want to','OSM-plugin') ?></li>
+  <li><?php _e('add a border around the map and or some controls if you want to','OSM-plugin') ?></li>
+  <li><?php _e('click on the map to generate the shortcode (if you chose a marker it is placed where you clicked)','OSM-plugin') ?></li>
+  <li><?php _e('copy the shortcode from below the map and paste it in your post/page','OSM-plugin') ?></li>
+  <li><?php _e('delete the argument - type - if you want all osm maps to be available','OSM-plugin') ?></li>
+  <li><?php _e('add other arguments to insert tracks, points ... or modify mapsize ... if needed','OSM-plugin') ?></li>
+  <li style="color:red"> <?php _e('do not save any of your personal data in the plugins/osm folder but in the upload folder!','OSM-plugin') ?></li>
 </ol>
 <br>
 
 <table border="0">
 <form name="Markerform" action="">
-<h3>If you want to add a marker choose one of the supported:</h3>
-  <li>the marker is placed where you click into the map</li>
-  <li>alternativly you can also add privat marker from the upload folder (see <a target="_new" href="http://wiki.openstreetmap.org/wiki/Wp-osm-plugin#adding_a_single_marker">osm-wiki page</a>)</li>
+<h3><?php _e('If you want to add a marker choose one of the supported:','OSM-plugin') ?></h3>
+  <li><?php _e('the marker is placed where you click into the map','OSM-plugin') ?></li>
+  <li><?php _e('alternativly you can also add privat marker from the upload folder (see ','OSM-plugin') ?> <a target="_new" href="http://wiki.openstreetmap.org/wiki/Wp-osm-plugin#adding_a_single_marker">osm-wiki page</a>)</li>
   <colgroup>
     <col width="120">
     <col width="120">
@@ -64,85 +64,85 @@
 </form>
 </table>
 
-<h3>If you want to add a gpx-track add it:</h3>
+<h3><?php _e('If you want to add a gpx-track add it:','OSM-plugin') ?></h3>
 <form name="GPXfileform" action="">
-  <li>copy the gpx file via FTP to your upload-folder</li>
-  <li>paste the local URL of gpx file here: <input name="GpxFile" type="text" size="30" maxlength="200" value="http://"></li>
+  <li><?php _e('copy the gpx file via FTP to your upload-folder','OSM-plugin') ?></li>
+  <li><?php _e('paste the local URL of gpx file here: ','OSM-plugin') ?> <input name="GpxFile" type="text" size="30" maxlength="200" value="http://"></li>
 </form>
 <form name="GPXcolourform" action="">
-<li> colour of your gpx-track: 
-  <input type="radio" name="Gpx_colour" value="red"> <span style="color:red">red </span>
-  <input type="radio" name="Gpx_colour" value="green"> <span style="color:green">green </span>
-  <input type="radio" name="Gpx_colour" value="blue"> <span style="color:blue">blue </span>
-  <input type="radio" name="Gpx_colour" value="black"> <span style="color:black">black </span>
+<li> <?php _e('colour of your gpx-track: ','OSM-plugin') ?> 
+  <input type="radio" name="Gpx_colour" value="red"> <span style="color:red"><?php _e('red ','OSM-plugin') ?>  </span>
+  <input type="radio" name="Gpx_colour" value="green"> <span style="color:green"><?php _e('green ','OSM-plugin') ?> </span>
+  <input type="radio" name="Gpx_colour" value="blue"> <span style="color:blue"><?php _e('blue ','OSM-plugin') ?> </span>
+  <input type="radio" name="Gpx_colour" value="black"> <span style="color:black"><?php _e('black ','OSM-plugin') ?> </span>
 </li>
 </form>
 
-<h3>If you want to add a marker file add it:</h3>
+<h3><?php _e('If you want to add a marker file add it:','OSM-plugin') ?></h3>
 <form name="Markerfileform" action="">
-  <li>copy the marker file via FTP to your upload-folder</li>
-  <li>paste the local URL of marker file here: <input name="MarkerFile" type="text" size="30" maxlength="200" value="http://"></li>
+  <li><?php _e('copy the marker file via FTP to your upload-folder','OSM-plugin') ?></li>
+  <li><?php _e('paste the local URL of marker file here: ','OSM-plugin') ?><input name="MarkerFile" type="text" size="30" maxlength="200" value="http://"></li>
 </form>
 
-<h3>If you want to add a border around the map choose the colour:</h3>
+<h3><?php _e('If you want to add a border around the map choose the colour:','OSM-plugin') ?></h3>
 <form name="Bordercolourform" action="">
-<li> colour of a thin solid border: 
-  <input type="radio" name="Border_colour" value="red"> <span style="color:red">red </span>
-  <input type="radio" name="Border_colour" value="green"> <span style="color:green">green </span>
-  <input type="radio" name="Border_colour" value="blue"> <span style="color:blue">blue </span>
-  <input type="radio" name="Border_colour" value="black"> <span style="color:black">black </span>
+<li> <?php _e('colour of a thin solid border:','OSM-plugin') ?> 
+  <input type="radio" name="Border_colour" value="red"> <span style="color:red"><?php _e('red ','OSM-plugin') ?> </span>
+  <input type="radio" name="Border_colour" value="green"> <span style="color:green"><?php _e('green ','OSM-plugin') ?> </span>
+  <input type="radio" name="Border_colour" value="blue"> <span style="color:blue"><?php _e('blue ','OSM-plugin') ?> </span>
+  <input type="radio" name="Border_colour" value="black"> <span style="color:black"><?php _e('black ','OSM-plugin') ?> </span>
 </li>
 </form>
 
-<h3>If you want to add some controls to your map add it here:</h3>
+<h3><?php _e('If you want to add some controls to your map add it here:','OSM-plugin') ?></h3>
 <form name="MapControlform" action="">
-<p><img src="<?php echo OSM_PLUGIN_URL ?>/WP_OSM_Plugin_Scaleline.png" alt="Scaleline"><br><input type="radio" name="MapControl" value="scaleline"> scaleline</p>
+<p><img src="<?php echo OSM_PLUGIN_URL ?>/WP_OSM_Plugin_Scaleline.png" alt="Scaleline"><br><input type="radio" name="MapControl" value="scaleline"> <?php _e('scaleline','OSM-plugin') ?></p>
 </form>
 
 <br>
-<h3> Adjust the map and click into the map to get your shortcode below the map</h3>
-  <li>select the area and zoomlevel on the map (get a zoomwindow with shift and mousebutton)</li>
-  <li>choose your maptype with this icon <img src="http://www.openlayers.org/api/img/layer-switcher-maximize.png" alt="map type icon"> in the map (google maps will have a license pop up in yor post/page)</li>
-  <li> your inputs (gpx-file, marker,...) are not displayed in this map but in your post/page </li>
-  <li> you can modify your inputs and click again into the map to generate another shortcode </li> 
+<h3> <?php _e('Adjust the map and click into the map to get your shortcode below the map','OSM-plugin') ?></h3>
+  <li><?php _e('select the area and zoomlevel on the map (get a zoomwindow with shift and mousebutton)','OSM-plugin') ?></li>
+  <li><?php _e('choose your maptype with this icon ','OSM-plugin') ?><img src="http://www.openlayers.org/api/img/layer-switcher-maximize.png" alt="map type icon"> <?php _e('in the map (google maps will have a license pop up in yor post/page)','OSM-plugin') ?></li>
+  <li> <?php _e('your inputs (gpx-file, marker,...) are not displayed in this map but in your post/page ','OSM-plugin') ?></li>
+  <li> <?php _e('you can modify your inputs and click again into the map to generate another shortcode ','OSM-plugin') ?></li> 
 <br> 
-<?php echo Osm::sc_showMap(array('msg_box'=>'sc_gen','lat'=>'50','long'=>'18.5','zoom'=>'3', 'type'=>'All', 'width'=>'600','height'=>'450', 'map_border'=>'thin solid blue')); ?>
+<?php echo Osm::sc_showMap(array('msg_box'=>'sc_gen','lat'=>'50','long'=>'18.5','zoom'=>'3', 'type'=>'All', 'width'=>'600','height'=>'450', 'map_border'=>'thin solid blue', 'control'=>'mouseposition,scaleline')); ?>
 <br>
-<h3><span style="color:green"> >> Copy the shortcode and paste it into the content of your post/article: </span></h3>
-<div id="ShortCode_Div">If you click into the map the shortcode is displayed instead of this text</div><br>
+<h3><span style="color:green"> >> <?php _e('Copy the shortcode and paste it into the content of your post/article: ','OSM-plugin') ?></span></h3>
+<div id="ShortCode_Div"><?php _e('If you click into the map the shortcode is displayed instead of this text','OSM-plugin') ?></div><br>
 
-<h3>Some usefull sites for this plugin:</h3>
+<h3><?php _e('Some usefull sites for this plugin:','OSM-plugin') ?></h3>
 <ol>
-  <li>for advanced samples visit the <a target="_new" href="http://www.Fotomobil.at/wp-osm-plugin">osm-plugin page</a>.</li>
-  <li>for detailed information about usage visit the <a target="_new" href="http://wiki.openstreetmap.org/wiki/Wp-osm-plugin">osm-wiki page</a>.</li>
-  <li>for questions, bugs and other feedback visit the <a target="_new" href="http://www.Fotomobil.at/wp-osm-plugin-forum">osm-plugin forum</a>.</li>
-  <li>find news and articles about the plugin at the <a target="_new" href="http://www.HanBlog.net">osm-author page</a>.</li>
-  <li>download the last version at WordPress.org <a target="_new" href="http://wordpress.org/extend/plugins/osm/">osm-plugin download</a>.</li>
+  <li><?php _e('for advanced samples visit the ','OSM-plugin') ?><a target="_new" href="http://www.Fotomobil.at/wp-osm-plugin">osm-plugin page</a>.</li>
+  <li><?php _e('for detailed information about usage visit the ','OSM-plugin') ?><a target="_new" href="http://wiki.openstreetmap.org/wiki/Wp-osm-plugin">osm-wiki page</a>.</li>
+  <li><?php _e('for questions, bugs and other feedback visit the','OSM-plugin') ?> <a target="_new" href="http://www.Fotomobil.at/wp-osm-plugin-forum">osm-plugin forum</a>.</li>
+  <li><?php _e('find news and articles about the plugin at the ','OSM-plugin') ?><a target="_new" href="http://www.HanBlog.net">osm-author page</a>.</li>
+  <li><?php _e('download the last version at WordPress.org ','OSM-plugin') ?><a target="_new" href="http://wordpress.org/extend/plugins/osm/">osm-plugin download</a>.</li>
 </ol>
-<h3>If you want to express thanks for this plugin ...</h3>
+<h3><?php _e('If you want to express thanks for this plugin ...','OSM-plugin') ?></h3>
 <ol>
-  <li>do not donate money but submit a photo at the <a target="_new" href="http://www.Fotomobil.at">Fotomobil.at</a> project.</li>
-  <li>put a link to the osm-plugin page on your site <a target="_new" href="http://www.Fotomobil.at/wp-osm-plugin">www.Fotomobil.at/wp-osm-plugin</a>.</li>
-  <li>or simply leave a message with a link to your page at <a target="_new" href="http://www.Fotomobil.at/wp-osm-plugin-forum">www.Fotomobil.at/wp-osm-plugin-forum</a>.</li>
-  <li>post an article about <a target="_new" href="http://www.OpenStreetMap.org">OpenStreetMap</a> on your blog.</li>
-  <li>give this plugin a good ranking at <a target="_new" href="http://wordpress.org/extend/plugins/osm/">WordPress.org</a>.</li>
+  <li><?php _e('do not donate money but submit a photo at the ','OSM-plugin') ?><a target="_new" href="http://www.Fotomobil.at">Fotomobil.at</a> <?php _e('project.','OSM-plugin') ?></li>
+  <li><?php _e('put a link to the osm-plugin page on your site ','OSM-plugin') ?><a target="_new" href="http://www.Fotomobil.at/wp-osm-plugin">www.Fotomobil.at/wp-osm-plugin</a>.</li>
+  <li><?php _e('or simply leave a message with a link to your page at ','OSM-plugin') ?><a target="_new" href="http://www.Fotomobil.at/wp-osm-plugin-forum">www.Fotomobil.at/wp-osm-plugin-forum</a>.</li>
+  <li><?php _e('post an article about ','OSM-plugin') ?><a target="_new" href="http://www.OpenStreetMap.org">OpenStreetMap</a><?php _e(' on your blog.','OSM-plugin') ?></li>
+  <li><?php _e('give this plugin a good ranking at ','OSM-plugin') ?><a target="_new" href="http://wordpress.org/extend/plugins/osm/">WordPress.org</a>.</li>
 </ol>
 <form method="post">
- <tr> <h3>How to geotag your post/page </h3> </tr>
+ <tr> <h3><?php _e('How to geotag your post/page ','OSM-plugin') ?></h3> </tr>
   <ol>
-    <li>Choose a Custom Field name here.</li>
-    <li>Add the geoaddress to this Custom Field in your post/page.</li>
+    <li><?php _e('Choose a Custom Field name here.','OSM-plugin') ?></li>
+    <li><?php _e('Add the geoaddress to this Custom Field in your post/page.','OSM-plugin') ?></li>
   </ol>
  <tr>
-  <td><label for="osm_custom_field"><?php echo __('Custom Field Name', 'Osm') ?>:</label></td>
+  <td><label for="osm_custom_field"><?php _e('Custom Field Name','OSM-plugin') ?>:</label></td>
   <td><input type="text" name="osm_custom_field" value="<?php echo $osm_custom_field ?>" /></td>
  </tr>
- <tr> <h3>PHP Interface</h3> </tr>
+ <tr> <h3>  PHP Interface</h3> </tr>
  <tr>
-  <td><label for="osm_zoom_level"><?php echo __('Map Zoomlevel for the PHP Link (1-17)', 'Osm') ?>:</label></td>
+  <td><label for="osm_zoom_level"><?php _e('Map Zoomlevel for the PHP Link (1-17)','OSM-plugin') ?>:</label></td>
   <td><input type="text" name="osm_zoom_level" value="<?php echo $osm_zoom_level ?>" /></td>
  </tr>
 </table>
-<div class="submit"><input type="submit" name="Options" value="<?php echo __('Update Options', 'Osm') ?> &raquo;" /></div>
+<div class="submit"><input type="submit" name="Options" value="<?php _e('Update Options','OSM-plugin') ?> &raquo;" /></div>
 </div>
 </form>

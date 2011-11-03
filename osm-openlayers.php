@@ -15,7 +15,7 @@ class Osm_OpenLayers
     return $Layer;
   }
   
-  // support different types of GML Layers
+// support different types of GML Layers
   function addOsmLayer($a_LayerName, $a_Type, $a_OverviewMapZoom, $a_MapControl, $a_ExtType, $a_ExtName, $a_ExtAddress, $a_ExtInit)
   {
     Osm::traceText(DEBUG_INFO, "addOsmLayer(".$a_LayerName.",".$a_Type.",".$a_OverviewMapZoom.")");
@@ -55,28 +55,33 @@ class Osm_OpenLayers
       $Layer .= 'var layerGoogleStreet     = new OpenLayers.Layer.Google("Google Street", {type: google.maps.MapTypeId.ROADMAP} );';
       $Layer .= 'var layerGoogleHybrid     = new OpenLayers.Layer.Google("Google Hybrid", {type: google.maps.MapTypeId.HYBRID} );';
       $Layer .= 'var layerGoogleSatellite  = new OpenLayers.Layer.Google("Google Satellite", {type: google.maps.MapTypeId.SATELLITE} );';
-      $Layer .= 'map.addLayers([layerMapnik, layerTah, layerCycle, layerGooglePhysical, layerGoogleStreet, layerGoogleHybrid, layerGoogleSatellite]);';
+      $Layer .= 'var layerOSM_Attr = new OpenLayers.Layer.Vector("OSM-plugin",{attribution:"<a href=\"http://www.Fotomobil.at/wp-osm-plugin\">OSM plugin</a>"});';
+      $Layer .= 'map.addLayers([layerMapnik, layerTah, layerCycle, layerGooglePhysical, layerGoogleStreet, layerGoogleHybrid, layerGoogleSatellite, layerOSM_Attr]);';
       $Layer .= 'map.addControl(new OpenLayers.Control.LayerSwitcher());';
     }
     else if ($a_Type == 'AllOsm'){
       $Layer .= 'var layerMapnik = new OpenLayers.Layer.OSM.Mapnik("Mapnik");';
       $Layer .= 'var layerTah    = new OpenLayers.Layer.OSM.Osmarender("Osmarender");';
       $Layer .= 'var layerCycle  = new OpenLayers.Layer.OSM.CycleMap("CycleMap");';
-      $Layer .= 'map.addLayers([layerMapnik, layerTah, layerCycle]);';
+      $Layer .= 'var layerOSM_Attr = new OpenLayers.Layer.Vector("OSM-plugin",{attribution:"<a href=\"http://www.Fotomobil.at/wp-osm-plugin\">OSM plugin</a>"});';
+      $Layer .= 'map.addLayers([layerMapnik, layerTah, layerCycle, layerOSM_Attr]);';
       $Layer .= 'map.addControl(new OpenLayers.Control.LayerSwitcher());';
+
+
     }
     else if ($a_Type == 'AllGoogle'){
       $Layer .= 'var layerGooglePhysical   = new OpenLayers.Layer.Google("Google Physical", {type: google.maps.MapTypeId.TERRAIN} );';
       $Layer .= 'var layerGoogleStreet     = new OpenLayers.Layer.Google("Google Street", {type: google.maps.MapTypeId.ROADMAP} );';
       $Layer .= 'var layerGoogleHybrid     = new OpenLayers.Layer.Google("Google Hybrid", {type: google.maps.MapTypeId.HYBRID} );';
       $Layer .= 'var layerGoogleSatellite  = new OpenLayers.Layer.Google("Google Satellite", {type: google.maps.MapTypeId.SATELLITE} );';
-      $Layer .= 'map.addLayers([layerGooglePhysical, layerGoogleStreet, layerGoogleHybrid, layerGoogleSatellite]);';
+      $Layer .= 'var layerOSM_Attr = new OpenLayers.Layer.Vector("OSM-plugin",{attribution:"<a href=\"http://www.Fotomobil.at/wp-osm-plugin\">OSM plugin</a>"});';
+      $Layer .= 'map.addLayers([layerGooglePhysical, layerGoogleStreet, layerGoogleHybrid, layerGoogleSatellite, layerOSM_Attr]);';
       $Layer .= 'map.addControl(new OpenLayers.Control.LayerSwitcher());';
     }
     else{
       if ($a_Type == 'Mapnik'){
         $Layer .= 'var lmap = new OpenLayers.Layer.OSM.Mapnik("Mapnik");';
-      }
+      } 
       else if ($a_Type == 'Osmarender'){
         $Layer .= 'var lmap = new OpenLayers.Layer.OSM.Osmarender("Osmarender");';
       } 
@@ -98,9 +103,10 @@ class Osm_OpenLayers
       else if (($a_Type == 'Ext') || ($a_Type == 'ext')) {
         $Layer .= 'var lmap = new OpenLayers.Layer.'.$a_ExtType.'("'.$a_ExtName.'","'.$a_ExtAddress.'",{'.$a_ExtInit.'});';
       }
-      $Layer .= 'map.addLayer(lmap);';
+      $Layer .= 'var layerOSM_Attr = new OpenLayers.Layer.Vector("OSM-plugin",{attribution:"<a href=\"http://www.Fotomobil.at/wp-osm-plugin\">OSM plugin</a>"});';
+      $Layer .= 'map.addLayers([lmap, layerOSM_Attr]);';
     }
-	
+	 
 	if ($a_MapControl[0] != 'No'){
 	  foreach ( $a_MapControl as $MapControl ){
 	  	$MapControl = strtolower($MapControl);
