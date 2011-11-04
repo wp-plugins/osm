@@ -80,7 +80,7 @@ You have to install [gcstats plugin](http://wordpress.org/extend/plugins/gcstats
 4. Use template-tags to show a map if your post/page has got a geolocation
 
 == Changelog ==
-= 1.0 =
+= 1.0 = 
 * NEW: Internationalization (languages: EN, DE)
 * FIX: HTML code for geotagged posts
 * FIX: WP-Theme Twenty Eleven
