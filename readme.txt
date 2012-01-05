@@ -73,12 +73,6 @@ there are some requests to put it in the Edit post I will make it configureable.
 
 You have to install [gcstats plugin](http://wordpress.org/extend/plugins/gcstats/ "Link to gcstats plugin") to use geocaching feature of OSM-plugin.
 
-== Screenshots ==
-1. Shortcode generator in the plugin settings page
-2. Showing the geo data of all posts/pages within one map
-3. Showing a track added with a GPX file and popupmarker with photo
-4. Use template-tags to show a map if your post/page has got a geolocation
-
 == Changelog ==
 = 1.0 = 
 * NEW: Internationalization (languages: EN, DE)
