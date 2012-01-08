@@ -1,9 +1,9 @@
 === OSM ===
 Contributors: MiKa
-Tags: map, OpenStreetMap, Google Maps, googlemaps, geo, KML, GPX, geotag, geolocation, geocache, geocaching, OSM, travelogue, template tag, travelblog, OpenLayers, Open Layers, Open Street Map,
+Tags: map, OpenStreetMap, Google Maps, googlemaps, geo, KML, GPX, geotag, geolocation, geocache, geocaching, OSM, travelogue, template tag, travelblog, OpenLayers, Open Layers, Open Street Map, CloudMade, YourNavigation, OpenRouteService, marker, POI
 Requires at least: 2.5.1
-Tested up to: 3.3.1
-Stable tag: 1.0
+Tested up to: 3.2.1
+Stable tag: 1.1
 
 OpenStreetMap plugin to embed maps. No API key! No Google API!
 
@@ -73,8 +73,22 @@ there are some requests to put it in the Edit post I will make it configureable.
 
 You have to install [gcstats plugin](http://wordpress.org/extend/plugins/gcstats/ "Link to gcstats plugin") to use geocaching feature of OSM-plugin.
 
+== Screenshots ==
+1. Shortcode generator in the plugin settings page
+2. Showing the geo data of all posts/pages within one map
+3. Showing a track added with a GPX file and popupmarker with photo
+4. Use template-tags to show a map if your post/page has got a geolocation
+
 == Changelog ==
-= 1.0 = 
+= 1.1 =
+* NEW: add the text for popup marker directly in the shortcode generator (settings => OSM)
+* NEW: add a link to a routing service (settings => OSM)
+* NEW: set the z-index if needed (eg. for Next Gen Gallery)
+* NEW: choose a theme for the control icons
+* NEW: add the mouse position directly in the shortcode generator (settins => OSM)
+* NEW: plugin size less than 100kB
+
+= 1.0 =
 * NEW: Internationalization (languages: EN, DE)
 * FIX: HTML code for geotagged posts
 * FIX: WP-Theme Twenty Eleven

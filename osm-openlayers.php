@@ -16,9 +16,11 @@ class Osm_OpenLayers
   }
   
 // support different types of GML Layers
-  function addOsmLayer($a_LayerName, $a_Type, $a_OverviewMapZoom, $a_MapControl, $a_ExtType, $a_ExtName, $a_ExtAddress, $a_ExtInit)
+  function addOsmLayer($a_LayerName, $a_Type, $a_OverviewMapZoom, $a_MapControl, $a_ExtType, $a_ExtName, $a_ExtAddress, $a_ExtInit, $a_theme)
   {
     Osm::traceText(DEBUG_INFO, "addOsmLayer(".$a_LayerName.",".$a_Type.",".$a_OverviewMapZoom.")");
+    $Layer .= ' OpenLayers.ImgPath = "'.OSM_PLUGIN_THEMES_URL.$a_theme.'/";';
+
     $Layer .= ' map = new OpenLayers.Map ("'.$a_LayerName.'", {';
     $Layer .= '            controls:[';
     if (($a_MapControl[0] != 'off') && (strtolower($a_Type)!= 'ext')) {
@@ -189,7 +191,28 @@ class Osm_OpenLayers
     $Layer .= '        }';
     $Layer .= '      }';
     $Layer .= '      return "undefined";';
-    $Layer .= '    }';    
+    $Layer .= '    }';   
+    $Layer .= '    else if (a_Form == "Naviform"){';
+    $Layer .= '      for (var i=0; i < document.Naviform.Navi_Link.length; i++){';
+    $Layer .= '        if (document.Naviform.Navi_Link[i].checked){';
+    $Layer .= '          var rad_val = document.Naviform.Navi_Link[i].value;';
+    $Layer .= '          return rad_val;';
+    $Layer .= '        }';
+    $Layer .= '      }';
+    $Layer .= '      return "undefined";';
+    $Layer .= '    }';  
+    $Layer .= '    else if (a_Form == "ControlStyleform"){';
+    $Layer .= '      for (var i=0; i < document.ControlStyleform.Cntrl_style.length; i++){';
+    $Layer .= '        if (document.ControlStyleform.Cntrl_style[i].checked){';
+    $Layer .= '          var rad_val = document.ControlStyleform.Cntrl_style[i].value;';
+    $Layer .= '          return rad_val;';
+    $Layer .= '        }';
+    $Layer .= '      }';
+    $Layer .= '      return "undefined";';
+    $Layer .= '    }'; 
+
+
+    $Layer .= '    return "not implemented";';
     $Layer .= '    }';
     
     $Layer .= 'OpenLayers.Control.Click = OpenLayers.Class(OpenLayers.Control, {';               
@@ -231,50 +254,78 @@ class Osm_OpenLayers
     $Layer .= ' var MarkerName    = get_radio_value("Markerform");';
     $Layer .= ' var GpxColour     = get_radio_value("GPXcolourform");';
     $Layer .= ' var BorderColour  = get_radio_value("Bordercolourform");';
+    $Layer .= ' var NaviName      = get_radio_value("Naviform");';
+    $Layer .= ' var CntrStyle     = get_radio_value("ControlStyleform");';
+
+    $Layer .= ' MarkerField = "";';
+    $Layer .= ' NaviField = "";';
+    $Layer .= ' MarkerTextField_01 = "";';
+    $Layer .= ' MarkerTextField_02 = "";';
+    $Layer .= ' MarkerTextField_03 = "";';
+    $Layer .= ' MarkerTextField_04 = "";';
+    $Layer .= ' GpxFileField = "";';
+    $Layer .= ' GpxColourField = "";';
+    $Layer .= ' MarkerFileField = "";';
+    $Layer .= ' MapControlField = "";';
+    $Layer .= ' BorderColourField = "";';
+    $Layer .= ' ControlStyleField = "";';
+
     $Layer .= ' if (MarkerName != "undefined"){';
     $Layer .= '   MarkerField = " marker=\""+Clicklonlat.lat+","+Clicklonlat.lon+
 "\" marker_name=\"" + MarkerName + "\"";';  
-    $Layer .= '  }';
-    $Layer .= '  else{';
-    $Layer .= '    MarkerField = "";';
-    $Layer .= '  }';
+
+    $Layer .= '   if (NaviName != "undefined"){';
+    $Layer .= '     NaviField = " marker_routing=\""+ NaviName + "\"";';  
+    $Layer .= '    }';
+
+    $Layer .= '   if (document.Markertextform.MarkerText_01.value != "Max Mustermann"){';
+    $Layer .= '     MarkerTextField_01 = " m_txt_01=\""+ document.Markertextform.MarkerText_01.value + "\"";';  
+    $Layer .= '   }';    
+    $Layer .= '   if (document.Markertextform.MarkerText_02.value != "Musterstr. 90"){';
+    $Layer .= '    MarkerTextField_02 = " m_txt_02=\""+ document.Markertextform.MarkerText_02.value + "\"";';  
+    $Layer .= '   }';
+    $Layer .= '   if (document.Markertextform.MarkerText_03.value != "1020 Mustercity"){';
+    $Layer .= '    MarkerTextField_03 = " m_txt_03=\""+ document.Markertextform.MarkerText_03.value + "\"";';  
+    $Layer .= '   }';
+    $Layer .= '   if (document.Markertextform.MarkerText_04.value != "MusterCountry"){';
+    $Layer .= '    MarkerTextField_04 = " m_txt_04=\""+ document.Markertextform.MarkerText_04.value + "\"";';  
+    $Layer .= '    }';
+
+    $Layer .= '  }'; // if (MarkerName != "undefined")
+
     $Layer .= ' if (document.GPXfileform.GpxFile.value != "http://"){';
     $Layer .= '   GpxFileField = " gpx_file=\""+ document.GPXfileform.GpxFile.value + "\"";';  
-    $Layer .= '  }';
-    $Layer .= '  else{';
-    $Layer .= '    GpxFileField = "";';
     $Layer .= '  }';
     $Layer .= ' if (GpxColour != "undefined"){';
     $Layer .= '   GpxColourField = " gpx_colour=\""+ GpxColour + "\"";';  
     $Layer .= '  }';
-    $Layer .= '  else{';
-    $Layer .= '    GpxColourField = "";';
+    $Layer .= ' if (CntrStyle != "undefined"){';
+    $Layer .= '   ControlStyleField = " theme=\""+ CntrStyle + "\"";';  
     $Layer .= '  }';
     $Layer .= ' if (document.Markerfileform.MarkerFile.value != "http://"){';
     $Layer .= '   MarkerFileField = " marker_file=\""+ document.Markerfileform.MarkerFile.value + "\"";';  
     $Layer .= '  }';
-    $Layer .= '  else{';
-    $Layer .= '    MarkerFileField = "";';
-    $Layer .= '  }';    
-    
-    
-    
+
     $Layer .= ' if (document.MapControlform.MapControl.checked){';
-    $Layer .= '   MapControlField = " control=\""+ document.MapControlform.MapControl.value + "\"";';  
+    $Layer .= '   MapControlField = " control=\""+ document.MapControlform.MapControl.value;';  
     $Layer .= '  }';
-    $Layer .= '  else{';
-    $Layer .= '    MapControlField = "";';
+    $Layer .= ' if (document.MapControlform.Mouseposition.checked){';
+    $Layer .= '   if (document.MapControlform.MapControl.checked){';
+    $Layer .= '     MapControlField = MapControlField + "," + document.MapControlform.Mouseposition.value;';  
+    $Layer .= '    }';
+    $Layer .= '    else{';
+    $Layer .= '      MapControlField = " control=\""+ document.MapControlform.Mouseposition.value;';  
+    $Layer .= '    }';
     $Layer .= '  }';
-    
-    
-    
+    $Layer .= ' if ((document.MapControlform.Mouseposition.checked) || (document.MapControlform.MapControl.checked)) {';
+    $Layer .= '  MapControlField = MapControlField + "\"";';
+    $Layer .= '  }';
+
     $Layer .= ' if (BorderColour != "undefined"){';
     $Layer .= '   BorderColourField = " map_border=\"thin solid "+ BorderColour + "\"";';  
     $Layer .= '  }';
-    $Layer .= '  else{';
-    $Layer .= '    BorderColourField = "";';
-    $Layer .= '  }';
-    $Layer .= ' div.innerHTML = "[osm_map lat=\"" + Centerlonlat.lat + "\" long=\"" + Centerlonlat.lon + "\" zoom=\"" + zoom + "\" width=\"600\" height=\"450\"" + MarkerField + GpxFileField + GpxColourField + BorderColourField + MarkerFileField + MapControlField + " type=\""+LayerName+"\"]";';
+
+    $Layer .= ' div.innerHTML = "[osm_map lat=\"" + Centerlonlat.lat + "\" long=\"" + Centerlonlat.lon + "\" zoom=\"" + zoom + "\" width=\"600\" height=\"450\"" + MarkerField + GpxFileField + GpxColourField + BorderColourField + MarkerFileField + MapControlField + MarkerTextField_01 + MarkerTextField_02 + MarkerTextField_03 + MarkerTextField_04 + NaviField + ControlStyleField + " type=\""+LayerName+"\"]";';
     }
     else if( $a_msgBox == 'lat_long'){
      $Layer .= ' 	                  alert("Lat= " + Clicklonlat.lat + " Long= " + Clicklonlat.lon);';   
@@ -288,9 +339,9 @@ class Osm_OpenLayers
     return $Layer;
   }
 
-  function addMarkerListLayer($a_LayerName, $Icon ,$a_MarkerArray, $a_PopUp)
+  function addMarkerListLayer($a_LayerName, $Icon ,$a_MarkerArray, $a_DoPopUp)
   {
-    Osm::traceText(DEBUG_INFO, "addMarkerListLayer(".$a_LayerName.",".$Icon[name].",".$Icon[width].",".$Icon[height].",".$a_MarkerArray.",".$Icon[offset_width].",".$Icon[offset_height].",".$a_PopUp.")");
+    Osm::traceText(DEBUG_INFO, "addMarkerListLayer(".$a_LayerName.",".$Icon[name].",".$Icon[width].",".$Icon[height].",".$a_MarkerArray.",".$Icon[offset_width].",".$Icon[offset_height].",".$a_DoPopUp.")");
 
     $Layer .= 'var markers = new OpenLayers.Layer.Markers( "'.$a_LayerName.'" );';
     $Layer .= 'map.addLayer(markers);';
@@ -329,11 +380,11 @@ class Osm_OpenLayers
       $Layer .= '  }';
       $Layer .= '  OpenLayers.Event.stop(evt);';
       $Layer .= '};';
-      if ($a_PopUp == 'true'){
+      if ($a_DoPopUp == 'true'){
         $Layer .= 'marker.events.register("mousedown", feature, markerClick);';
       }
       $Layer .= 'markers.addMarker(marker);';
-      if ($a_PopUp == 'true'){
+      if ($a_DoPopUp == 'true'){
         $Layer .= 'map.addPopup(feature.createPopup(feature.closeBox));';   // maybe there is a better way to do 
         if ($NumOfMarker > 1){
           $Layer .= 'feature.popup.toggle();';                                // it than create and toggle!

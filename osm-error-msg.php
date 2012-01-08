@@ -21,4 +21,5 @@
 	$this->ErrorMsg->add('e_library_config',  __('Could not load OSM library, check LoadLibraryMode @ wp-content/plugins/osm/osm-config.php!', $this->localizionName));  
 	$this->ErrorMsg->add('e_invalid_control',  __('Invalid usage of control tag!', $this->localizionName));  
 	$this->ErrorMsg->add('e_gpx_list_error',  __('Num of Gpx files does not match to num of Gpx colours!', $this->localizionName));  
+  $this->ErrorMsg->add('e_missing_rs_error',  __('Missing the routingservice at marker_routing argument!', $this->localizionName));
 ?>

@@ -1,7 +1,7 @@
 <?php
 /*
   Option page for OSM wordpress plugin
-  Michael Kang * created: april 2009
+  MiKa * created: april 2009
   plugin: http://www.Fotomobil.at/wp-osm-plugin
   blog:   http://www.HanBlog.net
 */
@@ -64,11 +64,28 @@
 </form>
 </table>
 
+<h3><?php _e('If you want to add a text to your marker change the text here','OSM-plugin') ?></h3>
+<form name="Markertextform">
+    <?php _e('1st row of markertext: ','OSM-plugin') ?> <input name="MarkerText_01" type="text" size="30" maxlength="200" value="Max Mustermann"><br>
+    <?php _e('2nd row of markertext: ','OSM-plugin') ?> <input name="MarkerText_02" type="text" size="30" maxlength="200" value="Musterstr. 90"><br>
+    <?php _e('3rd row of markertext: ','OSM-plugin') ?> <input name="MarkerText_03" type="text" size="30" maxlength="200" value="1020 Mustercity"><br>
+    <?php _e('4th row of markertext: ','OSM-plugin') ?> <input name="MarkerText_04" type="text" size="30" maxlength="200" value="MusterCountry"><br>
+  </p>
+</form>
+
+<form name="Naviform" action="">
+<?php _e('Add a link in the marker to route to your marker: ','OSM-plugin') ?> <br>
+<img src="<?php echo OSM_PLUGIN_URL ?>/icons/ORS_01.png" alt="OpenRouteService"><input type="radio" name="Navi_Link" value="ors"> <span><?php _e('OpenRouteService   ','OSM-plugin') ?> </span>
+<img src="<?php echo OSM_PLUGIN_URL ?>/icons/YN_01.png" alt="YourNavigation"><input type="radio" name="Navi_Link" value="yn"> <span><?php _e('YourNavigation   ','OSM-plugin') ?> </span>
+ <img src="<?php echo OSM_PLUGIN_URL ?>/icons/CM_01.png" alt="CloudMade"><input type="radio" name="Navi_Link" value="cm"> <span><?php _e('CloudMade ','OSM-plugin') ?> </span>
+</form>
+
 <h3><?php _e('If you want to add a gpx-track add it:','OSM-plugin') ?></h3>
 <form name="GPXfileform" action="">
   <li><?php _e('copy the gpx file via FTP to your upload-folder','OSM-plugin') ?></li>
   <li><?php _e('paste the local URL of gpx file here: ','OSM-plugin') ?> <input name="GpxFile" type="text" size="30" maxlength="200" value="http://"></li>
 </form>
+
 <form name="GPXcolourform" action="">
 <li> <?php _e('colour of your gpx-track: ','OSM-plugin') ?> 
   <input type="radio" name="Gpx_colour" value="red"> <span style="color:red"><?php _e('red ','OSM-plugin') ?>  </span>
@@ -93,10 +110,23 @@
   <input type="radio" name="Border_colour" value="black"> <span style="color:black"><?php _e('black ','OSM-plugin') ?> </span>
 </li>
 </form>
-
 <h3><?php _e('If you want to add some controls to your map add it here:','OSM-plugin') ?></h3>
+
+
 <form name="MapControlform" action="">
-<p><img src="<?php echo OSM_PLUGIN_URL ?>/WP_OSM_Plugin_Scaleline.png" alt="Scaleline"><br><input type="radio" name="MapControl" value="scaleline"> <?php _e('scaleline','OSM-plugin') ?></p>
+<img src="<?php echo OSM_PLUGIN_URL ?>/WP_OSM_Plugin_Scaleline.png" alt="Scaleline"><input type="checkbox" name="MapControl" value="scaleline"> <?php _e('scaleline  ','OSM-plugin') ?>
+<img src="<?php echo OSM_PLUGIN_URL ?>/WP_OSM_Plugin_Mouseposition.png" alt="Scaleline"><input type="checkbox" name="Mouseposition" value="mouseposition"> <?php _e('mouse position','OSM-plugin') ?><br>
+</form>
+
+<br>
+<form name="ControlStyleform" action="">
+<?php _e('Choose the style of the controls: ','OSM-plugin') ?> <br>
+<img src="<?php echo OSM_PLUGIN_URL ?>/themes/ol/zoom-world-mini.png" alt="OpenLayers default theme"><input type="radio" name="Cntrl_style" value="ol"> <span><?php _e('default theme   ','OSM-plugin') ?> </span>
+<img src="<?php echo OSM_PLUGIN_URL ?>/themes/dark/zoom-world-mini.png" alt="dark theme"><input type="radio" name="Cntrl_style" value="dark"> <span><?php _e('dark theme   ','OSM-plugin') ?> </span>
+</form>
+<h3><?php _e('Misc. settings:','OSM-plugin') ?></h3>
+<form name="ZIndexform" action="">
+<input type="radio" name="ZIndex" value="0"> <?php _e('z-index: 0','OSM-plugin') ?>
 </form>
 
 <br>

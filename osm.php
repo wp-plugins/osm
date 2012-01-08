@@ -3,7 +3,7 @@
 Plugin Name: OSM
 Plugin URI: http://www.Fotomobil.at/wp-osm-plugin
 Description: Embeds maps in your blog and adds geo data to your posts.  Find samples and a forum on the <a href="http://www.Fotomobil.at/wp-osm-plugin">OSM plugin page</a>.  Simply create the shortcode to add it in your post at [<a href="options-general.php?page=osm.php">Settings</a>]
-Version: 1.0
+Version: 1.1
 Author: MiKa
 Author URI: http://www.HanBlog.net
 Minimum WordPress Version Required: 2.5.1
@@ -27,7 +27,7 @@ Minimum WordPress Version Required: 2.5.1
 */
 load_plugin_textdomain('OSM-plugin', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/');
 
-define ("PLUGIN_VER", "V1.0");
+define ("PLUGIN_VER", "V1.1");
 
 // modify anything about the marker for tagged posts here
 // instead of the coding.
@@ -86,6 +86,7 @@ if ( ! defined( 'WP_PLUGIN_DIR' ) )
 define ("OSM_PLUGIN_URL", WP_PLUGIN_URL."/osm/");
 define ("OSM_PLUGIN_ICONS_URL", OSM_PLUGIN_URL."icons/");
 define ("URL_POST_MARKER", OSM_PLUGIN_URL.POST_MARKER_PNG);
+define ("OSM_PLUGIN_THEMES_URL", OSM_PLUGIN_URL."themes/");
 
 global $wp_version;
 if (version_compare($wp_version,"2.5.1","<")){
@@ -507,6 +508,7 @@ class Osm
     'import_osm_cat_incl_name'  => 'Osm_All',
     'import_osm_cat_excl_name'  => 'Osm_None',
     'marker'          => 'No',
+    'marker_routing'  => 'No',
     'msg_box'         => 'No',
     'custom_field'    => 'No',
   	'control'		      => 'No',
@@ -514,7 +516,13 @@ class Osm
 	  'extmap_name'     => 'No',
 	  'extmap_address'  => 'No',
 	  'extmap_init'     => 'No',
-    'map_border'      => 'none'
+    'map_border'      => 'none',
+    'z_index'         => 'none',
+    'm_txt_01'        => 'none',
+    'm_txt_02'        => 'none',
+    'm_txt_03'        => 'none',
+    'm_txt_04'        => 'none',
+    'theme'           => 'ol'
 	  ), $atts));
    
     if ($zoom < ZOOM_LEVEL_MIN || $zoom > ZOOM_LEVEL_MAX){
@@ -603,6 +611,12 @@ class Osm
     
     $output .= '.olControlAttribution {bottom: 0 !important;}';
     $output .= 'div.olControlMousePosition {bottom: 1em !important;}';
+
+    if ($z_index != 'none'){ // fix for NextGen-Gallery
+      $output .= '.entry .olMapViewport img {z-index: '.$z_index.' !important;}';   
+      $output .= '.olControlNoSelect {z-index: '.$z_index.' !important;}';    
+      $output .= '.olControlAttribution {z-index: '.$z_index.' !important;}';
+    }
      
 	  $output .= '#'.$MapName.' {clear: both; padding: 0px; margin: 0px; border: 0px; width: 100%; height: 100%; margin-top:0px; margin-right:0px;margin-left:0px; margin-bottom:0px; left: 0px;}';
     $output .= '#'.$MapName.' img{clear: both; padding: 0px; margin: 0px; border: 0px; width: 100%; height: 100%; position: absolute; margin-top:0px; margin-right:0px;margin-left:0px; margin-bottom:0px;}';
@@ -643,7 +657,7 @@ class Osm
     //$output .= 'jQuery(document).ready(';
     //$output .= 'function($) {';
     $output .= '(function($) {';
-    $output .= Osm_OpenLayers::addOsmLayer($MapName, $type, $ov_map, $array_control, $extmap_type, $extmap_name, $extmap_address, $extmap_init);
+    $output .= Osm_OpenLayers::addOsmLayer($MapName, $type, $ov_map, $array_control, $extmap_type, $extmap_name, $extmap_address, $extmap_init, $theme);
 
     // add a clickhandler if needed
     $msg_box = strtolower($msg_box);
@@ -712,10 +726,47 @@ class Osm
      list($temp_lat, $temp_lon, $temp_popup_custom_field) = explode(',', $marker);
 	   if ($temp_popup_custom_field == ''){
 		   $temp_popup_custom_field = 'osm_dummy';
-       $DoPopUp = 'false';
 	   }
+
      $temp_popup_custom_field = trim($temp_popup_custom_field);
      $temp_popup = get_post_meta($post->ID, $temp_popup_custom_field, true); 
+
+	   if ($m_txt_01 != 'none'){
+       $temp_popup .= '<br>'.$m_txt_01;
+	   }
+	   if ($m_txt_02 != 'none'){
+       $temp_popup .= '<br>'.$m_txt_02;
+	   }
+	   if ($m_txt_03 != 'none'){
+       $temp_popup .= '<br>'.$m_txt_03;
+	   }	   
+     if ($m_txt_04 != 'none'){
+       $temp_popup .= '<br>'.$m_txt_04;
+	   }
+
+     $marker_routing = strtolower($marker_routing);
+     if ($marker_routing != 'no') { 
+       $temp_popup .= '<br><div class="route"><a href="';
+       if ($marker_routing == 'ors' || $marker_routing == 'openrouteservice') {  
+         $temp_popup .= 'http://openrouteservice.org/index.php?end=' . $temp_lon . ',' . $temp_lat . '&zoom=' . $zoom . '&pref=Fastest&lang=' . substr(get_locale(),0,2) . '&noMotorways=false&noTollways=false';
+       } 
+       elseif ($marker_routing == 'cm' || $marker_routing == 'cloudmade') {  
+         $temp_popup .= 'http://maps.cloudmade.com/?lat=' . $temp_lat . '&lng=' . $temp_lon . '&zoom=' . $zoom . '&directions=' . $temp_lat . ',' . $temp_lon . '&travel=car&styleId=1&active_page=0&opened_tab=1';
+       }
+       elseif ($marker_routing == 'yn' || $marker_routing == 'yournavigation') {  
+         $temp_popup .= 'http://yournavigation.org/?tlat=' . $temp_lat . '&tlon=' . $temp_lon;
+       }
+       else {
+         $temp_popup .= 'missing routing service!'.$marker_routing;
+         Osm::traceText(DEBUG_ERROR, "e_missing_rs_error");
+       }
+       $temp_popup .= '">' . __("Route from your location to this place", "Osm") . '</a></div>';
+     }
+
+     if (($temp_popup_custom_field == 'osm_dummy') && ($m_txt_01 == 'none') && ($marker_routing == 'no')){
+       $DoPopUp = 'false';
+     }
+
      list($temp_lat, $temp_lon) = Osm::checkLatLongRange('Marker',$temp_lat, $temp_lon); 
      $MarkerArray[] = array('lat'=> $temp_lat,'lon'=>$temp_lon,'text'=>$temp_popup,'popup_height'=>'150', 'popup_width'=>'150');
      $output .= Osm_OpenLayers::addMarkerListLayer('Marker', $Icon,$MarkerArray,$DoPopUp);
@@ -835,19 +886,20 @@ function OSM_displayOpenStreetMap($a_widht, $a_hight, $a_zoom, $a_type){
   }
 }
 
-function OSM_displayOpenStreetMapExt($a_widht, $a_hight, $a_zoom, $a_type, $a_control, $a_marker_name, $a_marker_height, $a_marker_width, $a_marker_text, $a_ov_map, $a_marker_focus = 0){
+function OSM_displayOpenStreetMapExt($a_widht, $a_hight, $a_zoom, $a_type, $a_control, $a_marker_name, $a_marker_height, $a_marker_width, $a_marker_text, $a_ov_map, $a_marker_focus = 0, $a_routing = 'No'){
 
-  $atts = array ('width'        => $a_widht,
-                 'height'       => $a_hight,
-                 'type'         => $a_type,
-                 'zoom'         => $a_zoom,
-                 'ov_map'       => $a_ov_map,
-                 'marker_name'  => $a_marker_name,
-                 'marker_height'=> $a_marker_height,
-                 'marker_width' => $a_marker_width,
-                 'marker'       => OSM_getCoordinateLat("osm") . ',' . OSM_getCoordinateLong("osm") . ',' . $a_marker_text,
-	               'control'		  => $a_control,
-                 'marker_focus' => $a_marker_focus);
+  $atts = array ('width'          => $a_widht,
+                 'height'         => $a_hight,
+                 'type'           => $a_type,
+                 'zoom'           => $a_zoom,
+                 'ov_map'         => $a_ov_map,
+                 'marker_name'    => $a_marker_name,
+                 'marker_height'  => $a_marker_height,
+                 'marker_width'   => $a_marker_width,
+                 'marker'         => OSM_getCoordinateLat("osm") . ',' . OSM_getCoordinateLong("osm") . ',' . $a_marker_text,
+	               'control'		    => $a_control,
+                 'marker_focus'   => $a_marker_focus,
+                 'marker_routing' => $a_routing);
 
   if ((OSM_getCoordinateLong("osm"))&&(OSM_getCoordinateLat("osm"))) { 
     echo OSM::sc_showMap($atts);
