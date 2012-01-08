@@ -1,5 +1,5 @@
 === OSM ===
-Contributors: MiKa
+Contributors: MiKa 
 Tags: map, OpenStreetMap, Google Maps, googlemaps, geo, KML, GPX, geotag, geolocation, geocache, geocaching, OSM, travelogue, template tag, travelblog, OpenLayers, Open Layers, Open Street Map, CloudMade, YourNavigation, OpenRouteService, marker, POI
 Requires at least: 2.5.1
 Tested up to: 3.3.1
