@@ -1,11 +1,12 @@
 === OSM ===
-Contributors: MiKa 
-Tags: map, OpenStreetMap, Google Maps, googlemaps, geo, KML, GPX, geotag, geolocation, geocache, geocaching, OSM, travelogue, template tag, travelblog, OpenLayers, Open Layers, Open Street Map, CloudMade, YourNavigation, OpenRouteService, marker, POI
+Contributors: MiKa
+Tags: map, OpenStreetMap, Google Maps, googlemaps, geo, KML, GPX, geotag, geolocation, geocache, geocaching, OSM, travelogue, template tag, travelblog, OpenLayers, Open Layers, Open Street Map, CloudMade, YourNavigation, OpenRouteService, marker, POI, geocode, geotagging, google earth, Leaflet, location, Route, Tracks, WMS
 Requires at least: 2.5.1
 Tested up to: 3.3.1
-Stable tag: 1.1
+Stable tag: 1.1.1
 
 OpenStreetMap plugin to embed maps. No API key! No Google API!
+Include your OSM map with GPX tracks, POIs, markers and geotagged posts. 
 
 == Description ==
 If you want to download the OSM-plugin you are right here!
@@ -27,6 +28,7 @@ Features of the OSM-plugin:
 * use custom field to add geolocation to your blog
 * geo data are written to html-meta tags of your blog
 * uses OpenLayers Library
+* extends Mediathek rights to upload GPX files
 
 Languages:
 
@@ -47,18 +49,11 @@ Licenses of the maps:
 IMPORTANT: 
 Personal data (eg. gpx files) must not be stored in the plugins/osm folder but in the upload folder!
 
-NOTE: 
-Feel free to delete the files screenshot-1.png to screenshot-4.png in the OSM-folder to save webspace.
-
 == Frequently Asked Questions ==
 
 = Do I need any key or any registration to show maps in my blog =
 
 No!
-
-= I have limited webspace, why does this plugin use more than 500kB =
-
-Feel free to delete the files screenshot-1.png to screenshot-4.png.
 
 = Can I use OSM-plugin at Wordpress MU? =
 
@@ -69,17 +64,20 @@ Yes.
 Since most people do not add a map in every post I decided to put it in the settings page. If 
 there are some requests to put it in the Edit post I will make it configureable.
 
-= How can I use this plugin for my geocache posts ? =
+= I do not see my gpx file / marker file in the map ? =
 
-You have to install [gcstats plugin](http://wordpress.org/extend/plugins/gcstats/ "Link to gcstats plugin") to use geocaching feature of OSM-plugin.
+The file has to be located at the same adress as your blog.
+There must be not format tag (like href ...) in the shortcode.
 
-== Screenshots ==
-1. Shortcode generator in the plugin settings page
-2. Showing the geo data of all posts/pages within one map
-3. Showing a track added with a GPX file and popupmarker with photo
-4. Use template-tags to show a map if your post/page has got a geolocation
 
 == Changelog ==
+
+= 1.1.1 =
+* NEW: extended rights to upload GPX files in Mediathek
+* NEW: CSS file 
+* FIX: WP-Theme zBench fix
+* FIX: HTML tag if post is geotagged
+* FIX: z-index at shortcode generator
 = 1.1 =
 * NEW: add the text for popup marker directly in the shortcode generator (settings => OSM)
 * NEW: add a link to a routing service (settings => OSM)
@@ -87,7 +85,6 @@ You have to install [gcstats plugin](http://wordpress.org/extend/plugins/gcstats
 * NEW: choose a theme for the control icons
 * NEW: add the mouse position directly in the shortcode generator (settins => OSM)
 * NEW: plugin size less than 100kB
-
 = 1.0 =
 * NEW: Internationalization (languages: EN, DE)
 * FIX: HTML code for geotagged posts
