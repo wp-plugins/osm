@@ -126,7 +126,7 @@
 </form>
 <h3><?php _e('Misc. settings:','OSM-plugin') ?></h3>
 <form name="ZIndexform" action="">
-<input type="radio" name="ZIndex" value="0"> <?php _e('z-index: 0','OSM-plugin') ?>
+<input type="checkbox" name="ZIndex" value="0"> <?php _e('z-index: 0','OSM-plugin') ?>
 </form>
 
 <br>

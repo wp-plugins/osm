@@ -1,3 +1,11 @@
+<?php
+/*
+  OSM Error Msg for OSM wordpress plugin
+  MiKa * created: april 2009
+  plugin: http://www.Fotomobil.at/wp-osm-plugin
+  blog:   http://www.HanBlog.net
+*/
+?>
 <?php  
     // these messages are related to the gcStats plugin
     $this->ErrorMsg->add('e_missing_gcStats', __('gcStats plugin is not activated!', $this->localizionName));

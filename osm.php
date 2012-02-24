@@ -27,7 +27,7 @@ Minimum WordPress Version Required: 2.5.1
 */
 load_plugin_textdomain('OSM-plugin', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/');
 
-define ("PLUGIN_VER", "V1.1");
+define ("PLUGIN_VER", "V1.1.1");
 
 // modify anything about the marker for tagged posts here
 // instead of the coding.
@@ -101,6 +101,61 @@ if (@(!include('osm-config.php'))){
 
 // do not edit this
 define ("Osm_TraceLevel", DEBUG_ERROR); 
+
+
+// If the function exists this file is called as upload_mimes.
+// We don't do anything then.
+if ( ! function_exists( 'fb_restrict_mime_types' ) ) {
+  add_filter( 'upload_mimes', 'fb_restrict_mime_types' );
+  /**
+  * Retrun allowed mime types
+  *
+  * @see function get_allowed_mime_types in wp-includes/functions.php
+  * @param array Array of mime types
+  * @return array Array of mime types keyed by the file extension regex corresponding to those types.
+  */
+  function fb_restrict_mime_types( $mime_types ) {
+    $mime_types['gpx'] = 'text/gpx';
+    return $mime_types;
+  }
+}
+
+
+// If the function exists this file is called as post-upload-ui.
+// We don't do anything then.
+if ( ! function_exists( 'fb_restrict_mime_types_hint' ) ) {
+	// add to wp
+	add_action( 'post-upload-ui', 'fb_restrict_mime_types_hint' );
+	/**
+	 * Get an Hint about the allowed mime types
+	 *
+	 * @return  void
+	 */
+	function fb_restrict_mime_types_hint() {
+
+		echo '<br />';
+		_e( 'OSM plugin added: GPX' );
+	}
+}
+
+
+
+// If the function exists this file is called as post-upload-ui.
+// We don't do anything then.
+if ( ! function_exists( 'fb_restrict_mime_types_hint' ) ) {
+// add to wp
+add_action( 'post-upload-ui', 'fb_restrict_mime_types_hint' );
+/**
+* Get an Hint about the allowed mime types
+*
+* @return void
+*/
+function fb_restrict_mime_types_hint() {
+
+echo '<br />';
+_e( 'Accepted MIME types: PDF, DOC/DOCX' );
+}
+}
 
 include('osm-openlayers.php');
     	
@@ -207,13 +262,16 @@ class Osm
 	function wp_head($not_used)
 	{ 
 		global $wp_query;
+	  global $post;
+    $lat = '';
+    $lon = '';
     
-    $CustomField = get_option('osm_custom_field');
+    $CustomField = get_settings('osm_custom_field');
 
     if (get_post_meta($wp_query->post->ID, $CustomField, true)){
-      $PostLatLon = get_post_meta($wp_query->post->ID, $CustomField, true);
-		  list($lat, $lon) = explode(',', $PostLatLon[0]);
+  	  list($lat, $lon) = explode(',', get_post_meta($post->ID, $CustomField, true)); 
     }
+
 		if(is_single() && ($lat != '') && ($lon != '')){
 			$title = convert_chars(strip_tags(get_bloginfo("name")))." - ".$wp_query->post->post_title;
       $this->traceText(HTML_COMMENT, 'OSM plugin '.PLUGIN_VER.': adding geo meta tags:');
@@ -525,7 +583,7 @@ class Osm
     'theme'           => 'ol'
 	  ), $atts));
    
-    if ($zoom < ZOOM_LEVEL_MIN || $zoom > ZOOM_LEVEL_MAX){
+    if (($zoom < ZOOM_LEVEL_MIN || $zoom > ZOOM_LEVEL_MAX) && ($zoom != 'auto')){
       $this->traceText(DEBUG_ERROR, "e_zoomlevel_range");
       $this->traceText(DEBUG_INFO, "Error: (Zoomlevel: ".$zoom.")!");
       $zoom = 0;   
@@ -584,7 +642,9 @@ class Osm
 	  $array_control = explode( ',', $control);
    
     list($lat, $long) = Osm::getMapCenter($lat, $long, $import_type, $import_UserName);
-    list($lat, $long) = Osm::checkLatLongRange('MapCenter',$lat, $long);
+    if ($lat != 'auto' && $long != 'auto'){
+      list($lat, $long) = Osm::checkLatLongRange('MapCenter',$lat, $long);
+    }
     $gpx_colour       = Osm::checkStyleColour($gpx_colour); 
     $kml_colour       = Osm::checkStyleColour($kml_colour);
     $type             = Osm_OpenLayers::checkMapType($type);
@@ -604,18 +664,12 @@ class Osm
       
     // if we came up to here, let's load the map
     $output = '';	
-	  $output .= '<style type="text/css">';
-    $output .= '.entry .olMapViewport img {max-width: none; max-height: none;}';
-    
-    $output .= '.entry-content img, .widget img {max-width: none; max-height: none;}';
-    
-    $output .= '.olControlAttribution {bottom: 0 !important;}';
-    $output .= 'div.olControlMousePosition {bottom: 1em !important;}';
-
+    $output .= '<link rel="stylesheet" type="text/css" href="'.OSM_PLUGIN_URL.'/css/osm_map.css" />';
+    $output .= '<style type="text/css">';
     if ($z_index != 'none'){ // fix for NextGen-Gallery
       $output .= '.entry .olMapViewport img {z-index: '.$z_index.' !important;}';   
-      $output .= '.olControlNoSelect {z-index: '.$z_index.' !important;}';    
-      $output .= '.olControlAttribution {z-index: '.$z_index.' !important;}';
+      $output .= '.olControlNoSelect {z-index: '.$z_index.'+1.'.' !important;}';    
+      $output .= '.olControlAttribution {z-index: '.$z_index.'+1.'.' !important;}';
     }
      
 	  $output .= '#'.$MapName.' {clear: both; padding: 0px; margin: 0px; border: 0px; width: 100%; height: 100%; margin-top:0px; margin-right:0px;margin-left:0px; margin-bottom:0px; left: 0px;}';

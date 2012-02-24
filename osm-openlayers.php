@@ -1,4 +1,12 @@
 <?php
+/*
+  OSM OpenLayers for OSM wordpress plugin
+  MiKa * created: april 2009
+  plugin: http://www.Fotomobil.at/wp-osm-plugin
+  blog:   http://www.HanBlog.net
+*/
+?>
+<?php
 
 class Osm_OpenLayers
 {
@@ -210,8 +218,6 @@ class Osm_OpenLayers
     $Layer .= '      }';
     $Layer .= '      return "undefined";';
     $Layer .= '    }'; 
-
-
     $Layer .= '    return "not implemented";';
     $Layer .= '    }';
     
@@ -269,6 +275,7 @@ class Osm_OpenLayers
     $Layer .= ' MapControlField = "";';
     $Layer .= ' BorderColourField = "";';
     $Layer .= ' ControlStyleField = "";';
+    $Layer .= ' ZIndexField = "";';
 
     $Layer .= ' if (MarkerName != "undefined"){';
     $Layer .= '   MarkerField = " marker=\""+Clicklonlat.lat+","+Clicklonlat.lon+
@@ -302,6 +309,9 @@ class Osm_OpenLayers
     $Layer .= ' if (CntrStyle != "undefined"){';
     $Layer .= '   ControlStyleField = " theme=\""+ CntrStyle + "\"";';  
     $Layer .= '  }';
+    $Layer .= ' if (document.ZIndexform.ZIndex.checked){';
+    $Layer .= '   ZIndexField = " z_index=\""+ document.ZIndexform.ZIndex.value + "\"";';  
+    $Layer .= '  }';    
     $Layer .= ' if (document.Markerfileform.MarkerFile.value != "http://"){';
     $Layer .= '   MarkerFileField = " marker_file=\""+ document.Markerfileform.MarkerFile.value + "\"";';  
     $Layer .= '  }';
@@ -325,7 +335,7 @@ class Osm_OpenLayers
     $Layer .= '   BorderColourField = " map_border=\"thin solid "+ BorderColour + "\"";';  
     $Layer .= '  }';
 
-    $Layer .= ' div.innerHTML = "[osm_map lat=\"" + Centerlonlat.lat + "\" long=\"" + Centerlonlat.lon + "\" zoom=\"" + zoom + "\" width=\"600\" height=\"450\"" + MarkerField + GpxFileField + GpxColourField + BorderColourField + MarkerFileField + MapControlField + MarkerTextField_01 + MarkerTextField_02 + MarkerTextField_03 + MarkerTextField_04 + NaviField + ControlStyleField + " type=\""+LayerName+"\"]";';
+    $Layer .= ' div.innerHTML = "[osm_map lat=\"" + Centerlonlat.lat + "\" long=\"" + Centerlonlat.lon + "\" zoom=\"" + zoom + "\" width=\"600\" height=\"450\"" + MarkerField + GpxFileField + GpxColourField + BorderColourField + MarkerFileField + MapControlField + MarkerTextField_01 + MarkerTextField_02 + MarkerTextField_03 + MarkerTextField_04 + NaviField + ZIndexField + ControlStyleField + " type=\""+LayerName+"\"]";';
     }
     else if( $a_msgBox == 'lat_long'){
      $Layer .= ' 	                  alert("Lat= " + Clicklonlat.lat + " Long= " + Clicklonlat.lon);';   
@@ -408,10 +418,21 @@ class Osm_OpenLayers
   function setMapCenterAndZoom($a_lat, $a_lon, $a_zoom)
   {
     Osm::traceText(DEBUG_INFO, "setMapCenterAndZoom(".$a_lat.",".$a_lon.",".$a_zoom.")");
-    $Layer .= 'var lonLat = new OpenLayers.LonLat('.$a_lon.','.$a_lat.').transform(map.displayProjection,  map.projection);';
+
+    if (strtolower($a_zoom) == ('auto')){
+      $a_zoom = 'null';
+    }
+    if ((strtolower($a_lat) == ('auto')) || (strtolower($a_lon) == ('auto'))) {
+      $Layer .= 'var lonLat = null;';
+    }
+    else {
+      $Layer .= 'var lonLat = new OpenLayers.LonLat('.$a_lon.','.$a_lat.').transform(map.displayProjection,  map.projection);';
+    }
+    
     $Layer .= 'map.setCenter (lonLat,'.$a_zoom.');'; // Zoomstufe einstellen
     return $Layer;
-  }  
+  } 
+
       
   // if you miss a MapType, just add it
   function checkMapType($a_type){
