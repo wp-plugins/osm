@@ -27,8 +27,13 @@ class Osm_OpenLayers
   function addOsmLayer($a_LayerName, $a_Type, $a_OverviewMapZoom, $a_MapControl, $a_ExtType, $a_ExtName, $a_ExtAddress, $a_ExtInit, $a_theme)
   {
     Osm::traceText(DEBUG_INFO, "addOsmLayer(".$a_LayerName.",".$a_Type.",".$a_OverviewMapZoom.")");
-    $Layer .= ' OpenLayers.ImgPath = "'.OSM_PLUGIN_THEMES_URL.$a_theme.'/";';
 
+    if ($a_theme == 'private'){
+      $Layer .= ' OpenLayers.ImgPath = "'.OSM_OPENLAYERS_THEMES_URL.'";';
+    }
+    else {
+      $Layer .= ' OpenLayers.ImgPath = "'.OSM_PLUGIN_THEMES_URL.$a_theme.'/";';
+    }
     $Layer .= ' map = new OpenLayers.Map ("'.$a_LayerName.'", {';
     $Layer .= '            controls:[';
     if (($a_MapControl[0] != 'off') && (strtolower($a_Type)!= 'ext')) {

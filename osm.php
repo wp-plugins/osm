@@ -3,7 +3,7 @@
 Plugin Name: OSM
 Plugin URI: http://www.Fotomobil.at/wp-osm-plugin
 Description: Embeds maps in your blog and adds geo data to your posts.  Find samples and a forum on the <a href="http://www.Fotomobil.at/wp-osm-plugin">OSM plugin page</a>.  Simply create the shortcode to add it in your post at [<a href="options-general.php?page=osm.php">Settings</a>]
-Version: 1.1.1
+Version: 1.1.2
 Author: MiKa
 Author URI: http://www.HanBlog.net
 Minimum WordPress Version Required: 2.5.1
@@ -27,7 +27,7 @@ Minimum WordPress Version Required: 2.5.1
 */
 load_plugin_textdomain('OSM-plugin', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/');
 
-define ("PLUGIN_VER", "V1.1.1");
+define ("PLUGIN_VER", "V1.1.2");
 
 // modify anything about the marker for tagged posts here
 // instead of the coding.
@@ -87,6 +87,7 @@ define ("OSM_PLUGIN_URL", WP_PLUGIN_URL."/osm/");
 define ("OSM_PLUGIN_ICONS_URL", OSM_PLUGIN_URL."icons/");
 define ("URL_POST_MARKER", OSM_PLUGIN_URL.POST_MARKER_PNG);
 define ("OSM_PLUGIN_THEMES_URL", OSM_PLUGIN_URL."themes/");
+define( 'OSM_OPENLAYERS_THEMES_URL', WP_CONTENT_URL. '/uploads/osm/theme/' );
 
 global $wp_version;
 if (version_compare($wp_version,"2.5.1","<")){
@@ -176,6 +177,7 @@ class Osm
 
     // add the WP shortcode
     add_shortcode('osm_map',array(&$this, 'sc_showMap'));
+    add_shortcode('osm_image',array(&$this, 'sc_showImage'));
 	}
   
   function initErrorMsg()
@@ -263,13 +265,15 @@ class Osm
 	{ 
 		global $wp_query;
 	  global $post;
+
     $lat = '';
     $lon = '';
     
-    $CustomField = get_settings('osm_custom_field');
+    $CustomField =  get_option('osm_custom_field');
 
-    if (get_post_meta($wp_query->post->ID, $CustomField, true)){
-  	  list($lat, $lon) = explode(',', get_post_meta($post->ID, $CustomField, true)); 
+    if (get_post_meta($post->ID, $CustomField, true)){
+      $PostLatLon = get_post_meta($post->ID, $CustomField, true);
+		  list($lat, $lon) = explode(',', $PostLatLon);
     }
 
 		if(is_single() && ($lat != '') && ($lon != '')){
@@ -835,7 +839,116 @@ class Osm
     return $output;
 	}
 
+////////////++++
+
+  // execute the java script to display 
+  // the zoomify 
+  function sc_showImage($atts) {
+    // let's get the shortcode arguments
+  	extract(shortcode_atts(array(
+    // size of the map
+    'width'     => '450', 'height' => '300',  
+    // the zoomlevel of the map 
+    'zoom'      => '7',     
+    // track info
+  	'control'		      => 'No',
+    'map_border'      => 'none',
+    'z_index'         => 'none',
+	  'extmap_address'  => 'No',
+    'theme'           => 'ol'
+	  ), $atts));
+   
+    if (($zoom < ZOOM_LEVEL_MIN || $zoom > ZOOM_LEVEL_MAX) && ($zoom != 'auto')){
+      $this->traceText(DEBUG_ERROR, "e_zoomlevel_range");
+      $this->traceText(DEBUG_INFO, "Error: (Zoomlevel: ".$zoom.")!");
+      $zoom = 0;   
+    }
+    if ($width < 1 || $height < 1){
+      Osm::traceText(DEBUG_ERROR, "e_map_size");
+      Osm::traceText(DEBUG_INFO, "Error: ($width: ".$width." $height: ".$height.")!");
+      $width = 450; $height = 300;
+    }
+
+
+	  $array_control = explode( ',', $control);
+	  
+    $array_control    = Osm_OpenLayers::checkControlType($array_control);
+
+    // to manage several maps on the same page
+    // create names with index
+    static  $MapCounter = 0;
+    $MapCounter += 1;
+    $MapName = 'map_'.$MapCounter;
 	
+    Osm::traceText(DEBUG_INFO, "MapCounter = ".$MapCounter);
+      
+    // if we came up to here, let's load the image
+    $output = '';	
+    $output .= '<link rel="stylesheet" type="text/css" href="'.OSM_PLUGIN_URL.'/css/osm_map.css" />';
+    $output .= '<style type="text/css">';
+    if ($z_index != 'none'){ // fix for NextGen-Gallery
+      $output .= '.entry .olMapViewport img {z-index: '.$z_index.' !important;}';   
+      $output .= '.olControlNoSelect {z-index: '.$z_index.'+1.'.' !important;}';    
+      $output .= '.olControlAttribution {z-index: '.$z_index.'+1.'.' !important;}';
+    }
+     
+	  $output .= '#'.$MapName.' {clear: both; padding: 0px; margin: 0px; border: 0px; width: 100%; height: 100%; margin-top:0px; margin-right:0px;margin-left:0px; margin-bottom:0px; left: 0px;}';
+    $output .= '#'.$MapName.' img{clear: both; padding: 0px; margin: 0px; border: 0px; width: 100%; height: 100%; position: absolute; margin-top:0px; margin-right:0px;margin-left:0px; margin-bottom:0px;}';
+	  $output .= '</style>';
+
+    $output .= '<div id="'.$MapName.'" style="width:'.$width.'px; height:'.$height.'px; overflow:hidden;padding:0px;border:'.$map_border.';">';
+
+    
+	    if (Osm_LoadLibraryMode == SERVER_EMBEDDED){
+	      if (OL_LIBS_LOADED == 0) {
+    	    $output .= '<script type="text/javascript" src="'.Osm_OL_LibraryLocation.'"></script>';
+          define (OL_LIBS_LOADED, 1);
+        }
+  
+        if ($type == 'Mapnik' || $type == 'Osmarender' || $type == 'CycleMap' || $type == 'All' || $type == 'AllOsm' || $type == 'Ext'){
+	        if (OSM_LIBS_LOADED == 0) {
+            $output .= '<script type="text/javascript" src="'.Osm_OSM_LibraryLocation.'"></script>';
+            define (OSM_LIBS_LOADED, 1);
+          }
+        }
+
+        if ($type == 'GooglePhysical' || $type == 'GoogleStreet' || $type == 'GoogleHybrid' || $type == 'GoogleSatellite' || $type == 'All' || $type == 'AllGoogle' || $a_type == 'Ext' || $type == 'Google Physical' || $type == 'Google Street' || $type == 'Google Hybrid' || $type == 'Google Satellite'){
+	        if (GOOGLE_LIBS_LOADED == 0) {
+            $output .= '<script type="text/javascript" src="'.Osm_GOOGLE_LibraryLocation.'"></script>';
+            define (GOOGLE_LIBS_LOADED, 1);
+          }
+        }
+      }
+	    elseif (Osm_LoadLibraryMode == SERVER_WP_ENQUEUE){
+	    // registered and loaded by WordPress
+	    }
+	    else{
+	      $this->traceText(DEBUG_ERROR, "e_library_config");
+	    }
+      
+    $extmap_init = 'new OpenLayers.Size('.width.', '.height.' )';
+
+    $output .= '<script type="text/javascript">';
+    $output .= '/* <![CDATA[ */';
+    //$output .= 'jQuery(document).ready(';
+    //$output .= 'function($) {';
+    $output .= '(function($) {';
+    $output .= Osm_OpenLayers::addOsmLayer("Zoomify", "ext", "0", "ext", "Zoomify", "Zoomify", $extmap_address, $extmap_init, $theme);
+
+    // set center and zoom of the map
+    //$output .= Osm_OpenLayers::setMapCenterAndZoom($lat, $long, $zoom);
+  
+    //$output .= '}';
+    //$output .= ');';
+    $output .= '})(jQuery)';
+    $output .= '/* ]]> */';
+    $output .= ' </script>';
+	$output .= '</div>';
+    return $output;
+	}
+
+////////////----	
+
 	// add OSM-config page to Settings
 	function admin_menu($not_used){
     // place the info in the plugin settings page

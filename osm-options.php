@@ -121,9 +121,16 @@
 <br>
 <form name="ControlStyleform" action="">
 <?php _e('Choose the style of the controls: ','OSM-plugin') ?> <br>
-<img src="<?php echo OSM_PLUGIN_URL ?>/themes/ol/zoom-world-mini.png" alt="OpenLayers default theme"><input type="radio" name="Cntrl_style" value="ol"> <span><?php _e('default theme   ','OSM-plugin') ?> </span>
-<img src="<?php echo OSM_PLUGIN_URL ?>/themes/dark/zoom-world-mini.png" alt="dark theme"><input type="radio" name="Cntrl_style" value="dark"> <span><?php _e('dark theme   ','OSM-plugin') ?> </span>
+<img src="<?php echo OSM_PLUGIN_URL ?>/themes/ol/zoom-world-mini.png" alt="OpenLayers default theme"><input type="radio" name="Cntrl_style" value="ol"> 
+<span><?php _e('default theme   ','OSM-plugin') ?> </span>
+<img src="<?php echo OSM_PLUGIN_URL ?>/themes/dark/zoom-world-mini.png" alt="dark theme">
+<input type="radio" name="Cntrl_style" value="dark"> 
+<span><?php _e('dark theme   ','OSM-plugin') ?> </span>
+<input type="radio" name="Cntrl_style" value="private"> 
+<span><?php _e('/uploads/osm/theme/','OSM-plugin') ?> </span>
 </form>
+
+
 <h3><?php _e('Misc. settings:','OSM-plugin') ?></h3>
 <form name="ZIndexform" action="">
 <input type="checkbox" name="ZIndex" value="0"> <?php _e('z-index: 0','OSM-plugin') ?>
