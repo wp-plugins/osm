@@ -76,7 +76,7 @@ There must be not format tag (like href ...) in the shortcode.
 = 1.2 =
 * FIX: Warning: explode() expects parameter 2 ... on line 272
 * NEW: use private theme for cntrols in /wp-content/uploads/osm/theme/
-* NEW: language: Japan 
+* NEW: language: Japan
 = 1.1.1 =
 * NEW: extended rights to upload GPX files in Mediathek
 * NEW: CSS file 
