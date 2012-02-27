@@ -3,7 +3,7 @@
 Plugin Name: OSM
 Plugin URI: http://www.Fotomobil.at/wp-osm-plugin
 Description: Embeds maps in your blog and adds geo data to your posts.  Find samples and a forum on the <a href="http://www.Fotomobil.at/wp-osm-plugin">OSM plugin page</a>.  Simply create the shortcode to add it in your post at [<a href="options-general.php?page=osm.php">Settings</a>]
-Version: 1.2
+Version: 1.2.1
 Author: MiKa
 Author URI: http://www.HanBlog.net
 Minimum WordPress Version Required: 2.5.1
@@ -27,7 +27,7 @@ Minimum WordPress Version Required: 2.5.1
 */
 load_plugin_textdomain('OSM-plugin', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/');
 
-define ("PLUGIN_VER", "V1.2");
+define ("PLUGIN_VER", "V1.2.1");
 
 // modify anything about the marker for tagged posts here
 // instead of the coding.
@@ -273,7 +273,7 @@ class Osm
 
     if (get_post_meta($post->ID, $CustomField, true)){
       $PostLatLon = get_post_meta($post->ID, $CustomField, true);
-		  list($lat, $lon) = explode(',', $PostLatLon);
+		  // list($lat, $lon) = explode(',', $PostLatLon); produced warning on some blogs ToDo
     }
 
 		if(is_single() && ($lat != '') && ($lon != '')){
