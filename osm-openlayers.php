@@ -64,22 +64,20 @@ class Osm_OpenLayers
     $Layer .= '      } );';
     if ($a_Type == 'All'){
       $Layer .= 'var layerMapnik = new OpenLayers.Layer.OSM.Mapnik("Mapnik");';
-      $Layer .= 'var layerTah    = new OpenLayers.Layer.OSM.Osmarender("Osmarender");';
       $Layer .= 'var layerCycle  = new OpenLayers.Layer.OSM.CycleMap("CycleMap");';
       $Layer .= 'var layerGooglePhysical   = new OpenLayers.Layer.Google("Google Physical", {type: google.maps.MapTypeId.TERRAIN} );';
       $Layer .= 'var layerGoogleStreet     = new OpenLayers.Layer.Google("Google Street", {type: google.maps.MapTypeId.ROADMAP} );';
       $Layer .= 'var layerGoogleHybrid     = new OpenLayers.Layer.Google("Google Hybrid", {type: google.maps.MapTypeId.HYBRID} );';
       $Layer .= 'var layerGoogleSatellite  = new OpenLayers.Layer.Google("Google Satellite", {type: google.maps.MapTypeId.SATELLITE} );';
       $Layer .= 'var layerOSM_Attr = new OpenLayers.Layer.Vector("OSM-plugin",{attribution:"<a href=\"http://www.Fotomobil.at/wp-osm-plugin\">OSM plugin</a>"});';
-      $Layer .= 'map.addLayers([layerMapnik, layerTah, layerCycle, layerGooglePhysical, layerGoogleStreet, layerGoogleHybrid, layerGoogleSatellite, layerOSM_Attr]);';
+      $Layer .= 'map.addLayers([layerMapnik, layerCycle, layerGooglePhysical, layerGoogleStreet, layerGoogleHybrid, layerGoogleSatellite, layerOSM_Attr]);';
       $Layer .= 'map.addControl(new OpenLayers.Control.LayerSwitcher());';
     }
     else if ($a_Type == 'AllOsm'){
       $Layer .= 'var layerMapnik = new OpenLayers.Layer.OSM.Mapnik("Mapnik");';
-      $Layer .= 'var layerTah    = new OpenLayers.Layer.OSM.Osmarender("Osmarender");';
       $Layer .= 'var layerCycle  = new OpenLayers.Layer.OSM.CycleMap("CycleMap");';
       $Layer .= 'var layerOSM_Attr = new OpenLayers.Layer.Vector("OSM-plugin",{attribution:"<a href=\"http://www.Fotomobil.at/wp-osm-plugin\">OSM plugin</a>"});';
-      $Layer .= 'map.addLayers([layerMapnik, layerTah, layerCycle, layerOSM_Attr]);';
+      $Layer .= 'map.addLayers([layerMapnik, layerCycle, layerOSM_Attr]);';
       $Layer .= 'map.addControl(new OpenLayers.Control.LayerSwitcher());';
 
 
@@ -441,6 +439,10 @@ class Osm_OpenLayers
       
   // if you miss a MapType, just add it
   function checkMapType($a_type){
+    // Osmarender ist not supported anymore
+    if ($a_type == 'Osmarender'){
+      return "Mapnik";
+    }
     if ($a_type != 'Mapnik' && $a_type != 'Osmarender' && $a_type != 'CycleMap' && $a_type != 'Google' && $a_type != 'All' && $a_type != 'AllGoogle' && $a_type != 'AllOsm' && $a_type != 'ext' && $a_type != 'GooglePhysical' && $a_type != 'GoogleStreet' && $a_type != 'GoogleHybrid' && $a_type != 'GoogleSatellite' && $a_type != 'Google Physical' && $a_type != 'Google Street' && $a_type != 'Google Hybrid' && $a_type != 'Google Satellite'&& $a_type != 'Ext'){
       return "All";
     }
