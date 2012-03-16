@@ -74,7 +74,7 @@ There must be not format tag (like href ...) in the shortcode.
 == Changelog ==
 
 = 1.2.2 =
-* FIX: Shortcode generator did not show anything since Osmarender is not supported anymore.
+* FIX: Shortcode generator did not show anything since Osmarender service is not supported anymore.
 = 1.2.1 =
 * FIX: Warning: explode() expects parameter 2 ... on line 276
 = 1.2 =
