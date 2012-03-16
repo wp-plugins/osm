@@ -6,7 +6,7 @@ Tested up to: 3.3.1
 Stable tag: 1.2.1 
 
 OpenStreetMap plugin to embed maps. No API key! No Google API!
-Include your OSM map with GPX tracks, POIs, markers and geotagged posts. 
+Include your OSM (OpenStreetMap) map with GPX tracks, POIs, markers and geotagged posts. 
 
 == Description ==
 If you want to download the OSM-plugin you are right here!
