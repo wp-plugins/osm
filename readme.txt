@@ -3,7 +3,7 @@ Contributors: MiKa
 Tags: map, OpenStreetMap, Google Maps, googlemaps, geo, KML, GPX, geotag, geolocation, geocache, geocaching, OSM, travelogue, template tag, travelblog, OpenLayers, Open Layers, Open Street Map, CloudMade, YourNavigation, OpenRouteService, marker, POI, geocode, geotagging, google earth, Leaflet, location, Route, Tracks, WMS
 Requires at least: 2.5.1
 Tested up to: 3.3.1
-Stable tag: 1.2.1 
+Stable tag: 1.2.2 
 
 OpenStreetMap plugin to embed maps. No API key! No Google API!
 Include your OSM (OpenStreetMap) map with GPX tracks, POIs, markers and geotagged posts. 
@@ -73,6 +73,8 @@ There must be not format tag (like href ...) in the shortcode.
 
 == Changelog ==
 
+= 1.2.2 =
+* FIX: Shortcode generator did not show anything since Osmarender is not supported anymore.
 = 1.2.1 =
 * FIX: Warning: explode() expects parameter 2 ... on line 276
 = 1.2 =
