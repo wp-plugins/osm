@@ -2,8 +2,8 @@
 Contributors: MiKa
 Tags: map, OpenStreetMap, Google Maps, googlemaps, geo, KML, GPX, geotag, geolocation, geocache, geocaching, OSM, travelogue, template tag, travelblog, OpenLayers, Open Layers, Open Street Map, CloudMade, YourNavigation, OpenRouteService, marker, POI, geocode, geotagging, google earth, Leaflet, location, Route, Tracks, WMS
 Requires at least: 2.5.1
-Tested up to: 3.3.2
-Stable tag: 1.2.2 
+Tested up to: 3.4.1
+Stable tag: 1.2.3 
 
 OpenStreetMap plugin to embed maps. No API key! No Google API!
 Include your OSM (OpenStreetMap) map with GPX tracks, POIs, markers and geotagged posts. 
@@ -14,8 +14,7 @@ If you want to download the OSM-plugin you are right here!
 If you want to get detailed information about the OSM-plugin visit these pages:
 
 * OSM-plugin: [www.Fotomobil.at/wp-osm-plugin](http://www.Fotomobil.at/wp-osm-plugin/ "OSM-plugin")
-* OSM-plugin Forum EN: [www.Fotomobil.at/wp-osm-plugin-forum](http://www.Fotomobil.at/wp-osm-plugin-forum/ "OSM-plugin forum [EN]")
-* OSM-plugin Forum DE: [www.Fotomobil.at/wp-osm-plugin-forum-de](http://www.Fotomobil.at/wp-osm-plugin-forum-de/ "OSM-plugin forum [DE]")
+* OSM-plugin Forum: [www.Fotomobil.at/wp-osm-plugin-forum](http://www.Fotomobil.at/wp-osm-plugin-forum/ "OSM-plugin forum")
 * OSM-plugin Wiki: [wiki.OpenStreetMap.org](http://wiki.openstreetmap.org/wiki/Wp-osm-plugin "OSM-plugin Wiki")
 * Author blog: [www.HanBlog.net](http://www.HanBlog.net/ "HanBlog.net")
 
@@ -74,6 +73,8 @@ There must be not format tag (like href ...) in the shortcode.
 
 == Changelog ==
 
+= 1.2.3 =
+* FIX: Link OpenLayers 2.11 as GML layer is not supported anymore
 = 1.2.2 =
 * FIX: Shortcode generator did not show anything since Osmarender service is not supported anymore.
 = 1.2.1 =
