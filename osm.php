@@ -3,13 +3,13 @@
 Plugin Name: OSM
 Plugin URI: http://www.Fotomobil.at/wp-osm-plugin
 Description: Embeds maps in your blog and adds geo data to your posts.  Find samples and a forum on the <a href="http://www.Fotomobil.at/wp-osm-plugin">OSM plugin page</a>.  Simply create the shortcode to add it in your post at [<a href="options-general.php?page=osm.php">Settings</a>]
-Version: 1.2.3
+Version: 1.3
 Author: MiKa
 Author URI: http://www.HanBlog.net
 Minimum WordPress Version Required: 2.5.1
 */
 
-/*  (c) Copyright 2011  Michael Kang
+/*  (c) Copyright 2013  Michael Kang
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@ Minimum WordPress Version Required: 2.5.1
 */
 load_plugin_textdomain('OSM-plugin', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/');
 
-define ("PLUGIN_VER", "V1.2.3");
+define ("PLUGIN_VER", "V1.3");
 
 // modify anything about the marker for tagged posts here
 // instead of the coding.
@@ -573,11 +573,11 @@ class Osm
     'marker_routing'  => 'No',
     'msg_box'         => 'No',
     'custom_field'    => 'No',
-  	'control'		      => 'No',
-	  'extmap_type'     => 'No',
-	  'extmap_name'     => 'No',
-	  'extmap_address'  => 'No',
-	  'extmap_init'     => 'No',
+    'control'         => 'No',
+    'extmap_type'     => 'No',
+    'extmap_name'     => 'No',
+    'extmap_address'  => 'No',
+    'extmap_init'     => 'No',
     'map_border'      => 'none',
     'z_index'         => 'none',
     'm_txt_01'        => 'none',
@@ -683,18 +683,28 @@ class Osm
     $output .= '<div id="'.$MapName.'" style="width:'.$width.'px; height:'.$height.'px; overflow:hidden;padding:0px;border:'.$map_border.';">';
 
     
-	    if (Osm_LoadLibraryMode == SERVER_EMBEDDED){
+	if (Osm_LoadLibraryMode == SERVER_EMBEDDED){
 	      if (OL_LIBS_LOADED == 0) {
     	    $output .= '<script type="text/javascript" src="'.Osm_OL_LibraryLocation.'"></script>';
           define (OL_LIBS_LOADED, 1);
         }
   
         if ($type == 'Mapnik' || $type == 'Osmarender' || $type == 'CycleMap' || $type == 'All' || $type == 'AllOsm' || $type == 'Ext'){
-	        if (OSM_LIBS_LOADED == 0) {
+	  if (OSM_LIBS_LOADED == 0) {
             $output .= '<script type="text/javascript" src="'.Osm_OSM_LibraryLocation.'"></script>';
             define (OSM_LIBS_LOADED, 1);
           }
         }
+
+       if ($type == 'OpenSeaMap'){
+	  if (OSM_LIBS_LOADED == 0) {
+            $output .= '<script type="text/javascript" src="'.Osm_OSM_LibraryLocation.'"></script>';
+            $output .= '<script type="text/javascript" src="'.Osm_harbours_LibraryLocation.'"></script>';
+            $output .= '<script type="text/javascript" src="'.Osm_map_utils_LibraryLocation.'"></script>';
+            $output .= '<script type="text/javascript" src="'.Osm_utilities_LibraryLocation.'"></script>';
+            define (OSM_LIBS_LOADED, 1);
+          }
+       }
 
         if ($type == 'GooglePhysical' || $type == 'GoogleStreet' || $type == 'GoogleHybrid' || $type == 'GoogleSatellite' || $type == 'All' || $type == 'AllGoogle' || $a_type == 'Ext' || $type == 'Google Physical' || $type == 'Google Street' || $type == 'Google Hybrid' || $type == 'Google Satellite'){
 	        if (GOOGLE_LIBS_LOADED == 0) {
@@ -835,7 +845,7 @@ class Osm
     $output .= '})(jQuery)';
     $output .= '/* ]]> */';
     $output .= ' </script>';
-	$output .= '</div>';
+    $output .= '</div>';
     return $output;
 	}
 
@@ -851,10 +861,10 @@ class Osm
     // the zoomlevel of the map 
     'zoom'      => '7',     
     // track info
-  	'control'		      => 'No',
+    'control'     => 'No',
     'map_border'      => 'none',
     'z_index'         => 'none',
-	  'extmap_address'  => 'No',
+    'extmap_address'  => 'No',
     'theme'           => 'ol'
 	  ), $atts));
    
@@ -908,6 +918,16 @@ class Osm
         if ($type == 'Mapnik' || $type == 'Osmarender' || $type == 'CycleMap' || $type == 'All' || $type == 'AllOsm' || $type == 'Ext'){
 	        if (OSM_LIBS_LOADED == 0) {
             $output .= '<script type="text/javascript" src="'.Osm_OSM_LibraryLocation.'"></script>';
+            define (OSM_LIBS_LOADED, 1);
+          }
+        }
+
+        if ($type == 'OpenSeaMap'){
+	  if (OSM_LIBS_LOADED == 0) {
+            $output .= '<script type="text/javascript" src="'.Osm_OSM_LibraryLocation.'"></script>';
+            $output .= '<script type="text/javascript" src="'.Osm_harbours_LibraryLocation.'"></script>';
+            $output .= '<script type="text/javascript" src="'.Osm_map_utils_LibraryLocation.'"></script>';
+            $output .= '<script type="text/javascript" src="'.Osm_utilities_LibraryLocation.'"></script>';
             define (OSM_LIBS_LOADED, 1);
           }
         }

@@ -1,12 +1,12 @@
 === OSM ===
 Contributors: MiKa
-Tags: map, OpenStreetMap, Google Maps, googlemaps, geo, KML, GPX, geotag, geolocation, geocache, geocaching, OSM, travelogue, template tag, travelblog, OpenLayers, Open Layers, Open Street Map, CloudMade, YourNavigation, OpenRouteService, marker, POI, geocode, geotagging, google earth, Leaflet, location, Route, Tracks, WMS
+Tags: map, OpenStreetMap, Google Maps, googlemaps, geo, KML, GPX, geotag, geolocation, geocache, geocaching, OSM, travelogue, template tag, travelblog, OpenLayers, Open Layers, Open Street Map, CloudMade, YourNavigation, OpenRouteService, marker, POI, geocode, geotagging, google earth, Leaflet, location, Route, Tracks, WMS, Open Sea Map, OpenSeaMap
 Requires at least: 2.5.1
-Tested up to: 3.4.1
-Stable tag: 1.2.3 
+Tested up to: 3.5.1
+Stable tag: 1.3
 
 OpenStreetMap plugin to embed maps. No API key! No Google API!
-Include your OSM (OpenStreetMap) map with GPX tracks, POIs, markers and geotagged posts. 
+Include your OSM (OpenStreetMap and OpenSeaMap) map with GPX tracks, POIs, markers and geotagged posts. 
 
 == Description ==
 If you want to download the OSM-plugin you are right here!
@@ -20,7 +20,7 @@ If you want to get detailed information about the OSM-plugin visit these pages:
 
 Features of the OSM-plugin:
 
-* embeds OpenStreetMap and Google Maps maps to your posts/pages
+* embeds OpenStreetMap, OpenSeaMap and Google Maps maps to your posts/pages
 * embeds external maps to your posts/pages
 * visualizes several tracks / routs in different colours (gpx and kml)
 * visualizes popup-html-markers (list in txt-file or single in the shortcode)
@@ -72,7 +72,8 @@ There must be not format tag (like href ...) in the shortcode.
 
 
 == Changelog ==
-
+= 1.3 =
+* NEW: Support of OpenSeaMap
 = 1.2.3 =
 * FIX: Link OpenLayers 2.11 as GML layer is not supported anymore
 = 1.2.2 =

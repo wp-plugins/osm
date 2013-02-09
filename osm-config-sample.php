@@ -6,4 +6,8 @@ define ("Osm_OSM_LibraryLocation", 'http://www.openstreetmap.org/openlayers/Open
 //define ("Osm_OL_LibraryLocation", 'http://www.openlayers.org/api/OpenLayers.js');
 define ("Osm_OL_LibraryLocation", 'http://openlayers.org/api/2.11/OpenLayers.js');
 define ("Osm_GOOGLE_LibraryLocation", 'http://maps.google.com/maps/api/js?sensor=false');
+// OpenSeaMap scripts
+define ("Osm_harbours_LibraryLocation", 'http://map.openseamap.org/map/javascript/harbours.js');
+define ("Osm_map_utils_LibraryLocation", 'http://map.openseamap.org/map/javascript/map_utils.js');
+define ("Osm_utilities_LibraryLocation", 'http://map.openseamap.org/map/javascript/utilities.js');
 ?>

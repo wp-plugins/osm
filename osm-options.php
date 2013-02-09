@@ -147,7 +147,7 @@
 <br>
 <h3><span style="color:green"> >> <?php _e('Copy the shortcode and paste it into the content of your post/article: ','OSM-plugin') ?></span></h3>
 <div id="ShortCode_Div"><?php _e('If you click into the map the shortcode is displayed instead of this text','OSM-plugin') ?></div><br>
-
+<li><?php _e('NOTE: For OpenSeaMap just modify the type to type="OpenSeaMap" manually in the generated shortcode!','OSM-plugin') ?></li>
 <h3><?php _e('Some usefull sites for this plugin:','OSM-plugin') ?></h3>
 <ol>
   <li><?php _e('for advanced samples visit the ','OSM-plugin') ?><a target="_new" href="http://www.Fotomobil.at/wp-osm-plugin">osm-plugin page</a>.</li>

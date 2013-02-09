@@ -34,6 +34,24 @@ class Osm_OpenLayers
     else {
       $Layer .= ' OpenLayers.ImgPath = "'.OSM_PLUGIN_THEMES_URL.$a_theme.'/";';
     }
+$Layer .= ' function getTileURL(bounds) {';
+$Layer .= ' var res = this.map.getResolution();';
+$Layer .= ' var x = Math.round((bounds.left - this.maxExtent.left) / (res * this.tileSize.w));';
+$Layer .= ' var y = Math.round((this.maxExtent.top - bounds.top) / (res * this.tileSize.h));';
+$Layer .= ' var z = this.map.getZoom();';
+$Layer .= ' var limit = Math.pow(2, z);';
+$Layer .= ' if (y < 0 || y >= limit) {';
+$Layer .= ' return null;';
+$Layer .= ' } else {';
+$Layer .= ' x = ((x % limit) + limit) % limit;';
+$Layer .= ' url = this.url;';
+$Layer .= ' path= z + "/" + x + "/" + y + "." + this.type;';
+$Layer .= ' if (url instanceof Array) {';
+$Layer .= ' url = this.selectUrl(path, url);';	
+$Layer .= ' }';
+$Layer .= ' return url+path;';
+$Layer .= ' }';
+$Layer .= ' }';
     $Layer .= ' map = new OpenLayers.Map ("'.$a_LayerName.'", {';
     $Layer .= '            controls:[';
     if (($a_MapControl[0] != 'off') && (strtolower($a_Type)!= 'ext')) {
@@ -79,8 +97,15 @@ class Osm_OpenLayers
       $Layer .= 'var layerOSM_Attr = new OpenLayers.Layer.Vector("OSM-plugin",{attribution:"<a href=\"http://www.Fotomobil.at/wp-osm-plugin\">OSM plugin</a>"});';
       $Layer .= 'map.addLayers([layerMapnik, layerCycle, layerOSM_Attr]);';
       $Layer .= 'map.addControl(new OpenLayers.Control.LayerSwitcher());';
-
-
+    }
+    else if ($a_Type == 'OpenSeaMap'){
+      $Layer .= 'var layerMapnik   = new OpenLayers.Layer.OSM.Mapnik("Mapnik");';
+      $Layer .= 'var layerSeamark  = new OpenLayers.Layer.TMS("Seezeichen", "http://tiles.openseamap.org/seamark/", { numZoomLevels: 18, type: "png", getURL: getTileURL, isBaseLayer: false, displayOutsideMaxExtent: true});';
+      $Layer .= 'var layerPois = new OpenLayers.Layer.Vector("Haefen", { projection: new OpenLayers.Projection("EPSG:4326"), visibility: true, displayOutsideMaxExtent:true});';
+      $Layer .= 'layerPois.setOpacity(0.8);';
+      $Layer .= 'var layerOSM_Attr = new OpenLayers.Layer.Vector("OSM-plugin",{attribution:"<a href=\"http://www.Fotomobil.at/wp-osm-plugin\">OSM plugin</a>"});';
+      $Layer .= 'map.addLayers([layerMapnik, layerSeamark, layerPois, layerOSM_Attr]);';
+      $Layer .= 'map.addControl(new OpenLayers.Control.LayerSwitcher());';
     }
     else if ($a_Type == 'AllGoogle'){
       $Layer .= 'var layerGooglePhysical   = new OpenLayers.Layer.Google("Google Physical", {type: google.maps.MapTypeId.TERRAIN} );';
@@ -443,7 +468,7 @@ class Osm_OpenLayers
     if ($a_type == 'Osmarender'){
       return "Mapnik";
     }
-    if ($a_type != 'Mapnik' && $a_type != 'Osmarender' && $a_type != 'CycleMap' && $a_type != 'Google' && $a_type != 'All' && $a_type != 'AllGoogle' && $a_type != 'AllOsm' && $a_type != 'ext' && $a_type != 'GooglePhysical' && $a_type != 'GoogleStreet' && $a_type != 'GoogleHybrid' && $a_type != 'GoogleSatellite' && $a_type != 'Google Physical' && $a_type != 'Google Street' && $a_type != 'Google Hybrid' && $a_type != 'Google Satellite'&& $a_type != 'Ext'){
+    if ($a_type != 'Mapnik' && $a_type != 'Osmarender' && $a_type != 'CycleMap' && $a_type != 'OpenSeaMap' && $a_type != 'Google' && $a_type != 'All' && $a_type != 'AllGoogle' && $a_type != 'AllOsm' && $a_type != 'ext' && $a_type != 'GooglePhysical' && $a_type != 'GoogleStreet' && $a_type != 'GoogleHybrid' && $a_type != 'GoogleSatellite' && $a_type != 'Google Physical' && $a_type != 'Google Street' && $a_type != 'Google Hybrid' && $a_type != 'Google Satellite'&& $a_type != 'Ext'){
       return "All";
     }
     return $a_type;
