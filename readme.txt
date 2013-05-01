@@ -19,6 +19,10 @@ If you want to get detailed information about the OSM-plugin visit these pages:
 * OSM-plugin Wiki: [wiki.OpenStreetMap.org](http://wiki.openstreetmap.org/wiki/Wp-osm-plugin "OSM-plugin Wiki")
 * Author blog: [www.HanBlog.net](http://www.HanBlog.net/ "HanBlog.net")
 
+* Get a Beta Version here:
+  OSM-plugin: [WP-OSM-Plugin](http://wp-osm-plugin.hanblog.net/ "OSM-plugin")
+
+
 Features of the OSM-plugin:
 
 * embeds OpenStreetMap, OpenSeaMap and Google Maps maps to your posts/pages
