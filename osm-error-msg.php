@@ -2,7 +2,7 @@
 /*
   OSM Error Msg for OSM wordpress plugin
   MiKa * created: april 2009
-  plugin: http://www.Fotomobil.at/wp-osm-plugin
+  plugin: http://wp-osm-plugin.Hanblog.net
   blog:   http://www.HanBlog.net
 */
 ?>

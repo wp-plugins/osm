@@ -1,12 +1,12 @@
 <?php
 /*
 Plugin Name: OSM
-Plugin URI: http://www.Fotomobil.at/wp-osm-plugin
-Description: Embeds maps in your blog and adds geo data to your posts.  Find samples and a forum on the <a href="http://www.Fotomobil.at/wp-osm-plugin">OSM plugin page</a>.  Simply create the shortcode to add it in your post at [<a href="options-general.php?page=osm.php">Settings</a>]
-Version: 1.3
+Plugin URI: http://wp-osm-plugin.HanBlog.net
+Description: Embeds maps in your blog and adds geo data to your posts.  Find samples and a forum on the <a href="http://wp-osm-plugin.HanBlog.net">OSM plugin page</a>.  Simply create the shortcode to add it in your post at [<a href="options-general.php?page=osm.php">Settings</a>]
+Version: 2.0
 Author: MiKa
 Author URI: http://www.HanBlog.net
-Minimum WordPress Version Required: 2.5.1
+Minimum WordPress Version Required: 2.8
 */
 
 /*  (c) Copyright 2013  Michael Kang
@@ -27,7 +27,7 @@ Minimum WordPress Version Required: 2.5.1
 */
 load_plugin_textdomain('OSM-plugin', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/');
 
-define ("PLUGIN_VER", "V1.3");
+define ("PLUGIN_VER", "V2.0");
 
 // modify anything about the marker for tagged posts here
 // instead of the coding.
@@ -88,6 +88,7 @@ define ("OSM_PLUGIN_ICONS_URL", OSM_PLUGIN_URL."icons/");
 define ("URL_POST_MARKER", OSM_PLUGIN_URL.POST_MARKER_PNG);
 define ("OSM_PLUGIN_THEMES_URL", OSM_PLUGIN_URL."themes/");
 define( 'OSM_OPENLAYERS_THEMES_URL', WP_CONTENT_URL. '/uploads/osm/theme/' );
+define ("OSM_PLUGIN_JS_URL", OSM_PLUGIN_URL."js/");
 
 global $wp_version;
 if (version_compare($wp_version,"2.5.1","<")){
@@ -101,7 +102,8 @@ if (@(!include('osm-config.php'))){
 }
 
 // do not edit this
-define ("Osm_TraceLevel", DEBUG_ERROR); 
+define ("Osm_TraceLevel", DEBUG_ERROR);
+
 
 
 // If the function exists this file is called as upload_mimes.
@@ -117,9 +119,11 @@ if ( ! function_exists( 'fb_restrict_mime_types' ) ) {
   */
   function fb_restrict_mime_types( $mime_types ) {
     $mime_types['gpx'] = 'text/gpx';
+    $mime_types['kml'] = 'text/kml';
     return $mime_types;
   }
 }
+
 
 
 // If the function exists this file is called as post-upload-ui.
@@ -135,27 +139,60 @@ if ( ! function_exists( 'fb_restrict_mime_types_hint' ) ) {
 	function fb_restrict_mime_types_hint() {
 
 		echo '<br />';
-		_e( 'OSM plugin added: GPX' );
+		_e( 'OSM plugin added: GPX / KML' );
 	}
 }
 
+//hook to create the meta box
+add_action( 'add_meta_boxes', 'osm_map_create' );
 
-
-// If the function exists this file is called as post-upload-ui.
-// We don't do anything then.
-if ( ! function_exists( 'fb_restrict_mime_types_hint' ) ) {
-// add to wp
-add_action( 'post-upload-ui', 'fb_restrict_mime_types_hint' );
-/**
-* Get an Hint about the allowed mime types
-*
-* @return void
-*/
-function fb_restrict_mime_types_hint() {
-
-echo '<br />';
-_e( 'Accepted MIME types: PDF, DOC/DOCX' );
+function osm_map_create() {
+  //create a custom meta box
+  add_meta_box( 'osm-sc-meta', 'WP OSM Plugin shortcode generator', 'osm_map_create_function', 'post', 'normal', 'high' );	
 }
+
+function osm_map_create_function( $post ) {
+?>
+    <p>
+    <b>Generate</b>:
+    <select name="osm_mode">
+        <option value="sc_gen">OSM shortcode</option>
+        <option value="geotagging">geotag</option>
+    </select><br>
+    OSM shortcode options: <br>
+    <b>OSM control theme</b>: 
+    <select name="osm_theme">
+        <option value="none">none</option>
+        <option value="blue">blue</option>
+        <option value="dark">dark</option>
+        <option value="orange">orange</option>
+    </select>
+    <b>OSM marker</b>:
+    <select name="osm_marker">
+        <option value="none">none</option>
+        <option value="wpttemp-green.png">Waypoint Green</option>
+        <option value="wpttemp-red.png">Waypoint Red</option>
+        <option value="marker_blue.png">Marker Blue</option>
+        <option value="wpttemp-yellow.png">Marker Yellow</option>
+        <option value="car.png">Marker Car</option>
+        <option value="bus.png">Marker Bus</option>
+        <option value="bicycling.png">Marker Bicycling</option>
+        <option value="airport.png">Marker Airport</option>
+        <option value="motorbike.png">Marker Motorbike</option>
+        <option value="hostel.png">Marker Hostel</option>
+        <option value="guest_house.png">Marker Guesthouse</option>
+        <option value="camping.png">Marker Camping</option>
+        <option value="geocache.png">Geocache</option>
+        <option value="styria_linux.png">Styria Tux</option>
+    </select>
+    </p>
+
+<?php echo Osm::sc_showMap(array('msg_box'=>'metabox_sc_gen','lat'=>'50','long'=>'18.5','zoom'=>'3', 'type'=>'All', 'width'=>'450','height'=>'300', 'map_border'=>'thin solid grey', 'theme'=>'dark', 'control'=>'mouseposition,scaleline')); ?>
+  <br>
+  <h3><span style="color:green"> >> <?php _e('Copy the generated shortcode/customfield/argument: ','OSM-plugin') ?></span></h3>
+  <div id="ShortCode_Div"><?php _e('If you click into the map this text is replaced','OSM-plugin') ?>
+  </div><br>
+  <?php
 }
 
 include('osm-openlayers.php');
@@ -164,7 +201,8 @@ include('osm-openlayers.php');
 // with this namespace
 class Osm
 { 
-	function Osm() {
+
+    function Osm() {
 		$this->localizionName = 'Osm';
     //$this->TraceLevel = DEBUG_INFO;
 		$this->ErrorMsg = new WP_Error();
@@ -178,8 +216,8 @@ class Osm
     // add the WP shortcode
     add_shortcode('osm_map',array(&$this, 'sc_showMap'));
     add_shortcode('osm_image',array(&$this, 'sc_showImage'));
-	}
-  
+  }
+
   function initErrorMsg()
   {
     include('osm-error-msg.php');	
@@ -288,7 +326,7 @@ class Osm
     // let's store geo data with W3 standard
 		echo "<meta name=\"ICBM\" content=\"{$lat}, {$lon}\" />\n";
 		echo "<meta name=\"DC.title\" content=\"{$wp_query->post->post_title}\" />\n";
-    echo "<meta name=\"geo.placename\" content=\"{$wp_query->post->post_title}\"/>\n"; 
+                echo "<meta name=\"geo.placename\" content=\"{$wp_query->post->post_title}\"/>\n"; 
 		echo "<meta name=\"geo.position\"  content=\"{$lat};{$lon}\" />\n";
 	}
     
@@ -380,16 +418,16 @@ class Osm
 
   // if you miss a colour, just add it
   function checkStyleColour($a_colour){
-    if ($a_colour != 'red' && $a_colour != 'blue' && $a_colour != 'black' && $a_colour != 'green'){
+    if ($a_colour != 'red' && $a_colour != 'blue' && $a_colour != 'black' && $a_colour != 'green' && $a_colour != 'orange'){
       return "blue";
     }
     return $a_colour;
   }
 
-  // if you miss a colour, just add it
-  function getImportLayer($a_import_type, $a_import_UserName, $Icon, $a_import_osm_cat_incl_name,  $a_import_osm_cat_excl_name){
+  // get the layer for the markers
+  function getImportLayer($a_type, $a_UserName, $Icon, $a_osm_cat_incl_name, $a_osm_cat_excl_name, $a_line_color, $a_line_width, $a_line_opacity){
 
-    if ($a_import_type  == 'osm_l'){
+    if ($a_type  == 'osm_l'){
       $LayerName = 'TaggedPosts';
       if ($Icon[name] != 'NoName'){ // <= ToDo
         $PopUp = 'true';     
@@ -401,25 +439,25 @@ class Osm
     }    
     
     // import data from tagged posts
-    else if ($a_import_type  == 'osm'){
+    else if ($a_type  == 'osm'){
       $LayerName = 'TaggedPosts';
       $PopUp = 'false';
     }
 
     // import data from wpgmg
-    else if ($a_import_type  == 'wpgmg'){
+    else if ($a_type  == 'wpgmg'){
       $LayerName = 'TaggedPosts';
       $PopUp = 'false';
     }
     // import data from gcstats
-    else if ($a_import_type == 'gcstats'){
+    else if ($a_type == 'gcstats'){
       $LayerName     = 'GeoCaches';
       $PopUp = 'true';
       $Icon = Osm::getIconsize(GCSTATS_MARKER_PNG);
       $Icon[name] = GCSTATS_MARKER_PNG;
     }
     // import data from ecf
-    else if ($a_import_type == 'ecf'){
+    else if ($a_type == 'ecf'){
       $LayerName = 'Comments';
       $PopUp = 'true';
       $Icon = Osm::getIconsize(INDIV_MARKER);
@@ -428,8 +466,13 @@ class Osm
     else{
       $this->traceText(DEBUG_ERROR, "e_import_unknwon");
     }
-    $MarkerArray = $this->createMarkerList($a_import_type, $a_import_UserName,'Empty', $a_import_osm_cat_incl_name,  $a_import_osm_cat_excl_name);
-    return Osm_OpenLayers::addMarkerListLayer($LayerName, $Icon, $MarkerArray, $PopUp);
+    $MarkerArray = $this->createMarkerList($a_type, $a_UserName,'Empty', $a_osm_cat_incl_name,  $a_osm_cat_excl_name);
+     if ($a_line_color != 'none'){
+       $line_color = Osm::checkStyleColour($a_line_color);
+       $txt = Osm_OpenLayers::addLines($MarkerArray, $line_color, $a_line_width);
+     }
+    $txt .= Osm_OpenLayers::addMarkerListLayer($LayerName, $Icon, $MarkerArray, $PopUp);
+    return $txt;
   }
 
  // check Lat and Long
@@ -569,6 +612,9 @@ class Osm
     'import'          => 'No',
     'import_osm_cat_incl_name'  => 'Osm_All',
     'import_osm_cat_excl_name'  => 'Osm_None',
+    'import_osm_line_color' => 'none', 
+    'import_osm_line_width' => '4',
+    'import_osm_line_opacity' => '0.9',
     'marker'          => 'No',
     'marker_routing'  => 'No',
     'msg_box'         => 'No',
@@ -584,7 +630,17 @@ class Osm
     'm_txt_02'        => 'none',
     'm_txt_03'        => 'none',
     'm_txt_04'        => 'none',
-    'theme'           => 'ol'
+    'theme'           => 'ol',
+    'disc_center_list'          => '',          // in decimal degrees
+    'disc_radius_list'          => '',          // in meters
+    'disc_center_opacity_list'  => '0.5',       // float 0->1
+    'disc_center_color_list'    => 'red',       // html name or #rvb or #rrvvbb
+    'disc_border_width_list'    => '3',         // integer
+    'disc_border_color_list'    => 'blue',      // html name or #rvb or #rrvvbb
+    'disc_border_opacity_list'  => '0.5',      // float 0->1
+    'disc_fill_color_list'      => 'lightblue',// html name or #rvb or #rrvvbb
+    'disc_fill_opacity_list'    => '0.5'       // float 0->1
+
 	  ), $atts));
    
     if (($zoom < ZOOM_LEVEL_MIN || $zoom > ZOOM_LEVEL_MAX) && ($zoom != 'auto')){
@@ -675,6 +731,9 @@ class Osm
       $output .= '.olControlNoSelect {z-index: '.$z_index.'+1.'.' !important;}';    
       $output .= '.olControlAttribution {z-index: '.$z_index.'+1.'.' !important;}';
     }
+      $output .= '.olTileImage { max-width: none; max-height: none; vertical-align: none;}';
+      $output .= 'img { max-width: none; max-height: none; vertical-align: none;}';      
+
      
 	  $output .= '#'.$MapName.' {clear: both; padding: 0px; margin: 0px; border: 0px; width: 100%; height: 100%; margin-top:0px; margin-right:0px;margin-left:0px; margin-bottom:0px; left: 0px;}';
     $output .= '#'.$MapName.' img{clear: both; padding: 0px; margin: 0px; border: 0px; width: 100%; height: 100%; position: absolute; margin-top:0px; margin-right:0px;margin-left:0px; margin-bottom:0px;}';
@@ -712,13 +771,15 @@ class Osm
             define (GOOGLE_LIBS_LOADED, 1);
           }
         }
+         $output .= '<script type="text/javascript" src="'.OSM_PLUGIN_JS_URL.'osm-plugin-lib.js"></script>';
+
       }
-	    elseif (Osm_LoadLibraryMode == SERVER_WP_ENQUEUE){
-	    // registered and loaded by WordPress
-	    }
-	    else{
-	      $this->traceText(DEBUG_ERROR, "e_library_config");
-	    }
+      elseif (Osm_LoadLibraryMode == SERVER_WP_ENQUEUE){
+      // registered and loaded by WordPress
+      }
+      else{
+        $this->traceText(DEBUG_ERROR, "e_library_config");
+      }
       
     $output .= '<script type="text/javascript">';
     $output .= '/* <![CDATA[ */';
@@ -729,7 +790,7 @@ class Osm
 
     // add a clickhandler if needed
     $msg_box = strtolower($msg_box);
-    if ( $msg_box == 'sc_gen' || $msg_box == 'lat_long'){
+    if ( $msg_box == 'sc_gen' || $msg_box == 'lat_long' || $msg_box == 'metabox_sc_gen'){
       $output .= Osm_OpenLayers::AddClickHandler($msg_box);
     }
     // set center and zoom of the map
@@ -784,8 +845,30 @@ class Osm
     }
 
     if ($import_type  != 'no'){
-      $output .= Osm::getImportLayer($import_type, $import_UserName, $Icon, $import_osm_cat_incl_name,  $import_osm_cat_excl_name);
+      $output .= Osm::getImportLayer($import_type, $import_UserName, $Icon, $import_osm_cat_incl_name,  $import_osm_cat_excl_name, $import_osm_line_color, $import_osm_line_width, $import_osm_line_opacity);
     }
+
+//++
+    if ($disc_center_list != ''){
+      $centerListArray        = explode( ',', $disc_center_list );
+      $radiusListArray        = explode( ',', $disc_radius_list );
+      $centerOpacityListArray = explode( ',', $disc_center_opacity_list);
+      $centerColorListArray   = explode( ',', $disc_center_color_list );
+      $borderWidthListArray   = explode( ',', $disc_border_width_list );
+      $borderColorListArray   = explode( ',', $disc_border_color_list );
+      $borderOpacityListArray = explode( ',', $disc_border_opacity_list);
+      $fillColorListArray     = explode( ',', $disc_fill_color_list );
+      $fillOpacityListArray   = explode( ',', $disc_fill_opacity_list);
+      $this->traceText(DEBUG_INFO, "(NumOfdiscs: ".sizeof($centerListArray)." NumOfradius: ".sizeof($radiusListArray).")!");
+
+      if (sizeof($centerListArray) == sizeof($radiusListArray) && !empty($centerListArray) && !empty($radiusListArray)   ) {
+        $output .= Osm_OpenLayers::addDiscs($centerListArray,$radiusListArray,$centerOpacityListArray,$centerColorListArray, $borderWidthListArray,$borderColorListArray,$borderOpacityListArray,$fillColorListArray,$fillOpacityListArray);
+      } else {
+        $this->traceText(DEBUG_ERROR, "Discs parameters error");
+      }
+    }
+//--
+
   
    // just add single marker 
    if ($marker  != 'No'){  
@@ -848,8 +931,6 @@ class Osm
     $output .= '</div>';
     return $output;
 	}
-
-////////////++++
 
   // execute the java script to display 
   // the zoomify 
@@ -938,6 +1019,7 @@ class Osm
             define (GOOGLE_LIBS_LOADED, 1);
           }
         }
+         $output .= '<script type="text/javascript" src="'.OSM_PLUGIN_JS_URL.'osm-plugin-lib.js"></script>';
       }
 	    elseif (Osm_LoadLibraryMode == SERVER_WP_ENQUEUE){
 	    // registered and loaded by WordPress
@@ -965,16 +1047,16 @@ class Osm
     $output .= ' </script>';
 	$output .= '</div>';
     return $output;
-	}
+	}	
 
-////////////----	
-
-	// add OSM-config page to Settings
-	function admin_menu($not_used){
+ // add OSM-config page to Settings
+    function admin_menu($not_used){
     // place the info in the plugin settings page
 		add_options_page(__('OpenStreetMap Manager', 'Osm'), __('OSM', 'Osm'), 5, basename(__FILE__), array('Osm', 'options_page_osm'));
-	}
+    }
   
+
+
   // ask WP to handle the loading of scripts
   // if it is not admin area
   function show_enqueue_script() {
@@ -989,6 +1071,7 @@ class Osm
 	    wp_enqueue_script('OlScript',Osm_OL_LibraryLocation);
       wp_enqueue_script('OsnScript',Osm_OSM_LibraryLocation);
       wp_enqueue_script('OsnScript',Osm_GOOGLE_LibraryLocation);
+      wp_enqueue_script('OsnScript',OSM_PLUGIN_JS_URL.'osm-plugin-lib.js');
       define (OSM_LIBS_LOADED, 1);
       define (OL_LIBS_LOADED, 1);
       define (GOOGLE_LIBS_LOADED, 1);
@@ -1003,6 +1086,7 @@ $pOsm = new Osm();
 
 // This is meant to be the interface used
 // in your WP-template
+
 // returns Lat data of coordination
 function OSM_getCoordinateLat($a_import)
 {

@@ -1,9 +1,9 @@
-=== OSM - OpenStreetMap ===
+=== OSM ===
 Contributors: MiKa
 Tags: map, OpenStreetMap, Google Maps, googlemaps, geo, KML, GPX, geotag, geolocation, geocache, geocaching, OSM, travelogue, template tag, travelblog, OpenLayers, Open Layers, Open Street Map, CloudMade, YourNavigation, OpenRouteService, marker, POI, geocode, geotagging, google earth, Leaflet, location, Route, Tracks, WMS, Open Sea Map, OpenSeaMap
-Requires at least: 2.5.1
+Requires at least: 2.8
 Tested up to: 3.5.1
-Stable tag: 1.3
+Stable tag: 2.0
 
 OpenStreetMap plugin to embed maps. No API key! No Google API!
 Include your OSM (OpenStreetMap and OpenSeaMap) map with GPX tracks, POIs, markers and geotagged posts. 
@@ -19,15 +19,11 @@ If you want to get detailed information about the OSM-plugin visit these pages:
 * OSM-plugin Wiki: [wiki.OpenStreetMap.org](http://wiki.openstreetmap.org/wiki/Wp-osm-plugin "OSM-plugin Wiki")
 * Author blog: [www.HanBlog.net](http://www.HanBlog.net/ "HanBlog.net")
 
-* Get a Beta Version here:
-  OSM-plugin: [WP-OSM-Plugin](http://wp-osm-plugin.hanblog.net/ "OSM-plugin")
-
-
 Features of the OSM-plugin:
 
 * embeds OpenStreetMap, OpenSeaMap and Google Maps maps to your posts/pages
 * embeds external maps to your posts/pages
-* visualizes several tracks / routs in different colours (gpx and kml)
+* visualizes several tracks / routes in different colours (gpx and kml)
 * visualizes popup-html-markers (list in txt-file or single in the shortcode)
 * visualize all geotagged posts of your blog in one map with/without a link to the post
 * use custom field to add geolocation to your blog
@@ -40,6 +36,7 @@ Languages:
 * English
 * Deutsch
 * Japanese [by Sykane]
+* French [by Tounoki]
 
 Licenses of the maps:
 
@@ -65,10 +62,6 @@ No!
 
 Yes.
 
-= Why is there no map in the "Edit post" page ? =
-
-Since most people do not add a map in every post I decided to put it in the settings page. If 
-there are some requests to put it in the Edit post I will make it configureable.
 
 = I do not see my gpx file / marker file in the map ? =
 
@@ -77,6 +70,15 @@ There must be not format tag (like href ...) in the shortcode.
 
 
 == Changelog ==
+= 2.0 =
+* NEW: ShortCode Generator at edit posts
+* NEW: High precision to set a marker at the backend
+* NEW: Display circles / discs in your map
+* NEW: Upload and display KML files (Popup Points)
+* NEW: Draw line between geotagged posts automatically 
+* NEW: OpenLayers 2.12
+* NEW: French translation
+* NEW: Predefined OSM themes for control and map border
 = 1.3 =
 * NEW: Support of OpenSeaMap
 = 1.2.3 =

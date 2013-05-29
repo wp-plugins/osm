@@ -2,7 +2,7 @@
 /*
   Option page for OSM wordpress plugin
   MiKa * created: april 2009
-  plugin: http://www.Fotomobil.at/wp-osm-plugin
+  plugin: http://wp-osm-plugin.HanBlog.net
   blog:   http://www.HanBlog.net
 */
 ?>
@@ -14,7 +14,6 @@
   <td><h2>OpenStreetMap Plugin <?php echo PLUGIN_VER ?> </h2></td>
  </tr>
 </table>
-<table border="0">
 <h3><?php _e('How to add a map to your post/page','OSM-plugin') ?></h3>
 <ol>
   <li><?php _e('choose a marker if you want to','OSM-plugin') ?></li>
@@ -150,17 +149,17 @@
 <li><?php _e('NOTE: For OpenSeaMap just modify the type to type="OpenSeaMap" manually in the generated shortcode!','OSM-plugin') ?></li>
 <h3><?php _e('Some usefull sites for this plugin:','OSM-plugin') ?></h3>
 <ol>
-  <li><?php _e('for advanced samples visit the ','OSM-plugin') ?><a target="_new" href="http://www.Fotomobil.at/wp-osm-plugin">osm-plugin page</a>.</li>
+  <li><?php _e('for advanced samples visit the ','OSM-plugin') ?><a target="_new" href="http://wp-osm-plugin.HanBlog.net">osm-plugin page</a>.</li>
   <li><?php _e('for detailed information about usage visit the ','OSM-plugin') ?><a target="_new" href="http://wiki.openstreetmap.org/wiki/Wp-osm-plugin">osm-wiki page</a>.</li>
-  <li><?php _e('for questions, bugs and other feedback visit the','OSM-plugin') ?> <a target="_new" href="http://www.Fotomobil.at/wp-osm-plugin-forum">osm-plugin forum</a>.</li>
+  <li><?php _e('for questions, bugs and other feedback visit the','OSM-plugin') ?> <a target="_new" href="http://wp-osm-plugin.HanBlog.net">osm-plugin forum</a>.</li>
   <li><?php _e('find news and articles about the plugin at the ','OSM-plugin') ?><a target="_new" href="http://www.HanBlog.net">osm-author page</a>.</li>
   <li><?php _e('download the last version at WordPress.org ','OSM-plugin') ?><a target="_new" href="http://wordpress.org/extend/plugins/osm/">osm-plugin download</a>.</li>
 </ol>
 <h3><?php _e('If you want to express thanks for this plugin ...','OSM-plugin') ?></h3>
 <ol>
   <li><?php _e('do not donate money but submit a photo at the ','OSM-plugin') ?><a target="_new" href="http://www.Fotomobil.at">Fotomobil.at</a> <?php _e('project.','OSM-plugin') ?></li>
-  <li><?php _e('put a link to the osm-plugin page on your site ','OSM-plugin') ?><a target="_new" href="http://www.Fotomobil.at/wp-osm-plugin">www.Fotomobil.at/wp-osm-plugin</a>.</li>
-  <li><?php _e('or simply leave a message with a link to your page at ','OSM-plugin') ?><a target="_new" href="http://www.Fotomobil.at/wp-osm-plugin-forum">www.Fotomobil.at/wp-osm-plugin-forum</a>.</li>
+  <li><?php _e('put a link to the osm-plugin page on your site ','OSM-plugin') ?><a target="_new" href="http://wp-osm-plugin.HanBlog.net">WP-OSM-Plugin.HanBlog.net</a>.</li>
+  <li><?php _e('or simply leave a message with a link to your page at ','OSM-plugin') ?><a target="_new" href="http://wp-osm-plugin.HanBlog.net">wp-osm-plugin-forum</a>.</li>
   <li><?php _e('post an article about ','OSM-plugin') ?><a target="_new" href="http://www.OpenStreetMap.org">OpenStreetMap</a><?php _e(' on your blog.','OSM-plugin') ?></li>
   <li><?php _e('give this plugin a good ranking at ','OSM-plugin') ?><a target="_new" href="http://wordpress.org/extend/plugins/osm/">WordPress.org</a>.</li>
 </ol>
