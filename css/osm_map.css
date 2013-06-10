@@ -3,16 +3,16 @@
 /* note: there is also some style information in the php-file */
 
 .entry .olMapViewport img, .entry-content img, .widget img {
-  max-width: none; 
-  max-height: none;
-  vertical-align: none;
+  max-width: none !important; 
+  max-height: none !important;
+  vertical-align: none !important;
 }
 
 
 .olTileImage {
-  max-width: none; 
-  max-height: none;
-  vertical-align: none;
+  max-width: none !important; 
+  max-height: none !important;
+  vertical-align: none !important;
 }
    
 .olControlAttribution {

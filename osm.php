@@ -3,7 +3,7 @@
 Plugin Name: OSM
 Plugin URI: http://wp-osm-plugin.HanBlog.net
 Description: Embeds maps in your blog and adds geo data to your posts.  Find samples and a forum on the <a href="http://wp-osm-plugin.HanBlog.net">OSM plugin page</a>.  Simply create the shortcode to add it in your post at [<a href="options-general.php?page=osm.php">Settings</a>]
-Version: 2.0
+Version: 2.1
 Author: MiKa
 Author URI: http://www.HanBlog.net
 Minimum WordPress Version Required: 2.8
@@ -27,7 +27,7 @@ Minimum WordPress Version Required: 2.8
 */
 load_plugin_textdomain('OSM-plugin', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/');
 
-define ("PLUGIN_VER", "V2.0");
+define ("PLUGIN_VER", "V2.1");
 
 // modify anything about the marker for tagged posts here
 // instead of the coding.
@@ -148,7 +148,10 @@ add_action( 'add_meta_boxes', 'osm_map_create' );
 
 function osm_map_create() {
   //create a custom meta box
-  add_meta_box( 'osm-sc-meta', 'WP OSM Plugin shortcode generator', 'osm_map_create_function', 'post', 'normal', 'high' );	
+  $screens = array( 'post', 'page' );
+  foreach ($screens as $screen) {
+    add_meta_box( 'osm-sc-meta', 'WP OSM Plugin shortcode generator', 'osm_map_create_function', $screen, 'normal', 'high' );
+  }
 }
 
 function osm_map_create_function( $post ) {
@@ -731,8 +734,8 @@ class Osm
       $output .= '.olControlNoSelect {z-index: '.$z_index.'+1.'.' !important;}';    
       $output .= '.olControlAttribution {z-index: '.$z_index.'+1.'.' !important;}';
     }
-      $output .= '.olTileImage { max-width: none; max-height: none; vertical-align: none;}';
-      $output .= 'img { max-width: none; max-height: none; vertical-align: none;}';      
+      $output .= '.olTileImage { max-width: none !important; max-height: none !important; vertical-align: none;}';
+      $output .= 'img { max-width: none !important; max-height: none !important; vertical-align: none;}';      
 
      
 	  $output .= '#'.$MapName.' {clear: both; padding: 0px; margin: 0px; border: 0px; width: 100%; height: 100%; margin-top:0px; margin-right:0px;margin-left:0px; margin-bottom:0px; left: 0px;}';
@@ -847,7 +850,7 @@ class Osm
     if ($import_type  != 'no'){
       $output .= Osm::getImportLayer($import_type, $import_UserName, $Icon, $import_osm_cat_incl_name,  $import_osm_cat_excl_name, $import_osm_line_color, $import_osm_line_width, $import_osm_line_opacity);
     }
-
+    
 //++
     if ($disc_center_list != ''){
       $centerListArray        = explode( ',', $disc_center_list );
@@ -922,7 +925,10 @@ class Osm
      $MarkerArray[] = array('lat'=> $temp_lat,'lon'=>$temp_lon,'text'=>$temp_popup,'popup_height'=>'150', 'popup_width'=>'150');
      $output .= Osm_OpenLayers::addMarkerListLayer('Marker', $Icon,$MarkerArray,$DoPopUp);
     }
-  
+
+    // set center and zoom of the map
+    $output .= Osm_OpenLayers::setMapCenterAndZoom($lat, $long, $zoom);
+
     //$output .= '}';
     //$output .= ');';
     $output .= '})(jQuery)';

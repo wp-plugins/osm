@@ -99,7 +99,8 @@ class Osm_OpenLayers
     }
     else if (($a_MapControl[0] != 'off') && (strtolower($a_Type)== 'ext')){
       $Layer .= '              new OpenLayers.Control.Navigation(),';
-      $Layer .= '              new OpenLayers.Control.PanZoom()';
+      $Layer .= '              new OpenLayers.Control.PanZoom(),';
+     $Layer .= '              new OpenLayers.Control.Attribution()';
     }
     else if (($a_MapControl[0] == 'off') && (strtolower($a_Type)== 'ext')){
       // there is nothing to do
@@ -175,7 +176,7 @@ class Osm_OpenLayers
         $Layer .= 'var lmap = new OpenLayers.Layer.Google("Google Satellite", {type: google.maps.MapTypeId.SATELLITE} );';
       }
       else if (($a_Type == 'Ext') || ($a_Type == 'ext')) {
-        $Layer .= 'var lmap = new OpenLayers.Layer.'.$a_ExtType.'("'.$a_ExtName.'","'.$a_ExtAddress.'",{'.$a_ExtInit.'});';
+        $Layer .= 'var lmap = new OpenLayers.Layer.'.$a_ExtType.'("'.$a_ExtName.'","'.$a_ExtAddress.'",{'.$a_ExtInit.', attribution: "OpenLayers with"});';
       }
       $Layer .= 'var layerOSM_Attr = new OpenLayers.Layer.Vector("OSM-plugin",{attribution:"<a href=\"http://wp-osm-plugin.hanblog.net\">OSM plugin</a>"});';
       $Layer .= 'map.addLayers([lmap, layerOSM_Attr]);';

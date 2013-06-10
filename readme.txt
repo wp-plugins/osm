@@ -3,7 +3,7 @@ Contributors: MiKa
 Tags: map, OpenStreetMap, Google Maps, googlemaps, geo, KML, GPX, geotag, geolocation, geocache, geocaching, OSM, travelogue, template tag, travelblog, OpenLayers, Open Layers, Open Street Map, CloudMade, YourNavigation, OpenRouteService, marker, POI, geocode, geotagging, google earth, Leaflet, location, Route, Tracks, WMS, Open Sea Map, OpenSeaMap
 Requires at least: 2.8
 Tested up to: 3.5.1
-Stable tag: 2.0
+Stable tag: 2.1
 
 OpenStreetMap plugin to embed maps. No API key! No Google API!
 Include your OSM (OpenStreetMap and OpenSeaMap) map with GPX tracks, POIs, markers and geotagged posts. 
@@ -42,6 +42,7 @@ Licenses of the maps:
 
 * OpenStreetMap: [OpenStreetMap License](http://wiki.openstreetmap.org/wiki/OpenStreetMap_License) 
 * Google Maps: [Google Maps Terms of Service](http://code.google.com/intl/de-DE/apis/maps/terms.html)
+* Ext Maps: Depends on the map you are including - check it before including it!
 
 == Installation ==
 
@@ -70,6 +71,11 @@ There must be not format tag (like href ...) in the shortcode.
 
 
 == Changelog ==
+
+= 2.1 =
+* NEW: ShortCode Generator also at pages
+* FIX: Pink Stripes at adaptive WP theme
+* FIX: Center of the map is not influenced by marker anymore
 = 2.0 =
 * NEW: ShortCode Generator at edit posts
 * NEW: High precision to set a marker at the backend
