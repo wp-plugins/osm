@@ -3,7 +3,7 @@
 Plugin Name: OSM
 Plugin URI: http://wp-osm-plugin.HanBlog.net
 Description: Embeds maps in your blog and adds geo data to your posts.  Find samples and a forum on the <a href="http://wp-osm-plugin.HanBlog.net">OSM plugin page</a>.  Simply create the shortcode to add it in your post at [<a href="options-general.php?page=osm.php">Settings</a>]
-Version: 2.1
+Version: 2.2
 Author: MiKa
 Author URI: http://www.HanBlog.net
 Minimum WordPress Version Required: 2.8
@@ -27,7 +27,7 @@ Minimum WordPress Version Required: 2.8
 */
 load_plugin_textdomain('OSM-plugin', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/');
 
-define ("PLUGIN_VER", "V2.1");
+define ("PLUGIN_VER", "V2.2");
 
 // modify anything about the marker for tagged posts here
 // instead of the coding.
@@ -309,22 +309,22 @@ class Osm
 
     $lat = '';
     $lon = '';
-    
     $CustomField =  get_option('osm_custom_field');
-
-    if (get_post_meta($post->ID, $CustomField, true)){
+    if (($CustomField != false) && (get_post_meta($post->ID, $CustomField, true))){
       $PostLatLon = get_post_meta($post->ID, $CustomField, true);
-		  // list($lat, $lon) = explode(',', $PostLatLon); produced warning on some blogs ToDo
-    }
+      if (!empty($PostLatLon)) {
+        list($lat, $lon) = explode(',', $PostLatLon); 
+      }
+    }   
 
-		if(is_single() && ($lat != '') && ($lon != '')){
-			$title = convert_chars(strip_tags(get_bloginfo("name")))." - ".$wp_query->post->post_title;
+    if(is_single() && ($lat != '') && ($lon != '')){
+      $title = convert_chars(strip_tags(get_bloginfo("name")))." - ".$wp_query->post->post_title;
       $this->traceText(HTML_COMMENT, 'OSM plugin '.PLUGIN_VER.': adding geo meta tags:');
-		}
-		else{
+    }
+    else{
       $this->traceText(HTML_COMMENT, 'OSM plugin '.PLUGIN_VER.': did not add geo meta tags.');
-			return;
-		} 
+    return;
+    } 
     
     // let's store geo data with W3 standard
 		echo "<meta name=\"ICBM\" content=\"{$lat}, {$lon}\" />\n";
@@ -734,15 +734,14 @@ class Osm
       $output .= '.olControlNoSelect {z-index: '.$z_index.'+1.'.' !important;}';    
       $output .= '.olControlAttribution {z-index: '.$z_index.'+1.'.' !important;}';
     }
-      $output .= '.olTileImage { max-width: none !important; max-height: none !important; vertical-align: none;}';
-      $output .= 'img { max-width: none !important; max-height: none !important; vertical-align: none;}';      
+    $output .= '.olTileImage { max-width: none !important; max-height: none !important; vertical-align: none;}';
+    $output .= '.OSM_Map img { max-width: none !important; max-height: none !important; vertical-align: none;}';      
 
-     
-	  $output .= '#'.$MapName.' {clear: both; padding: 0px; margin: 0px; border: 0px; width: 100%; height: 100%; margin-top:0px; margin-right:0px;margin-left:0px; margin-bottom:0px; left: 0px;}';
+    $output .= '#'.$MapName.' {clear: both; padding: 0px; margin: 0px; border: 0px; width: 100%; height: 100%; margin-top:0px; margin-right:0px;margin-left:0px; margin-bottom:0px; left: 0px;}';
     $output .= '#'.$MapName.' img{clear: both; padding: 0px; margin: 0px; border: 0px; width: 100%; height: 100%; position: absolute; margin-top:0px; margin-right:0px;margin-left:0px; margin-bottom:0px;}';
-	  $output .= '</style>';
+    $output .= '</style>';
 
-    $output .= '<div id="'.$MapName.'" style="width:'.$width.'px; height:'.$height.'px; overflow:hidden;padding:0px;border:'.$map_border.';">';
+    $output .= '<div id="'.$MapName.'" class="OSM_Map" style="width:'.$width.'px; height:'.$height.'px; overflow:hidden;padding:0px;border:'.$map_border.';">';
 
     
 	if (Osm_LoadLibraryMode == SERVER_EMBEDDED){
@@ -884,19 +883,19 @@ class Osm
 
      $temp_popup_custom_field = trim($temp_popup_custom_field);
      $temp_popup = get_post_meta($post->ID, $temp_popup_custom_field, true); 
-
-	   if ($m_txt_01 != 'none'){
+ 
+     if ($m_txt_01 != 'none'){
        $temp_popup .= '<br>'.$m_txt_01;
-	   }
-	   if ($m_txt_02 != 'none'){
+     }
+     if ($m_txt_02 != 'none'){
        $temp_popup .= '<br>'.$m_txt_02;
-	   }
-	   if ($m_txt_03 != 'none'){
+     }
+     if ($m_txt_03 != 'none'){
        $temp_popup .= '<br>'.$m_txt_03;
-	   }	   
+     }	   
      if ($m_txt_04 != 'none'){
        $temp_popup .= '<br>'.$m_txt_04;
-	   }
+     }
 
      $marker_routing = strtolower($marker_routing);
      if ($marker_routing != 'no') { 
@@ -993,7 +992,7 @@ class Osm
     $output .= '#'.$MapName.' img{clear: both; padding: 0px; margin: 0px; border: 0px; width: 100%; height: 100%; position: absolute; margin-top:0px; margin-right:0px;margin-left:0px; margin-bottom:0px;}';
 	  $output .= '</style>';
 
-    $output .= '<div id="'.$MapName.'" style="width:'.$width.'px; height:'.$height.'px; overflow:hidden;padding:0px;border:'.$map_border.';">';
+    $output .= '<div id="'.$MapName.'" class="OSM_IMG" style="width:'.$width.'px; height:'.$height.'px; overflow:hidden;padding:0px;border:'.$map_border.';">';
 
     
 	    if (Osm_LoadLibraryMode == SERVER_EMBEDDED){

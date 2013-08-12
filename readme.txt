@@ -3,7 +3,7 @@ Contributors: MiKa
 Tags: map, OpenStreetMap, Google Maps, googlemaps, geo, KML, GPX, geotag, geolocation, geocache, geocaching, OSM, travelogue, template tag, travelblog, OpenLayers, Open Layers, Open Street Map, CloudMade, YourNavigation, OpenRouteService, marker, POI, geocode, geotagging, google earth, Leaflet, location, Route, Tracks, WMS, Open Sea Map, OpenSeaMap
 Requires at least: 2.8
 Tested up to: 3.5.1
-Stable tag: 2.1
+Stable tag: 2.2
 
 OpenStreetMap plugin to embed maps. No API key! No Google API!
 Include your OSM (OpenStreetMap and OpenSeaMap) map with GPX tracks, POIs, markers and geotagged posts. 
@@ -16,8 +16,9 @@ If you want to get detailed information about the OSM-plugin visit these pages:
 * OSM-plugin: [WP-OSM-Plugin](http://wp-osm-plugin.hanblog.net/ "OSM-plugin")
 * OSM-plugin Forum EN: [Forum EN](http://wp-osm-plugin.hanblog.net/forum/forum-en/ "OSM-plugin forum EN")
 * OSM-plugin Forum DE: [Forum DE](http://wp-osm-plugin.hanblog.net/forum/forum-de/ "OSM-plugin forum DE")
-* OSM-plugin Wiki: [wiki.OpenStreetMap.org](http://wiki.openstreetmap.org/wiki/Wp-osm-plugin "OSM-plugin Wiki")
-* Author blog: [www.HanBlog.net](http://www.HanBlog.net/ "HanBlog.net")
+* Author blog: [HanBlog.net](http://www.HanBlog.net/ "HanBlog.net")
+
+If you are facing difficulties after an update, get the previous OSM Plugin version at [WP-OSM-Plugin Page](http://wp-osm-plugin.hanblog.net/ "OSM-plugin").
 
 Features of the OSM-plugin:
 
@@ -71,7 +72,9 @@ There must be not format tag (like href ...) in the shortcode.
 
 
 == Changelog ==
-
+= 2.2 =
+* FIX: style rules are limited for OSM images
+* FIX: html comment is set if post / page is geotagged
 = 2.1 =
 * NEW: ShortCode Generator also at pages
 * FIX: Pink Stripes at adaptive WP theme
