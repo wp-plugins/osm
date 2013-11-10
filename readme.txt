@@ -3,7 +3,7 @@ Contributors: MiKa
 Tags: map, OpenStreetMap, Google Maps, googlemaps, geo, KML, GPX, geotag, geolocation, geocache, geocaching, OSM, travelogue, template tag, travelblog, OpenLayers, Open Layers, Open Street Map, CloudMade, YourNavigation, OpenRouteService, marker, POI, geocode, geotagging, google earth, Leaflet, location, Route, Tracks, WMS, Open Sea Map, OpenSeaMap
 Requires at least: 2.8
 Tested up to: 3.6
-Stable tag: 2.2
+Stable tag: 2.3
 
 OpenStreetMap plugin to embed maps. No API key! No Google API!
 Include your OSM (OpenStreetMap and OpenSeaMap) map with GPX tracks, POIs, markers and geotagged posts. 
@@ -72,6 +72,13 @@ There must be not format tag (like href ...) in the shortcode.
 
 
 == Changelog ==
+= 2.3 =
+  NEW: php call supports theme for map integration
+  NEW: marker_focus (5) added for map collection added
+  NEW: New arguments to filter:
+       post_type, custom_taxonomy, import_osm_custom_tax_incl_name
+  NEW: add several txt files in one map:
+       marker_file_list 
 = 2.2 =
 * FIX: style rules are limited for OSM images
 * FIX: html comment is set if post / page is geotagged

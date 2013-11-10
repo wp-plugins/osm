@@ -3,7 +3,7 @@
 Plugin Name: OSM
 Plugin URI: http://wp-osm-plugin.HanBlog.net
 Description: Embeds maps in your blog and adds geo data to your posts.  Find samples and a forum on the <a href="http://wp-osm-plugin.HanBlog.net">OSM plugin page</a>.  Simply create the shortcode to add it in your post at [<a href="options-general.php?page=osm.php">Settings</a>]
-Version: 2.2
+Version: 2.3
 Author: MiKa
 Author URI: http://www.HanBlog.net
 Minimum WordPress Version Required: 2.8
@@ -27,7 +27,7 @@ Minimum WordPress Version Required: 2.8
 */
 load_plugin_textdomain('OSM-plugin', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/');
 
-define ("PLUGIN_VER", "V2.2");
+define ("PLUGIN_VER", "V2.3");
 
 // modify anything about the marker for tagged posts here
 // instead of the coding.
@@ -192,7 +192,7 @@ function osm_map_create_function( $post ) {
 
 <?php echo Osm::sc_showMap(array('msg_box'=>'metabox_sc_gen','lat'=>'50','long'=>'18.5','zoom'=>'3', 'type'=>'All', 'width'=>'450','height'=>'300', 'map_border'=>'thin solid grey', 'theme'=>'dark', 'control'=>'mouseposition,scaleline')); ?>
   <br>
-  <h3><span style="color:green"> >> <?php _e('Copy the generated shortcode/customfield/argument: ','OSM-plugin') ?></span></h3>
+  <h3><span style="color:green"><?php _e('Copy the generated shortcode/customfield/argument: ','OSM-plugin') ?></span></h3>
   <div id="ShortCode_Div"><?php _e('If you click into the map this text is replaced','OSM-plugin') ?>
   </div><br>
   <?php
@@ -333,7 +333,8 @@ class Osm
 		echo "<meta name=\"geo.position\"  content=\"{$lat};{$lon}\" />\n";
 	}
     
-  function createMarkerList($a_import, $a_import_UserName, $a_Customfield, $a_import_osm_cat_incl_name,  $a_import_osm_cat_excl_name)
+ 
+  function createMarkerList($a_import, $a_import_UserName, $a_Customfield, $a_import_osm_cat_incl_name,  $a_import_osm_cat_excl_name, $a_post_type, $a_import_osm_custom_tax_incl_name, $a_custom_taxonomy)
   {
      $this->traceText(DEBUG_INFO, "createMarkerList(".$a_import.",".$a_import_UserName.",".$a_Customfield.")");
 	   global $post;
@@ -353,7 +354,7 @@ class Osm
        $this->traceText(DEBUG_INFO, "check all posts for osm geo custom fields");
        $CustomFieldName = get_settings('osm_custom_field');        
        $recentPosts = new WP_Query();
-       $recentPosts->query('meta_key='.$CustomFieldName.'&post_status=publish'.'&showposts=-1');
+   $recentPosts->query('meta_key='.$CustomFieldName.'&post_status=publish'.'&showposts=-1'.'&post_type='.$a_post_type.'');
 //     $recentPosts->query('meta_key='.$CustomFieldName.'&post_status=publish'.'&post_type=page');
        while ($recentPosts->have_posts()) : $recentPosts->the_post();
   	     list($temp_lat, $temp_lon) = explode(',', get_post_meta($post->ID, $CustomFieldName, true)); 
@@ -361,7 +362,7 @@ class Osm
 
          // check if a filter is set and geodata are set
          // if filter is set and set then pretend there are no geodata
-         if (($a_import_osm_cat_incl_name  != 'Osm_All' || $a_import_osm_cat_excl_name  != 'Osm_None')&&($temp_lat != '' && $temp_lon != '')){
+ if (($a_import_osm_cat_incl_name  != 'Osm_All' || $a_import_osm_cat_excl_name  != 'Osm_None' || $a_import_osm_custom_tax_incl_name != 'Osm_All')&&($temp_lat != '' && $temp_lon != '')){
            $categories = wp_get_post_categories($post->ID);
            foreach( $categories as $catid ) {
 	            $cat = get_category($catid);
@@ -374,8 +375,31 @@ class Osm
                 $temp_lon = '';
               }
            } 
+   
+   
+   if ($a_import_osm_custom_tax_incl_name != 'Osm_All')
+ $mycustomcategories = get_the_terms( $post->ID, $a_import_osm_custom_tax_incl_name);
+ foreach( $mycustomcategories as $term ) {
+$taxonomies[0] = $term->term_taxonomy_id;
+// Get rid of the other data stored in the object
+unset($term);
          }
+   foreach( $taxonomies as $taxid ) {
+$termsObjects = wp_get_object_terms($post->ID, $a_custom_taxonomy);
+ foreach ($termsObjects as $termsObject) {
+$currentCustomCat[] = $termsObject->name;
+ }
+  if (($a_import_osm_custom_tax_incl_name  != 'Osm_All') &&  ! in_array($a_import_osm_custom_tax_incl_name, $currentCustomCat)) {
+$temp_lat = '';
+$temp_lon = '';
+  }
+  if (strtolower($currentCustomCat) == (strtolower($a_import_osm_cat_excl_name))){
+$temp_lat = '';
+$temp_lon = '';
+  }
+   }
 
+ }
 
          if ($temp_lat != '' && $temp_lon != '') {
            list($temp_lat, $temp_lon) = $this->checkLatLongRange('$marker_all_posts',$temp_lat, $temp_lon);
@@ -428,7 +452,7 @@ class Osm
   }
 
   // get the layer for the markers
-  function getImportLayer($a_type, $a_UserName, $Icon, $a_osm_cat_incl_name, $a_osm_cat_excl_name, $a_line_color, $a_line_width, $a_line_opacity){
+  function getImportLayer($a_type, $a_UserName, $Icon, $a_osm_cat_incl_name, $a_osm_cat_excl_name, $a_line_color, $a_line_width, $a_line_opacity, $a_post_type, $a_import_osm_custom_tax_incl_name, $a_custom_taxonomy){
 
     if ($a_type  == 'osm_l'){
       $LayerName = 'TaggedPosts';
@@ -469,7 +493,7 @@ class Osm
     else{
       $this->traceText(DEBUG_ERROR, "e_import_unknwon");
     }
-    $MarkerArray = $this->createMarkerList($a_type, $a_UserName,'Empty', $a_osm_cat_incl_name,  $a_osm_cat_excl_name);
+$MarkerArray = $this->createMarkerList($a_type, $a_UserName,'Empty', $a_osm_cat_incl_name,  $a_osm_cat_excl_name, $a_post_type, $a_import_osm_custom_tax_incl_name, $a_custom_taxonomy);
      if ($a_line_color != 'none'){
        $line_color = Osm::checkStyleColour($a_line_color);
        $txt = Osm_OpenLayers::addLines($MarkerArray, $line_color, $a_line_width);
@@ -604,7 +628,8 @@ class Osm
     'kml_colour'=> 'NoColour',
     // are there markers in the map wished loaded from a file
     'marker_file'     => 'NoFile', // 'absolut address'
-    'marker_file_proxy'     => 'NoFile', // 'absolut address'
+    'marker_file_proxy' => 'NoFile', // 'absolut address'
+  	'marker_file_list' => 'NoFileList', // 'absolut address for a list of marker files''
     // are there markers in the map wished loaded from post tags
     'marker_all_posts'=> 'n',      // 'y' or 'Y'
     'marker_name'     => 'NoName',
@@ -618,6 +643,9 @@ class Osm
     'import_osm_line_color' => 'none', 
     'import_osm_line_width' => '4',
     'import_osm_line_opacity' => '0.9',
+	'post_type' => 'post',
+	'custom_taxonomy' => 'none',
+	'import_osm_custom_tax_incl_name'  => 'Osm_All',
     'marker'          => 'No',
     'marker_routing'  => 'No',
     'msg_box'         => 'No',
@@ -689,6 +717,10 @@ class Osm
       else if ($marker_focus == 4){ // right bottom
         $Icon[offset_height] = -$marker_height;
         $Icon[offset_width]  = -$marker_width;
+      }
+      else if ($marker_focus == 5){ // center bottom
+        $Icon[offset_height] = -$marker_height;
+        $Icon[offset_width] = round(-$marker_width/2);
       }
       if ($Icon[height] == 0 || $Icon[width] == 0){
         Osm::traceText(DEBUG_ERROR, "e_marker_size"); //<= ToDo
@@ -839,7 +871,15 @@ class Osm
       $MarkerName = basename($marker_file, ".txt");
       $output .= Osm_OpenLayers::addTextLayer($MarkerName, $marker_file);
     }  
-
+    if ($marker_file_list != 'NoFileList'){
+      $MarkerFileListArray = explode( ',', $marker_file_list );
+      $this->traceText(DEBUG_INFO, "(NumOfMarkerFiles: ".sizeof($MarkerFileListArray)."!");
+      for($x=0;$x<sizeof($MarkerFileListArray);$x++){
+        $MarkerLstName = basename($MarkerFileListArray[$x], ".txt");
+      	$output .= Osm_OpenLayers::addTextLayer($MarkerLstName, $MarkerFileListArray[$x]);
+      }
+     }      	
+      	
     $marker_all_posts = strtolower($marker_all_posts);
     if ($marker_all_posts == 'y'){
       //$this->traceText(DEBUG_ERROR, "e_use_marker_all_posts");
@@ -847,7 +887,7 @@ class Osm
     }
 
     if ($import_type  != 'no'){
-      $output .= Osm::getImportLayer($import_type, $import_UserName, $Icon, $import_osm_cat_incl_name,  $import_osm_cat_excl_name, $import_osm_line_color, $import_osm_line_width, $import_osm_line_opacity);
+  $output .= Osm::getImportLayer($import_type, $import_UserName, $Icon, $import_osm_cat_incl_name,  $import_osm_cat_excl_name, $import_osm_line_color, $import_osm_line_width, $import_osm_line_opacity, $post_type, $import_osm_custom_tax_incl_name, $custom_taxonomy);
     }
     
 //++
@@ -1162,7 +1202,7 @@ function OSM_displayOpenStreetMap($a_widht, $a_hight, $a_zoom, $a_type){
   }
 }
 
-function OSM_displayOpenStreetMapExt($a_widht, $a_hight, $a_zoom, $a_type, $a_control, $a_marker_name, $a_marker_height, $a_marker_width, $a_marker_text, $a_ov_map, $a_marker_focus = 0, $a_routing = 'No'){
+function OSM_displayOpenStreetMapExt($a_widht, $a_hight, $a_zoom, $a_type, $a_control, $a_marker_name, $a_marker_height, $a_marker_width, $a_marker_text, $a_ov_map, $a_marker_focus = 0, $a_routing = 'No', $a_theme = 'dark'){
 
   $atts = array ('width'          => $a_widht,
                  'height'         => $a_hight,
@@ -1173,8 +1213,9 @@ function OSM_displayOpenStreetMapExt($a_widht, $a_hight, $a_zoom, $a_type, $a_co
                  'marker_height'  => $a_marker_height,
                  'marker_width'   => $a_marker_width,
                  'marker'         => OSM_getCoordinateLat("osm") . ',' . OSM_getCoordinateLong("osm") . ',' . $a_marker_text,
-	               'control'		    => $a_control,
+	         	 'control'        => $a_control,
                  'marker_focus'   => $a_marker_focus,
+                 'theme'          => $a_theme,
                  'marker_routing' => $a_routing);
 
   if ((OSM_getCoordinateLong("osm"))&&(OSM_getCoordinateLat("osm"))) { 
