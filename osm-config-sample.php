@@ -10,4 +10,5 @@ define ("Osm_GOOGLE_LibraryLocation", 'http://maps.google.com/maps/api/js?sensor
 define ("Osm_harbours_LibraryLocation", 'http://map.openseamap.org/map/javascript/harbours.js');
 define ("Osm_map_utils_LibraryLocation", 'http://map.openseamap.org/map/javascript/map_utils.js');
 define ("Osm_utilities_LibraryLocation", 'http://map.openseamap.org/map/javascript/utilities.js');
+define ("Osm_openweather_LibraryLocation", 'http://openweathermap.org/js/OWM.OpenLayers.1.3.4.js');
 ?>

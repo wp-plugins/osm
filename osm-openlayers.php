@@ -1,9 +1,7 @@
 <?php
 /*
-  OSM OpenLayers for OSM wordpress plugin
-  MiKa * created: april 2009
-  plugin: http://wp-osm-plugin.HanBlog.net
-  blog:   http://www.HanBlog.net
+OpenLayers Abstraction for WordPress OSM Plugin
+Plugin URI: http://wp-osm-plugin.HanBlog.net
 */
 ?>
 <?php
@@ -143,6 +141,13 @@ class Osm_OpenLayers
       $Layer .= 'var layerOSM_Attr = new OpenLayers.Layer.Vector("OSM-plugin",{attribution:"<a href=\"http://wp-osm-plugin.hanblog.net\">OSM plugin</a>"});';
       $Layer .= 'map.addLayers([layerMapnik, layerSeamark, layerPois, layerOSM_Attr]);';
       $Layer .= 'map.addControl(new OpenLayers.Control.LayerSwitcher());';
+    }
+    else if ($a_Type == 'OpenWheaterMap'){
+    	$Layer .= 'var layerMapnik   = new OpenLayers.Layer.OSM.Mapnik("Mapnik");';
+    	$Layer .= '	var layerWheater = new OpenLayers.Layer.Vector.OWMWeather("Weather");';
+    	$Layer .= 'var layerOSM_Attr = new OpenLayers.Layer.Vector("OSM-plugin",{attribution:"<a href=\"http://wp-osm-plugin.hanblog.net\">OSM plugin</a>"});';
+    	$Layer .= 'map.addLayers([layerMapnik, layerWheater,layerOSM_Attr]);';
+    	$Layer .= 'map.addControl(new OpenLayers.Control.LayerSwitcher());';
     }
     else if ($a_Type == 'AllGoogle'){
       $Layer .= 'var layerGooglePhysical   = new OpenLayers.Layer.Google("Google Physical", {type: google.maps.MapTypeId.TERRAIN} );';
@@ -554,7 +559,7 @@ class Osm_OpenLayers
     if ($a_type == 'Osmarender'){
       return "Mapnik";
     }
-    if ($a_type != 'Mapnik' && $a_type != 'Osmarender' && $a_type != 'CycleMap' && $a_type != 'OpenSeaMap' && $a_type != 'Google' && $a_type != 'All' && $a_type != 'AllGoogle' && $a_type != 'AllOsm' && $a_type != 'ext' && $a_type != 'GooglePhysical' && $a_type != 'GoogleStreet' && $a_type != 'GoogleHybrid' && $a_type != 'GoogleSatellite' && $a_type != 'Google Physical' && $a_type != 'Google Street' && $a_type != 'Google Hybrid' && $a_type != 'Google Satellite'&& $a_type != 'Ext'){
+    if ($a_type != 'Mapnik' && $a_type != 'Osmarender' && $a_type != 'CycleMap' && $a_type != 'OpenSeaMap' && $a_type != 'OpenWheaterMap' && $a_type != 'Google' && $a_type != 'All' && $a_type != 'AllGoogle' && $a_type != 'AllOsm' && $a_type != 'ext' && $a_type != 'GooglePhysical' && $a_type != 'GoogleStreet' && $a_type != 'GoogleHybrid' && $a_type != 'GoogleSatellite' && $a_type != 'Google Physical' && $a_type != 'Google Street' && $a_type != 'Google Hybrid' && $a_type != 'Google Satellite'&& $a_type != 'Ext'){
       return "All";
     }
     return $a_type;
@@ -578,7 +583,7 @@ class Osm_OpenLayers
 	    $a_MapControl[0]='No';
 	  }
     }
-  return $a_MapControl;
+    return $a_MapControl;
   }
   
 }

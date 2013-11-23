@@ -3,7 +3,7 @@
 Plugin Name: OSM
 Plugin URI: http://wp-osm-plugin.HanBlog.net
 Description: Embeds maps in your blog and adds geo data to your posts.  Find samples and a forum on the <a href="http://wp-osm-plugin.HanBlog.net">OSM plugin page</a>.  Simply create the shortcode to add it in your post at [<a href="options-general.php?page=osm.php">Settings</a>]
-Version: 2.3
+Version: 2.4
 Author: MiKa
 Author URI: http://www.HanBlog.net
 Minimum WordPress Version Required: 2.8
@@ -27,7 +27,7 @@ Minimum WordPress Version Required: 2.8
 */
 load_plugin_textdomain('OSM-plugin', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/');
 
-define ("PLUGIN_VER", "V2.3");
+define ("PLUGIN_VER", "V2.4");
 
 // modify anything about the marker for tagged posts here
 // instead of the coding.
@@ -104,8 +104,6 @@ if (@(!include('osm-config.php'))){
 // do not edit this
 define ("Osm_TraceLevel", DEBUG_ERROR);
 
-
-
 // If the function exists this file is called as upload_mimes.
 // We don't do anything then.
 if ( ! function_exists( 'fb_restrict_mime_types' ) ) {
@@ -137,9 +135,8 @@ if ( ! function_exists( 'fb_restrict_mime_types_hint' ) ) {
 	 * @return  void
 	 */
 	function fb_restrict_mime_types_hint() {
-
-		echo '<br />';
-		_e( 'OSM plugin added: GPX / KML' );
+	  echo '<br />';
+	  _e( 'OSM plugin added: GPX / KML' );
 	}
 }
 
@@ -205,11 +202,11 @@ include('osm-openlayers.php');
 class Osm
 { 
 
-    function Osm() {
-		$this->localizionName = 'Osm';
+  function Osm() {
+    $this->localizionName = 'Osm';
     //$this->TraceLevel = DEBUG_INFO;
-		$this->ErrorMsg = new WP_Error();
-		$this->initErrorMsg();
+	$this->ErrorMsg = new WP_Error();
+	$this->initErrorMsg();
     
     // add the WP action
     add_action('wp_head', array(&$this, 'wp_head'));
@@ -242,9 +239,9 @@ class Osm
   function traceText($a_Level, $a_String)
   {
     $TracePrefix = array(
-      DEBUG_ERROR =>'[OSM-Plugin-Error]:',
-      DEBUG_WARNING=>'[OSM-Plugin-Warning]:',
-      DEBUG_INFO=>'[OSM-Plugin-Info]:');
+    DEBUG_ERROR =>'[OSM-Plugin-Error]:',
+    DEBUG_WARNING=>'[OSM-Plugin-Warning]:',
+    DEBUG_INFO=>'[OSM-Plugin-Info]:');
       
     if ($a_Level == DEBUG_ERROR){     
       echo '<div class="osm_error_msg"><p><strong style="color:red">'.$TracePrefix[$a_Level].Osm::traceErrorMsg($a_String).'</strong></p></div>';
@@ -258,17 +255,16 @@ class Osm
   }
 
 	// add it to the Settings page
-	function options_page_osm()
-	{
-		if(isset($_POST['Options'])){
-
+  function options_page_osm()
+  {
+    if(isset($_POST['Options'])){
       // 0 = no error; 
       // 1 = error occured
       $Option_Error = 0; 
 			
       // get the zoomlevel for the external link
       // and inform the user if the level was out of range     
-      update_option('osm_custom_field',$_POST['osm_custom_field']);
+      // update_option('osm_custom_field',$_POST['osm_custom_field']);
      
       if ($_POST['osm_zoom_level'] >= ZOOM_LEVEL_MIN && $_POST['osm_zoom_level'] <= ZOOM_LEVEL_MAX){
         update_option('osm_zoom_level',$_POST['osm_zoom_level']);
@@ -282,34 +278,33 @@ class Osm
         Osm::traceText(DEBUG_INFO, "i_options_updated");
       }
       else{
-         Osm::traceText(DEBUG_ERROR, "e_options_not_updated");
+        Osm::traceText(DEBUG_ERROR, "e_options_not_updated");
       }
-	
-		}
-		else{
-			add_option('osm_custom_field', 0);
-			add_option('osm_zoom_level', 0);
-		}
+	}
+    else{
+	  //add_option('osm_custom_field', 0);
+	  add_option('osm_zoom_level', 0);
+	}
 	
     // name of the custom field to store Long and Lat
     // for the geodata of the post
-		$osm_custom_field  = get_option('osm_custom_field');                                                  
+	$osm_custom_field  = get_option('osm_custom_field','OSM_geo_data');                                                  
 
     // zoomlevel for the link the OSM page
-    $osm_zoom_level    = get_option('osm_zoom_level');
+    $osm_zoom_level    = get_option('osm_zoom_level','7');
 			
     include('osm-options.php');	
-	}
+  }
 	
   // put meta tags into the head section
-	function wp_head($not_used)
-	{ 
-		global $wp_query;
-	  global $post;
+  function wp_head($not_used)
+  { 
+	global $wp_query;
+	global $post;
 
     $lat = '';
     $lon = '';
-    $CustomField =  get_option('osm_custom_field');
+    $CustomField =  get_option('osm_custom_field','OSM_geo_data');
     if (($CustomField != false) && (get_post_meta($post->ID, $CustomField, true))){
       $PostLatLon = get_post_meta($post->ID, $CustomField, true);
       if (!empty($PostLatLon)) {
@@ -327,17 +322,17 @@ class Osm
     } 
     
     // let's store geo data with W3 standard
-		echo "<meta name=\"ICBM\" content=\"{$lat}, {$lon}\" />\n";
-		echo "<meta name=\"DC.title\" content=\"{$wp_query->post->post_title}\" />\n";
-                echo "<meta name=\"geo.placename\" content=\"{$wp_query->post->post_title}\"/>\n"; 
-		echo "<meta name=\"geo.position\"  content=\"{$lat};{$lon}\" />\n";
-	}
+	echo "<meta name=\"ICBM\" content=\"{$lat}, {$lon}\" />\n";
+	echo "<meta name=\"DC.title\" content=\"{$wp_query->post->post_title}\" />\n";
+    echo "<meta name=\"geo.placename\" content=\"{$wp_query->post->post_title}\"/>\n"; 
+	echo "<meta name=\"geo.position\"  content=\"{$lat};{$lon}\" />\n";
+  }
     
  
   function createMarkerList($a_import, $a_import_UserName, $a_Customfield, $a_import_osm_cat_incl_name,  $a_import_osm_cat_excl_name, $a_post_type, $a_import_osm_custom_tax_incl_name, $a_custom_taxonomy)
   {
      $this->traceText(DEBUG_INFO, "createMarkerList(".$a_import.",".$a_import_UserName.",".$a_Customfield.")");
-	   global $post;
+	 global $post;
      $post_org = $post;
       
      // make a dummymarker to you use icon.clone later
@@ -352,9 +347,9 @@ class Osm
      else if ($a_import == 'osm' || $a_import == 'osm_l'){
        // let's see which posts are using our geo data ...
        $this->traceText(DEBUG_INFO, "check all posts for osm geo custom fields");
-       $CustomFieldName = get_settings('osm_custom_field');        
+       $CustomFieldName = get_option('osm_custom_field','OSM_geo_data');        
        $recentPosts = new WP_Query();
-   $recentPosts->query('meta_key='.$CustomFieldName.'&post_status=publish'.'&showposts=-1'.'&post_type='.$a_post_type.'');
+       $recentPosts->query('meta_key='.$CustomFieldName.'&post_status=publish'.'&showposts=-1'.'&post_type='.$a_post_type.'');
 //     $recentPosts->query('meta_key='.$CustomFieldName.'&post_status=publish'.'&post_type=page');
        while ($recentPosts->have_posts()) : $recentPosts->the_post();
   	     list($temp_lat, $temp_lon) = explode(',', get_post_meta($post->ID, $CustomFieldName, true)); 
@@ -362,67 +357,63 @@ class Osm
 
          // check if a filter is set and geodata are set
          // if filter is set and set then pretend there are no geodata
- if (($a_import_osm_cat_incl_name  != 'Osm_All' || $a_import_osm_cat_excl_name  != 'Osm_None' || $a_import_osm_custom_tax_incl_name != 'Osm_All')&&($temp_lat != '' && $temp_lon != '')){
-           $categories = wp_get_post_categories($post->ID);
-           foreach( $categories as $catid ) {
-	            $cat = get_category($catid);
-              if (($a_import_osm_cat_incl_name  != 'Osm_All') && (strtolower($cat->name) != (strtolower($a_import_osm_cat_incl_name)))){
-                $temp_lat = '';
-                $temp_lon = '';
-              }
-              if (strtolower($cat->name) == (strtolower($a_import_osm_cat_excl_name))){
-                $temp_lat = '';
-                $temp_lon = '';
-              }
-           } 
-   
-   
-   if ($a_import_osm_custom_tax_incl_name != 'Osm_All')
- $mycustomcategories = get_the_terms( $post->ID, $a_import_osm_custom_tax_incl_name);
- foreach( $mycustomcategories as $term ) {
-$taxonomies[0] = $term->term_taxonomy_id;
-// Get rid of the other data stored in the object
-unset($term);
+       if (($a_import_osm_cat_incl_name  != 'Osm_All' || $a_import_osm_cat_excl_name  != 'Osm_None' || $a_import_osm_custom_tax_incl_name != 'Osm_All')&&($temp_lat != '' && $temp_lon != '')){
+         $categories = wp_get_post_categories($post->ID);
+         foreach( $categories as $catid ) {
+	       $cat = get_category($catid);
+           if (($a_import_osm_cat_incl_name  != 'Osm_All') && (strtolower($cat->name) != (strtolower($a_import_osm_cat_incl_name)))){
+             $temp_lat = '';
+             $temp_lon = '';
+            }
+            if (strtolower($cat->name) == (strtolower($a_import_osm_cat_excl_name))){
+              $temp_lat = '';
+              $temp_lon = '';
+            }
+         }    
+         if ($a_import_osm_custom_tax_incl_name != 'Osm_All')
+           $mycustomcategories = get_the_terms( $post->ID, $a_import_osm_custom_tax_incl_name);
+         foreach( $mycustomcategories as $term ) {
+           $taxonomies[0] = $term->term_taxonomy_id;
+           // Get rid of the other data stored in the object
+           unset($term);
          }
-   foreach( $taxonomies as $taxid ) {
-$termsObjects = wp_get_object_terms($post->ID, $a_custom_taxonomy);
- foreach ($termsObjects as $termsObject) {
-$currentCustomCat[] = $termsObject->name;
- }
-  if (($a_import_osm_custom_tax_incl_name  != 'Osm_All') &&  ! in_array($a_import_osm_custom_tax_incl_name, $currentCustomCat)) {
-$temp_lat = '';
-$temp_lon = '';
-  }
-  if (strtolower($currentCustomCat) == (strtolower($a_import_osm_cat_excl_name))){
-$temp_lat = '';
-$temp_lon = '';
-  }
-   }
-
- }
-
-         if ($temp_lat != '' && $temp_lon != '') {
-           list($temp_lat, $temp_lon) = $this->checkLatLongRange('$marker_all_posts',$temp_lat, $temp_lon);
-           if ($a_import == 'osm_l' ){   
-             $categories = wp_get_post_categories($post->ID);
-	           // take the last one but ignore those without a specific category
-             foreach( $categories as $catid ) {
-	              $cat = get_category($catid);
-                if ((strtolower($cat->name) == 'uncategorized') || (strtolower($cat->name) == 'allgemein')){
-                  $Category_Txt = '';
-                }
-                else{
-                  $Category_Txt = $cat->name.': ';
-                }
+         foreach( $taxonomies as $taxid ) {
+           $termsObjects = wp_get_object_terms($post->ID, $a_custom_taxonomy);
+           foreach ($termsObjects as $termsObject) {
+             $currentCustomCat[] = $termsObject->name;
+           }
+           if (($a_import_osm_custom_tax_incl_name  != 'Osm_All') &&  ! in_array($a_import_osm_custom_tax_incl_name, $currentCustomCat)) {
+             $temp_lat = '';
+             $temp_lon = '';
+           }
+           if (strtolower($currentCustomCat) == (strtolower($a_import_osm_cat_excl_name))){
+             $temp_lat = '';
+             $temp_lon = '';
+           }
+         }
+       }
+       if ($temp_lat != '' && $temp_lon != '') {
+         list($temp_lat, $temp_lon) = $this->checkLatLongRange('$marker_all_posts',$temp_lat, $temp_lon);
+         if ($a_import == 'osm_l' ){   
+           $categories = wp_get_post_categories($post->ID);
+	       // take the last one but ignore those without a specific category
+           foreach( $categories as $catid ) {
+	         $cat = get_category($catid);
+             if ((strtolower($cat->name) == 'uncategorized') || (strtolower($cat->name) == 'allgemein')){
+               $Category_Txt = '';
              }
+             else{
+               $Category_Txt = $cat->name.': ';
+             }
+           }
            $Marker_Txt = '<a href="'.get_permalink($post->ID).'">'.$Category_Txt.get_the_title($post->ID).'  </a>';
            $MarkerArray[] = array('lat'=> $temp_lat,'lon'=>$temp_lon,'popup_height'=>'100', 'popup_width'=>'150', 'marker'=>$Icon[name], 'text'=>$Marker_Txt);
-           }	 
-           else{ // plain osm without link to the post
-             $Marker_Txt = ' ';
-             $MarkerArray[] = array('lat'=> $temp_lat,'lon'=>$temp_lon,'popup_height'=>'100', 'popup_width'=>'150', 'marker'=>$Icon[name], 'text'=>$Marker_Txt);
-           }
-	       }  
+         }	 
+         else{ // plain osm without link to the post
+           $Marker_Txt = ' ';
+           $MarkerArray[] = array('lat'=> $temp_lat,'lon'=>$temp_lon,'popup_height'=>'100', 'popup_width'=>'150', 'marker'=>$Icon[name], 'text'=>$Marker_Txt);
+         }
+	   }  
        endwhile;
      }
      else if ($a_import == 'wpgmg'){
@@ -435,10 +426,9 @@ $temp_lon = '';
          if ($temp_lat != '' && $temp_lon != '') {
            list($temp_lat, $temp_lon) = $this->checkLatLongRange('$marker_all_posts',$temp_lat, $temp_lon);          
            $MarkerArray[] = array('lat'=> $temp_lat,'lon'=>$temp_lon,'marker'=>$Icon[name],'popup_height'=>'100', 'popup_width'=>'200');
-        }  
+         }  
        endwhile;
      }
-
      $post = $post_org;
      return $MarkerArray;
   }
@@ -493,11 +483,11 @@ $temp_lon = '';
     else{
       $this->traceText(DEBUG_ERROR, "e_import_unknwon");
     }
-$MarkerArray = $this->createMarkerList($a_type, $a_UserName,'Empty', $a_osm_cat_incl_name,  $a_osm_cat_excl_name, $a_post_type, $a_import_osm_custom_tax_incl_name, $a_custom_taxonomy);
-     if ($a_line_color != 'none'){
-       $line_color = Osm::checkStyleColour($a_line_color);
-       $txt = Osm_OpenLayers::addLines($MarkerArray, $line_color, $a_line_width);
-     }
+    $MarkerArray = $this->createMarkerList($a_type, $a_UserName,'Empty', $a_osm_cat_incl_name,  $a_osm_cat_excl_name, $a_post_type, $a_import_osm_custom_tax_incl_name, $a_custom_taxonomy);
+    if ($a_line_color != 'none'){
+      $line_color = Osm::checkStyleColour($a_line_color);
+      $txt = Osm_OpenLayers::addLines($MarkerArray, $line_color, $a_line_width);
+    }
     $txt .= Osm_OpenLayers::addMarkerListLayer($LayerName, $Icon, $MarkerArray, $PopUp);
     return $txt;
   }
@@ -620,7 +610,7 @@ $MarkerArray = $this->createMarkerList($a_type, $a_UserName,'Empty', $a_osm_cat_
     'type'      => 'AllOsm',
     // track info
     'gpx_file'  => 'NoFile',           // 'absolut address'          
-    'gpx_file_proxy'  => 'NoFile',           // 'absolut address'          
+    'gpx_file_proxy'  => 'NoFile',     // 'absolut address'          
     'gpx_colour'=> 'NoColour',
     'gpx_file_list'   => 'NoFileList',
     'gpx_colour_list' => 'NoColourList',
@@ -694,7 +684,6 @@ $MarkerArray = $this->createMarkerList($a_type, $a_UserName,'Empty', $a_osm_cat_
        $Icon[name]  = $marker_name;
     }
     else  {
-
       $Icon[height] = $marker_height;
       $Icon[width]  = $marker_width; 
       $Icon[name]  = $marker_name;
@@ -777,50 +766,53 @@ $MarkerArray = $this->createMarkerList($a_type, $a_UserName,'Empty', $a_osm_cat_
 
     
 	if (Osm_LoadLibraryMode == SERVER_EMBEDDED){
-	      if (OL_LIBS_LOADED == 0) {
-    	    $output .= '<script type="text/javascript" src="'.Osm_OL_LibraryLocation.'"></script>';
-          define (OL_LIBS_LOADED, 1);
-        }
-  
-        if ($type == 'Mapnik' || $type == 'Osmarender' || $type == 'CycleMap' || $type == 'All' || $type == 'AllOsm' || $type == 'Ext'){
-	  if (OSM_LIBS_LOADED == 0) {
-            $output .= '<script type="text/javascript" src="'.Osm_OSM_LibraryLocation.'"></script>';
-            define (OSM_LIBS_LOADED, 1);
-          }
-        }
-
-       if ($type == 'OpenSeaMap'){
-	  if (OSM_LIBS_LOADED == 0) {
-            $output .= '<script type="text/javascript" src="'.Osm_OSM_LibraryLocation.'"></script>';
-            $output .= '<script type="text/javascript" src="'.Osm_harbours_LibraryLocation.'"></script>';
-            $output .= '<script type="text/javascript" src="'.Osm_map_utils_LibraryLocation.'"></script>';
-            $output .= '<script type="text/javascript" src="'.Osm_utilities_LibraryLocation.'"></script>';
-            define (OSM_LIBS_LOADED, 1);
-          }
-       }
-
-        if ($type == 'GooglePhysical' || $type == 'GoogleStreet' || $type == 'GoogleHybrid' || $type == 'GoogleSatellite' || $type == 'All' || $type == 'AllGoogle' || $a_type == 'Ext' || $type == 'Google Physical' || $type == 'Google Street' || $type == 'Google Hybrid' || $type == 'Google Satellite'){
-	        if (GOOGLE_LIBS_LOADED == 0) {
-            $output .= '<script type="text/javascript" src="'.Osm_GOOGLE_LibraryLocation.'"></script>';
-            define (GOOGLE_LIBS_LOADED, 1);
-          }
-        }
-         $output .= '<script type="text/javascript" src="'.OSM_PLUGIN_JS_URL.'osm-plugin-lib.js"></script>';
-
+	  if (OL_LIBS_LOADED == 0) {
+        $output .= '<script type="text/javascript" src="'.Osm_OL_LibraryLocation.'"></script>';
+        define (OL_LIBS_LOADED, 1);
       }
+  
+      if ($type == 'Mapnik' || $type == 'Osmarender' || $type == 'CycleMap' || $type == 'All' || $type == 'AllOsm' || $type == 'Ext'){
+	    if (OSM_LIBS_LOADED == 0) {
+          $output .= '<script type="text/javascript" src="'.Osm_OSM_LibraryLocation.'"></script>';
+          define (OSM_LIBS_LOADED, 1);
+        }
+      }
+      elseif ($type == 'OpenSeaMap'){
+	    if (OSM_LIBS_LOADED == 0) {
+          $output .= '<script type="text/javascript" src="'.Osm_OSM_LibraryLocation.'"></script>';
+          $output .= '<script type="text/javascript" src="'.Osm_harbours_LibraryLocation.'"></script>';
+          $output .= '<script type="text/javascript" src="'.Osm_map_utils_LibraryLocation.'"></script>';
+          $output .= '<script type="text/javascript" src="'.Osm_utilities_LibraryLocation.'"></script>';
+          define (OSM_LIBS_LOADED, 1);
+        }
+      }
+      elseif ($type == 'OpenWheaterMap'){
+      	if (OSM_LIBS_LOADED == 0) {
+      		$output .= '<script type="text/javascript" src="'.Osm_OSM_LibraryLocation.'"></script>';
+      		$output .= '<script type="text/javascript" src="'.Osm_openweather_LibraryLocation.'"></script>';
+      		define (OSM_LIBS_LOADED, 1);
+      	}
+      }
+      if ($type == 'GooglePhysical' || $type == 'GoogleStreet' || $type == 'GoogleHybrid' || $type == 'GoogleSatellite' || $type == 'All' || $type == 'AllGoogle' || $a_type == 'Ext' || $type == 'Google Physical' || $type == 'Google Street' || $type == 'Google Hybrid' || $type == 'Google Satellite'){
+	    if (GOOGLE_LIBS_LOADED == 0) {
+          $output .= '<script type="text/javascript" src="'.Osm_GOOGLE_LibraryLocation.'"></script>';
+          define (GOOGLE_LIBS_LOADED, 1);
+        }
+      }
+      $output .= '<script type="text/javascript" src="'.OSM_PLUGIN_JS_URL.'osm-plugin-lib.js"></script>';
+    }
       elseif (Osm_LoadLibraryMode == SERVER_WP_ENQUEUE){
       // registered and loaded by WordPress
       }
       else{
         $this->traceText(DEBUG_ERROR, "e_library_config");
       }
-      
-    $output .= '<script type="text/javascript">';
-    $output .= '/* <![CDATA[ */';
-    //$output .= 'jQuery(document).ready(';
-    //$output .= 'function($) {';
-    $output .= '(function($) {';
-    $output .= Osm_OpenLayers::addOsmLayer($MapName, $type, $ov_map, $array_control, $extmap_type, $extmap_name, $extmap_address, $extmap_init, $theme);
+      $output .= '<script type="text/javascript">';
+      $output .= '/* <![CDATA[ */';
+      //$output .= 'jQuery(document).ready(';
+      //$output .= 'function($) {';
+      $output .= '(function($) {';
+      $output .= Osm_OpenLayers::addOsmLayer($MapName, $type, $ov_map, $array_control, $extmap_type, $extmap_name, $extmap_address, $extmap_init, $theme);
 
     // add a clickhandler if needed
     $msg_box = strtolower($msg_box);
@@ -1028,80 +1020,83 @@ $MarkerArray = $this->createMarkerList($a_type, $a_UserName,'Empty', $a_osm_cat_
       $output .= '.olControlAttribution {z-index: '.$z_index.'+1.'.' !important;}';
     }
      
-	  $output .= '#'.$MapName.' {clear: both; padding: 0px; margin: 0px; border: 0px; width: 100%; height: 100%; margin-top:0px; margin-right:0px;margin-left:0px; margin-bottom:0px; left: 0px;}';
+	$output .= '#'.$MapName.' {clear: both; padding: 0px; margin: 0px; border: 0px; width: 100%; height: 100%; margin-top:0px; margin-right:0px;margin-left:0px; margin-bottom:0px; left: 0px;}';
     $output .= '#'.$MapName.' img{clear: both; padding: 0px; margin: 0px; border: 0px; width: 100%; height: 100%; position: absolute; margin-top:0px; margin-right:0px;margin-left:0px; margin-bottom:0px;}';
-	  $output .= '</style>';
+	$output .= '</style>';
 
     $output .= '<div id="'.$MapName.'" class="OSM_IMG" style="width:'.$width.'px; height:'.$height.'px; overflow:hidden;padding:0px;border:'.$map_border.';">';
 
     
-	    if (Osm_LoadLibraryMode == SERVER_EMBEDDED){
-	      if (OL_LIBS_LOADED == 0) {
-    	    $output .= '<script type="text/javascript" src="'.Osm_OL_LibraryLocation.'"></script>';
-          define (OL_LIBS_LOADED, 1);
-        }
-  
-        if ($type == 'Mapnik' || $type == 'Osmarender' || $type == 'CycleMap' || $type == 'All' || $type == 'AllOsm' || $type == 'Ext'){
-	        if (OSM_LIBS_LOADED == 0) {
-            $output .= '<script type="text/javascript" src="'.Osm_OSM_LibraryLocation.'"></script>';
-            define (OSM_LIBS_LOADED, 1);
-          }
-        }
-
-        if ($type == 'OpenSeaMap'){
-	  if (OSM_LIBS_LOADED == 0) {
-            $output .= '<script type="text/javascript" src="'.Osm_OSM_LibraryLocation.'"></script>';
-            $output .= '<script type="text/javascript" src="'.Osm_harbours_LibraryLocation.'"></script>';
-            $output .= '<script type="text/javascript" src="'.Osm_map_utils_LibraryLocation.'"></script>';
-            $output .= '<script type="text/javascript" src="'.Osm_utilities_LibraryLocation.'"></script>';
-            define (OSM_LIBS_LOADED, 1);
-          }
-        }
-
-        if ($type == 'GooglePhysical' || $type == 'GoogleStreet' || $type == 'GoogleHybrid' || $type == 'GoogleSatellite' || $type == 'All' || $type == 'AllGoogle' || $a_type == 'Ext' || $type == 'Google Physical' || $type == 'Google Street' || $type == 'Google Hybrid' || $type == 'Google Satellite'){
-	        if (GOOGLE_LIBS_LOADED == 0) {
-            $output .= '<script type="text/javascript" src="'.Osm_GOOGLE_LibraryLocation.'"></script>';
-            define (GOOGLE_LIBS_LOADED, 1);
-          }
-        }
-         $output .= '<script type="text/javascript" src="'.OSM_PLUGIN_JS_URL.'osm-plugin-lib.js"></script>';
+	if (Osm_LoadLibraryMode == SERVER_EMBEDDED){
+	  if (OL_LIBS_LOADED == 0) {
+    	$output .= '<script type="text/javascript" src="'.Osm_OL_LibraryLocation.'"></script>';
+        define (OL_LIBS_LOADED, 1);
       }
-	    elseif (Osm_LoadLibraryMode == SERVER_WP_ENQUEUE){
-	    // registered and loaded by WordPress
-	    }
-	    else{
-	      $this->traceText(DEBUG_ERROR, "e_library_config");
-	    }
-      
-    $extmap_init = 'new OpenLayers.Size('.width.', '.height.' )';
-
-    $output .= '<script type="text/javascript">';
-    $output .= '/* <![CDATA[ */';
-    //$output .= 'jQuery(document).ready(';
-    //$output .= 'function($) {';
-    $output .= '(function($) {';
-    $output .= Osm_OpenLayers::addOsmLayer("Zoomify", "ext", "0", "ext", "Zoomify", "Zoomify", $extmap_address, $extmap_init, $theme);
-
-    // set center and zoom of the map
-    //$output .= Osm_OpenLayers::setMapCenterAndZoom($lat, $long, $zoom);
   
-    //$output .= '}';
-    //$output .= ');';
-    $output .= '})(jQuery)';
-    $output .= '/* ]]> */';
-    $output .= ' </script>';
-	$output .= '</div>';
-    return $output;
-	}	
+    if ($type == 'Mapnik' || $type == 'Osmarender' || $type == 'CycleMap' || $type == 'All' || $type == 'AllOsm' || $type == 'Ext'){
+	  if (OSM_LIBS_LOADED == 0) {
+        $output .= '<script type="text/javascript" src="'.Osm_OSM_LibraryLocation.'"></script>';
+        define (OSM_LIBS_LOADED, 1);
+      }
+    }
+    elseif ($type == 'OpenSeaMap'){
+	  if (OSM_LIBS_LOADED == 0) {
+        $output .= '<script type="text/javascript" src="'.Osm_OSM_LibraryLocation.'"></script>';
+        $output .= '<script type="text/javascript" src="'.Osm_harbours_LibraryLocation.'"></script>';
+        $output .= '<script type="text/javascript" src="'.Osm_map_utils_LibraryLocation.'"></script>';
+        $output .= '<script type="text/javascript" src="'.Osm_utilities_LibraryLocation.'"></script>';
+        define (OSM_LIBS_LOADED, 1);
+      }
+    }
+    elseif ($type == 'OpenWheaterMap'){
+    	if (OSM_LIBS_LOADED == 0) {
+    		$output .= '<script type="text/javascript" src="'.Osm_OSM_LibraryLocation.'"></script>';
+    		$output .= '<script type="text/javascript" src="'.Osm_openweather_LibraryLocation.'"></script>';
+    		define (OSM_LIBS_LOADED, 1);
+    	}
+    }    
+    if ($type == 'GooglePhysical' || $type == 'GoogleStreet' || $type == 'GoogleHybrid' || $type == 'GoogleSatellite' || $type == 'All' || $type == 'AllGoogle' || $a_type == 'Ext' || $type == 'Google Physical' || $type == 'Google Street' || $type == 'Google Hybrid' || $type == 'Google Satellite'){
+	  if (GOOGLE_LIBS_LOADED == 0) {
+        $output .= '<script type="text/javascript" src="'.Osm_GOOGLE_LibraryLocation.'"></script>';
+        define (GOOGLE_LIBS_LOADED, 1);
+      }
+    }
+    $output .= '<script type="text/javascript" src="'.OSM_PLUGIN_JS_URL.'osm-plugin-lib.js"></script>';
+  }
+  elseif (Osm_LoadLibraryMode == SERVER_WP_ENQUEUE){
+  // registered and loaded by WordPress
+  }
+  else{
+    $this->traceText(DEBUG_ERROR, "e_library_config");
+  }
+      
+  $extmap_init = 'new OpenLayers.Size('.width.', '.height.' )';
+
+  $output .= '<script type="text/javascript">';
+  $output .= '/* <![CDATA[ */';
+  //$output .= 'jQuery(document).ready(';
+  //$output .= 'function($) {';
+  $output .= '(function($) {';
+  $output .= Osm_OpenLayers::addOsmLayer("Zoomify", "ext", "0", "ext", "Zoomify", "Zoomify", $extmap_address, $extmap_init, $theme);
+
+  // set center and zoom of the map
+  //$output .= Osm_OpenLayers::setMapCenterAndZoom($lat, $long, $zoom);
+  
+  //$output .= '}';
+  //$output .= ');';
+  $output .= '})(jQuery)';
+  $output .= '/* ]]> */';
+  $output .= ' </script>';
+  $output .= '</div>';
+  return $output;
+}	
 
  // add OSM-config page to Settings
-    function admin_menu($not_used){
-    // place the info in the plugin settings page
-		add_options_page(__('OpenStreetMap Manager', 'Osm'), __('OSM', 'Osm'), 5, basename(__FILE__), array('Osm', 'options_page_osm'));
-    }
+  function admin_menu($not_used){
+  // place the info in the plugin settings page
+    add_options_page(__('OpenStreetMap Manager', 'Osm'), __('OSM', 'Osm'), 5, basename(__FILE__), array('Osm', 'options_page_osm'));
+  }
   
-
-
   // ask WP to handle the loading of scripts
   // if it is not admin area
   function show_enqueue_script() {
@@ -1113,7 +1108,7 @@ $MarkerArray = $this->createMarkerList($a_type, $a_UserName,'Empty', $a_osm_cat_
 	elseif (Osm_LoadLibraryMode == SERVER_WP_ENQUEUE){
       //wp_enqueue_script('OlScript', 'http://www.openlayers.org/api/OpenLayers.js');
       //wp_enqueue_script('OsnScript', 'http://www.openstreetmap.org/openlayers/OpenStreetMap.js');
-	    wp_enqueue_script('OlScript',Osm_OL_LibraryLocation);
+	  wp_enqueue_script('OlScript',Osm_OL_LibraryLocation);
       wp_enqueue_script('OsnScript',Osm_OSM_LibraryLocation);
       wp_enqueue_script('OsnScript',Osm_GOOGLE_LibraryLocation);
       wp_enqueue_script('OsnScript',OSM_PLUGIN_JS_URL.'osm-plugin-lib.js');
@@ -1135,21 +1130,21 @@ $pOsm = new Osm();
 // returns Lat data of coordination
 function OSM_getCoordinateLat($a_import)
 {
-	global $post;
+  global $post;
 
   $a_import = strtolower($a_import);
   if ($a_import == 'osm' || $a_import == 'osm_l'){
-	  list($lat, $lon) = explode(',', get_post_meta($post->ID, get_settings('osm_custom_field'), true));
+	list($lat, $lon) = explode(',', get_post_meta($post->ID, get_option('osm_custom_field','OSM_geo_data'), true));
   }
   else if ($a_import == 'wpgmg'){
-	  $lat = get_post_meta($post->ID, WPGMG_LAT, true);
+	$lat = get_post_meta($post->ID, WPGMG_LAT, true);
   }
   else {
     $this->traceText(DEBUG_ERROR, "e_php_getlat_missing_arg");
     $lat = 0;
   }
   if ($lat != '') {
-	  return trim($lat);
+    return trim($lat);
   } 
   return '';
 }
@@ -1161,7 +1156,7 @@ function OSM_getCoordinateLong($a_import)
   
   $a_import = strtolower($a_import);
   if ($a_import == 'osm' || $a_import == 'osm_l'){
-	  list($lat, $lon) = explode(',', get_post_meta($post->ID, get_settings('osm_custom_field'), true));
+	  list($lat, $lon) = explode(',', get_post_meta($post->ID, get_option('osm_custom_field','OSM_geo_data'), true));
   }
   else if ($a_import == 'wpgmg'){
 	  list($lon) = get_post_meta($post->ID,WPGMG_LON, true);
@@ -1177,9 +1172,9 @@ function OSM_getCoordinateLong($a_import)
 }
 
 function OSM_getOpenStreetMapUrl() {
-  $zoom_level = get_settings('osm_zoom_level');  
-	$lat = $lat == ''? OSM_getCoordinateLat('osm') : $lat;
-	$lon = $lon == ''? OSM_getCoordinateLong('osm'): $lon;
+  $zoom_level = get_option('osm_zoom_level','7');  
+  $lat = $lat == ''? OSM_getCoordinateLat('osm') : $lat;
+  $lon = $lon == ''? OSM_getCoordinateLong('osm'): $lon;
   return URL_INDEX.URL_LAT.$lat.URL_LON.$lon.URL_ZOOM_01.$zoom_level.URL_ZOOM_02;
 }
 

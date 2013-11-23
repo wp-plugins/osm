@@ -3,7 +3,6 @@
   Option page for OSM wordpress plugin
   MiKa * created: april 2009
   plugin: http://wp-osm-plugin.HanBlog.net
-  blog:   http://www.HanBlog.net
 */
 ?>
 
@@ -164,6 +163,8 @@
   <li><?php _e('give this plugin a good ranking at ','OSM-plugin') ?><a target="_new" href="http://wordpress.org/extend/plugins/osm/">WordPress.org</a>.</li>
 </ol>
 <form method="post">
+ <?php
+ /*
  <tr> <h3><?php _e('How to geotag your post/page ','OSM-plugin') ?></h3> </tr>
   <ol>
     <li><?php _e('Choose a Custom Field name here.','OSM-plugin') ?></li>
@@ -173,6 +174,8 @@
   <td><label for="osm_custom_field"><?php _e('Custom Field Name','OSM-plugin') ?>:</label></td>
   <td><input type="text" name="osm_custom_field" value="<?php echo $osm_custom_field ?>" /></td>
  </tr>
+ */
+ ?>
  <tr> <h3>  PHP Interface</h3> </tr>
  <tr>
   <td><label for="osm_zoom_level"><?php _e('Map Zoomlevel for the PHP Link (1-17)','OSM-plugin') ?>:</label></td>

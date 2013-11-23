@@ -1,22 +1,22 @@
 === OSM - OpenStreetMap ===
 Contributors: MiKa
-Tags: map, OpenStreetMap, Google Maps, googlemaps, geo, KML, GPX, geotag, geolocation, geocache, geocaching, OSM, travelogue, template tag, travelblog, OpenLayers, Open Layers, Open Street Map, CloudMade, YourNavigation, OpenRouteService, marker, POI, geocode, geotagging, google earth, Leaflet, location, Route, Tracks, WMS, Open Sea Map, OpenSeaMap
+Tags: map, OpenStreetMap, Google Maps, googlemaps, geo, KML, GPX, geotag, geolocation, geocache, geocaching, OSM, travelogue, template tag, travelblog, OpenLayers, Open Layers, Open Street Map, CloudMade, YourNavigation, OpenRouteService, marker, POI, geocode, geotagging, google earth, Leaflet, location, Route, Tracks, WMS, Open Sea Map, OpenWeatherMap, Weather, OpenSeaMap
 Requires at least: 2.8
 Tested up to: 3.7.1
-Stable tag: 2.3
+Stable tag: 2.4
 
-OpenStreetMap plugin to embed maps. No API key! No Google API!
-Include your OSM (OpenStreetMap and OpenSeaMap) map with GPX tracks, POIs, markers and geotagged posts. 
+OpenStreetMap / OpenSeaMap plugin to embed maps. No API key! No Google API!
+Customize your maps with routes, marker, geotagged posts, weather, icons ... 
 
 == Description ==
 If you want to download the OSM-plugin you are right here!
 
 If you want to get detailed information about the OSM-plugin visit these pages:
 
-* OSM-plugin: [WP-OSM-Plugin](http://wp-osm-plugin.hanblog.net/ "OSM-plugin")
-* OSM-plugin Forum EN: [Forum EN](http://wp-osm-plugin.hanblog.net/forum/forum-en/ "OSM-plugin forum EN")
-* OSM-plugin Forum DE: [Forum DE](http://wp-osm-plugin.hanblog.net/forum/forum-de/ "OSM-plugin forum DE")
-* Author blog: [HanBlog.net](http://www.HanBlog.net/ "HanBlog.net")
+* Homepage: [WP-OSM-Plugin](http://wp-osm-plugin.hanblog.net/ "OSM-plugin")
+* Forum EN: [Forum EN](http://wp-osm-plugin.hanblog.net/forum/forum-en/ "OSM-plugin forum EN")
+* Forum DE: [Forum DE](http://wp-osm-plugin.hanblog.net/forum/forum-de/ "OSM-plugin forum DE")
+* Blog: [HanBlog.net](http://wp-osm-plugin.hanblog.net/blog "WP OSM Plugin Blog")
 
 If you are facing difficulties after an update, get the previous OSM Plugin version at [WP-OSM-Plugin Page](http://wp-osm-plugin.hanblog.net/ "OSM-plugin").
 
@@ -24,6 +24,7 @@ Features of the OSM-plugin:
 
 * embeds OpenStreetMap, OpenSeaMap and Google Maps maps to your posts/pages
 * embeds external maps to your posts/pages
+* visualizes weather in a map
 * visualizes several tracks / routes in different colours (gpx and kml)
 * visualizes popup-html-markers (list in txt-file or single in the shortcode)
 * visualize all geotagged posts of your blog in one map with/without a link to the post
@@ -43,13 +44,14 @@ Licenses of the maps:
 
 * OpenStreetMap: [OpenStreetMap License](http://wiki.openstreetmap.org/wiki/OpenStreetMap_License) 
 * Google Maps: [Google Maps Terms of Service](http://code.google.com/intl/de-DE/apis/maps/terms.html)
+* OpenWeatherMap: [OpenWeatherMap License](http://openweathermap.org/copyright)
 * Ext Maps: Depends on the map you are including - check it before including it!
 
 == Installation ==
 
 1. Upload OSM folder to the `/wp-content/plugins/` directory
 2. Activate the plugin through the 'Plugins' menu in WordPress
-3. Create your shortcode in 'Settings' => 'OSM' by simply clicking on the map.
+3. Generate the OSM shortcode when you write your post / page 
 
 IMPORTANT: 
 Personal data (eg. gpx files) must not be stored in the plugins/osm folder but in the upload folder!
@@ -72,12 +74,17 @@ There must be not format tag (like href ...) in the shortcode.
 
 
 == Changelog ==
+= 2.4 =
+* NEW: OpenWheaterMap integration
+* NEW: geotag custom field name predefined to OSM_geo_data
+* NEW: Default value for php function zoomlevel
+
 = 2.3 =
-  NEW: php call supports theme for map integration
-  NEW: marker_focus (5) added for map collection added
-  NEW: New arguments to filter:
+* NEW: php call supports theme for map integration
+* NEW: marker_focus (5) added for map collection added
+* NEW: New arguments to filter:
        post_type, custom_taxonomy, import_osm_custom_tax_incl_name
-  NEW: add several txt files in one map:
+* NEW: add several txt files in one map:
        marker_file_list 
 = 2.2 =
 * FIX: style rules are limited for OSM images
