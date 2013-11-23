@@ -75,7 +75,7 @@ There must be not format tag (like href ...) in the shortcode.
 
 == Changelog ==
 = 2.4 =
-* NEW: OpenWheaterMap integration
+* NEW: OpenWeatherMap integration
 * NEW: geotag custom field name predefined to OSM_geo_data
 * NEW: Default value for php function zoomlevel
 

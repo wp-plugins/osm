@@ -142,11 +142,11 @@ class Osm_OpenLayers
       $Layer .= 'map.addLayers([layerMapnik, layerSeamark, layerPois, layerOSM_Attr]);';
       $Layer .= 'map.addControl(new OpenLayers.Control.LayerSwitcher());';
     }
-    else if ($a_Type == 'OpenWheaterMap'){
+    else if ($a_Type == 'OpenWeatherMap'){
     	$Layer .= 'var layerMapnik   = new OpenLayers.Layer.OSM.Mapnik("Mapnik");';
-    	$Layer .= '	var layerWheater = new OpenLayers.Layer.Vector.OWMWeather("Weather");';
+    	$Layer .= '	var layerWeather = new OpenLayers.Layer.Vector.OWMWeather("Weather");';
     	$Layer .= 'var layerOSM_Attr = new OpenLayers.Layer.Vector("OSM-plugin",{attribution:"<a href=\"http://wp-osm-plugin.hanblog.net\">OSM plugin</a>"});';
-    	$Layer .= 'map.addLayers([layerMapnik, layerWheater,layerOSM_Attr]);';
+    	$Layer .= 'map.addLayers([layerMapnik, layerWeather,layerOSM_Attr]);';
     	$Layer .= 'map.addControl(new OpenLayers.Control.LayerSwitcher());';
     }
     else if ($a_Type == 'AllGoogle'){

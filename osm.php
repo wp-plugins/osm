@@ -786,7 +786,7 @@ class Osm
           define (OSM_LIBS_LOADED, 1);
         }
       }
-      elseif ($type == 'OpenWheaterMap'){
+      elseif ($type == 'OpenWeatherMap'){
       	if (OSM_LIBS_LOADED == 0) {
       		$output .= '<script type="text/javascript" src="'.Osm_OSM_LibraryLocation.'"></script>';
       		$output .= '<script type="text/javascript" src="'.Osm_openweather_LibraryLocation.'"></script>';
@@ -1048,7 +1048,7 @@ class Osm
         define (OSM_LIBS_LOADED, 1);
       }
     }
-    elseif ($type == 'OpenWheaterMap'){
+    elseif ($type == 'OpenWeatherMap'){
     	if (OSM_LIBS_LOADED == 0) {
     		$output .= '<script type="text/javascript" src="'.Osm_OSM_LibraryLocation.'"></script>';
     		$output .= '<script type="text/javascript" src="'.Osm_openweather_LibraryLocation.'"></script>';
