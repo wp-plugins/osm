@@ -135,7 +135,7 @@ class Osm_OpenLayers
     }
     else if ($a_Type == 'OpenSeaMap'){
       $Layer .= 'var layerMapnik   = new OpenLayers.Layer.OSM.Mapnik("Mapnik");';
-      $Layer .= 'var layerSeamark  = new OpenLayers.Layer.TMS("Seezeichen", "http://tiles.openseamap.org/seamark/", { numZoomLevels: 18, type: "png", getURL: getTileURL, isBaseLayer: false, displayOutsideMaxExtent: true});';
+      $Layer .= 'var layerSeamark  = new OpenLayers.Layer.TMS("Seezeichen", "http://t1.openseamap.org/seamark/", { numZoomLevels: 18, type: "png", getURL: getTileURL, isBaseLayer: false, displayOutsideMaxExtent: true});';
       $Layer .= 'var layerPois = new OpenLayers.Layer.Vector("Haefen", { projection: new OpenLayers.Projection("EPSG:4326"), visibility: true, displayOutsideMaxExtent:true});';
       $Layer .= 'layerPois.setOpacity(0.8);';
       $Layer .= 'var layerOSM_Attr = new OpenLayers.Layer.Vector("OSM-plugin",{attribution:"<a href=\"http://wp-osm-plugin.hanblog.net\">OSM plugin</a>"});';
