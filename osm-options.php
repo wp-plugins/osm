@@ -137,7 +137,7 @@
 <br>
 <h3> <?php _e('Adjust the map and click into the map to get your shortcode below the map','OSM-plugin') ?></h3>
   <li><?php _e('select the area and zoomlevel on the map (get a zoomwindow with shift and mousebutton)','OSM-plugin') ?></li>
-  <li><?php _e('choose your maptype with this icon ','OSM-plugin') ?><img src="http://www.openlayers.org/api/img/layer-switcher-maximize.png" alt="map type icon"> <?php _e('in the map (google maps will have a license pop up in yor post/page)','OSM-plugin') ?></li>
+  <li><?php _e('choose your maptype with this icon ','OSM-plugin') ?><img src="<?php echo Osm_OL_LibraryPath ?>img/layer-switcher-maximize.png" alt="map type icon"> <?php _e('in the map (google maps will have a license pop up in yor post/page)','OSM-plugin') ?></li>
   <li> <?php _e('your inputs (gpx-file, marker,...) are not displayed in this map but in your post/page ','OSM-plugin') ?></li>
   <li> <?php _e('you can modify your inputs and click again into the map to generate another shortcode ','OSM-plugin') ?></li> 
 <br> 

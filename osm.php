@@ -3,7 +3,7 @@
 Plugin Name: OSM
 Plugin URI: http://wp-osm-plugin.HanBlog.net
 Description: Embeds maps in your blog and adds geo data to your posts.  Find samples and a forum on the <a href="http://wp-osm-plugin.HanBlog.net">OSM plugin page</a>.  Simply create the shortcode to add it in your post at [<a href="options-general.php?page=osm.php">Settings</a>]
-Version: 2.4
+Version: 2.4.1
 Author: MiKa
 Author URI: http://www.HanBlog.net
 Minimum WordPress Version Required: 2.8
@@ -27,7 +27,7 @@ Minimum WordPress Version Required: 2.8
 */
 load_plugin_textdomain('OSM-plugin', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/');
 
-define ("PLUGIN_VER", "V2.4");
+define ("PLUGIN_VER", "V2.4.1");
 
 // modify anything about the marker for tagged posts here
 // instead of the coding.
@@ -74,21 +74,16 @@ define (HTML_COMMENT, 10);
 define (SERVER_EMBEDDED, 1);
 define (SERVER_WP_ENQUEUE, 2);
 
-
-if ( ! defined( 'WP_CONTENT_URL' ) )
-      define( 'WP_CONTENT_URL', get_option( 'siteurl' ) . '/wp-content' );
-if ( ! defined( 'WP_CONTENT_DIR' ) )
-      define( 'WP_CONTENT_DIR', ABSPATH . 'wp-content' );
-if ( ! defined( 'WP_PLUGIN_URL' ) )
-      define( 'WP_PLUGIN_URL', WP_CONTENT_URL. '/plugins' );
-if ( ! defined( 'WP_PLUGIN_DIR' ) )
-      define( 'WP_PLUGIN_DIR', WP_CONTENT_DIR . '/plugins' );
-define ("OSM_PLUGIN_URL", WP_PLUGIN_URL."/osm/");
-define ("OSM_PLUGIN_ICONS_URL", OSM_PLUGIN_URL."icons/");
-define ("URL_POST_MARKER", OSM_PLUGIN_URL.POST_MARKER_PNG);
-define ("OSM_PLUGIN_THEMES_URL", OSM_PLUGIN_URL."themes/");
-define( 'OSM_OPENLAYERS_THEMES_URL', WP_CONTENT_URL. '/uploads/osm/theme/' );
-define ("OSM_PLUGIN_JS_URL", OSM_PLUGIN_URL."js/");
+define('OSM_PRIV_WP_CONTENT_URL', site_url() . '/wp-content' );
+define('OSM_PRIV_WP_CONTENT_DIR', ABSPATH . 'wp-content' );
+define('OSM_PRIV_WP_PLUGIN_URL', OSM_PRIV_WP_CONTENT_URL. '/plugins' );
+define('OSM_PRIV_WP_PLUGIN_DIR', OSM_PRIV_WP_CONTENT_DIR . '/plugins' );
+define('OSM_PLUGIN_URL', OSM_PRIV_WP_PLUGIN_URL."/osm/");
+define('OSM_PLUGIN_ICONS_URL', OSM_PLUGIN_URL."icons/");
+define('URL_POST_MARKER', OSM_PLUGIN_URL.POST_MARKER_PNG);
+define('OSM_PLUGIN_THEMES_URL', OSM_PLUGIN_URL."themes/");
+define('OSM_OPENLAYERS_THEMES_URL', WP_CONTENT_URL. '/uploads/osm/theme/' );
+define('OSM_PLUGIN_JS_URL', OSM_PLUGIN_URL."js/");
 
 global $wp_version;
 if (version_compare($wp_version,"2.5.1","<")){
@@ -187,7 +182,7 @@ function osm_map_create_function( $post ) {
     </select>
     </p>
 
-<?php echo Osm::sc_showMap(array('msg_box'=>'metabox_sc_gen','lat'=>'50','long'=>'18.5','zoom'=>'3', 'type'=>'All', 'width'=>'450','height'=>'300', 'map_border'=>'thin solid grey', 'theme'=>'dark', 'control'=>'mouseposition,scaleline')); ?>
+<?php echo Osm::sc_showMap(array('msg_box'=>'metabox_sc_gen','lat'=>'50','long'=>'18.5','zoom'=>'3', 'type'=>'AllOsm', 'width'=>'450','height'=>'300', 'map_border'=>'thin solid grey', 'theme'=>'dark', 'control'=>'mouseposition,scaleline')); ?>
   <br>
   <h3><span style="color:green"><?php _e('Copy the generated shortcode/customfield/argument: ','OSM-plugin') ?></span></h3>
   <div id="ShortCode_Div"><?php _e('If you click into the map this text is replaced','OSM-plugin') ?>
@@ -324,7 +319,7 @@ class Osm
     // let's store geo data with W3 standard
 	echo "<meta name=\"ICBM\" content=\"{$lat}, {$lon}\" />\n";
 	echo "<meta name=\"DC.title\" content=\"{$wp_query->post->post_title}\" />\n";
-    echo "<meta name=\"geo.placename\" content=\"{$wp_query->post->post_title}\"/>\n"; 
+        echo "<meta name=\"geo.placename\" content=\"{$wp_query->post->post_title}\"/>\n"; 
 	echo "<meta name=\"geo.position\"  content=\"{$lat};{$lon}\" />\n";
   }
     
@@ -633,9 +628,9 @@ class Osm
     'import_osm_line_color' => 'none', 
     'import_osm_line_width' => '4',
     'import_osm_line_opacity' => '0.9',
-	'post_type' => 'post',
-	'custom_taxonomy' => 'none',
-	'import_osm_custom_tax_incl_name'  => 'Osm_All',
+    'post_type' => 'post',
+    'custom_taxonomy' => 'none',
+    'import_osm_custom_tax_incl_name'  => 'Osm_All',
     'marker'          => 'No',
     'marker_routing'  => 'No',
     'msg_box'         => 'No',
@@ -718,7 +713,7 @@ class Osm
       }
     }
 
-	list($import_type, $import_UserName) = explode(',', $import);
+    list($import_type, $import_UserName) = explode(',', $import);
     if ($import_UserName == ''){
       $import_UserName = 'DummyName';
     }
@@ -881,8 +876,6 @@ class Osm
     if ($import_type  != 'no'){
   $output .= Osm::getImportLayer($import_type, $import_UserName, $Icon, $import_osm_cat_incl_name,  $import_osm_cat_excl_name, $import_osm_line_color, $import_osm_line_width, $import_osm_line_opacity, $post_type, $import_osm_custom_tax_incl_name, $custom_taxonomy);
     }
-    
-//++
     if ($disc_center_list != ''){
       $centerListArray        = explode( ',', $disc_center_list );
       $radiusListArray        = explode( ',', $disc_radius_list );
@@ -901,8 +894,6 @@ class Osm
         $this->traceText(DEBUG_ERROR, "Discs parameters error");
       }
     }
-//--
-
   
    // just add single marker 
    if ($marker  != 'No'){  

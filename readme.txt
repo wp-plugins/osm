@@ -2,8 +2,8 @@
 Contributors: MiKa
 Tags: map, OpenStreetMap, Google Maps, googlemaps, geo, KML, GPX, geotag, geolocation, geocache, geocaching, OSM, travelogue, template tag, travelblog, OpenLayers, Open Layers, Open Street Map, CloudMade, YourNavigation, OpenRouteService, marker, POI, geocode, geotagging, google earth, Leaflet, location, Route, Tracks, WMS, Open Sea Map, OpenWeatherMap, Weather, OpenSeaMap
 Requires at least: 2.8
-Tested up to: 3.7.1
-Stable tag: 2.4
+Tested up to: 3.8
+Stable tag: 2.4.1
 
 OpenStreetMap / OpenSeaMap plugin to embed maps. No API key! No Google API!
 Customize your maps with routes, marker, geotagged posts, weather, icons ... 
@@ -62,11 +62,6 @@ Personal data (eg. gpx files) must not be stored in the plugins/osm folder but i
 
 No!
 
-= Can I use OSM-plugin at Wordpress MU? =
-
-Yes.
-
-
 = I do not see my gpx file / marker file in the map ? =
 
 The file has to be located at the same adress as your blog.
@@ -74,11 +69,13 @@ There must be not format tag (like href ...) in the shortcode.
 
 
 == Changelog ==
+= 2.4.1 =
+* FIX: New Server for OpenSeaMap
+* NEW: load OpenLayers locally (preperatin for SSL in backend)
 = 2.4 =
 * NEW: OpenWeatherMap integration
 * NEW: geotag custom field name predefined to OSM_geo_data
 * NEW: Default value for php function zoomlevel
-
 = 2.3 =
 * NEW: php call supports theme for map integration
 * NEW: marker_focus (5) added for map collection added
