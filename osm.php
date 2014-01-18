@@ -3,7 +3,7 @@
 Plugin Name: OSM
 Plugin URI: http://wp-osm-plugin.HanBlog.net
 Description: Embeds maps in your blog and adds geo data to your posts.  Find samples and a forum on the <a href="http://wp-osm-plugin.HanBlog.net">OSM plugin page</a>.  Simply create the shortcode to add it in your post at [<a href="options-general.php?page=osm.php">Settings</a>]
-Version: 2.4.1
+Version: 2.5
 Author: MiKa
 Author URI: http://www.HanBlog.net
 Minimum WordPress Version Required: 2.8
@@ -27,7 +27,7 @@ Minimum WordPress Version Required: 2.8
 */
 load_plugin_textdomain('OSM-plugin', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/');
 
-define ("PLUGIN_VER", "V2.4.1");
+define ("PLUGIN_VER", "V2.5");
 
 // modify anything about the marker for tagged posts here
 // instead of the coding.
@@ -98,6 +98,7 @@ if (@(!include('osm-config.php'))){
 
 // do not edit this
 define ("Osm_TraceLevel", DEBUG_ERROR);
+//define ("Osm_TraceLevel", DEBUG_INFO);
 
 // If the function exists this file is called as upload_mimes.
 // We don't do anything then.
@@ -131,7 +132,7 @@ if ( ! function_exists( 'fb_restrict_mime_types_hint' ) ) {
 	 */
 	function fb_restrict_mime_types_hint() {
 	  echo '<br />';
-	  _e( 'OSM plugin added: GPX / KML' );
+          _e('OSM plugin added: GPX / KML','OSM-plugin');
 	}
 }
 
@@ -149,40 +150,54 @@ function osm_map_create() {
 function osm_map_create_function( $post ) {
 ?>
     <p>
-    <b>Generate</b>:
+    <b><?php _e('Generate','OSM-plugin') ?></b>:
     <select name="osm_mode">
         <option value="sc_gen">OSM shortcode</option>
         <option value="geotagging">geotag</option>
     </select><br>
     OSM shortcode options: <br>
-    <b>OSM control theme</b>: 
-    <select name="osm_theme">
-        <option value="none">none</option>
-        <option value="blue">blue</option>
-        <option value="dark">dark</option>
-        <option value="orange">orange</option>
+    <b><?php _e('map type','OSM-plugin') ?></b>:
+    <select name="osm_map_type">
+        <option value="Mapnik">OpenStreetMap</option>
+        <option value="CycleMap">CycleMap</option>
+        <option value="OpenSeaMap">OpenSeaMap</option>
+        <option value="OpenWeatherMap">OpenWeatherMap</option>
+        <option value="basemap_at">BaseMap</option>
+        <option value="stamen_watercolor">Stamen Watercolor</option>
+        <option value="stamen_toner">Stamen Toner</option>
+        <option value="Google Physical">Google Maps</option>
+        <option value="GoogleStreet">Google Street</option>
+        <option value="GoogleHybrid">Google Hybrid</option>
+        <option value="GoogleSatellite">Google Satellite</option>
     </select>
-    <b>OSM marker</b>:
+    <br>
+    <b><?php _e('OSM control theme','OSM-plugin') ?></b>: 
+    <select name="osm_theme">
+        <option value="none"><?php _e('none','OSM-plugin') ?></option>
+        <option value="blue"><?php _e('blue','OSM-plugin') ?></option>
+        <option value="dark"><?php _e('dark','OSM-plugin') ?></option>
+        <option value="orange"><?php _e('orange','OSM-plugin') ?></option>
+    </select>
+    <b><?php _e('OSM marker','OSM-plugin') ?></b>:
     <select name="osm_marker">
         <option value="none">none</option>
-        <option value="wpttemp-green.png">Waypoint Green</option>
-        <option value="wpttemp-red.png">Waypoint Red</option>
-        <option value="marker_blue.png">Marker Blue</option>
-        <option value="wpttemp-yellow.png">Marker Yellow</option>
-        <option value="car.png">Marker Car</option>
-        <option value="bus.png">Marker Bus</option>
-        <option value="bicycling.png">Marker Bicycling</option>
-        <option value="airport.png">Marker Airport</option>
-        <option value="motorbike.png">Marker Motorbike</option>
-        <option value="hostel.png">Marker Hostel</option>
-        <option value="guest_house.png">Marker Guesthouse</option>
-        <option value="camping.png">Marker Camping</option>
-        <option value="geocache.png">Geocache</option>
-        <option value="styria_linux.png">Styria Tux</option>
+        <option value="wpttemp-green.png"><?php _e('Waypoint Green','OSM-plugin') ?></option>
+        <option value="wpttemp-red.png"><?php _e('Waypoint Red','OSM-plugin') ?></option>
+        <option value="marker_blue.png"><?php _e('Marker Blue','OSM-plugin') ?></option>
+        <option value="wpttemp-yellow.png"><?php _e('Marker Yellow','OSM-plugin') ?></option>
+        <option value="car.png"><?php _e('Car','OSM-plugin') ?></option>
+        <option value="bus.png"><?php _e('Bus','OSM-plugin') ?></option>
+        <option value="bicycling.png"><?php _e('Bicycling','OSM-plugin') ?></option>
+        <option value="airport.png"><?php _e('Airport','OSM-plugin') ?></option>
+        <option value="motorbike.png"><?php _e('Motorbike','OSM-plugin') ?></option>
+        <option value="hostel.png"><?php _e('Hostel','OSM-plugin') ?></option>
+        <option value="guest_house.png"><?php _e('Guesthouse','OSM-plugin') ?></option>
+        <option value="camping.png"><?php _e('Camping','OSM-plugin') ?></option>
+        <option value="geocache.png"><?php _e('Geocache','OSM-plugin') ?></option>
+        <option value="styria_linux.png"><?php _e('Styria Tux','OSM-plugin') ?></option>
     </select>
     </p>
-
-<?php echo Osm::sc_showMap(array('msg_box'=>'metabox_sc_gen','lat'=>'50','long'=>'18.5','zoom'=>'3', 'type'=>'AllOsm', 'width'=>'450','height'=>'300', 'map_border'=>'thin solid grey', 'theme'=>'dark', 'control'=>'mouseposition,scaleline')); ?>
+<?php echo Osm::sc_showMap(array('msg_box'=>'metabox_sc_gen','lat'=>'50','long'=>'18.5','zoom'=>'3', 'type'=>'mapnik_ssl', 'width'=>'450','height'=>'300', 'map_border'=>'thin solid grey', 'theme'=>'dark', 'control'=>'mouseposition,scaleline')); ?>
   <br>
   <h3><span style="color:green"><?php _e('Copy the generated shortcode/customfield/argument: ','OSM-plugin') ?></span></h3>
   <div id="ShortCode_Div"><?php _e('If you click into the map this text is replaced','OSM-plugin') ?>
@@ -275,15 +290,15 @@ class Osm
       else{
         Osm::traceText(DEBUG_ERROR, "e_options_not_updated");
       }
-	}
+    }
     else{
 	  //add_option('osm_custom_field', 0);
 	  add_option('osm_zoom_level', 0);
-	}
+    }
 	
     // name of the custom field to store Long and Lat
     // for the geodata of the post
-	$osm_custom_field  = get_option('osm_custom_field','OSM_geo_data');                                                  
+    $osm_custom_field  = get_option('osm_custom_field','OSM_geo_data');                                                  
 
     // zoomlevel for the link the OSM page
     $osm_zoom_level    = get_option('osm_zoom_level','7');
@@ -408,7 +423,8 @@ class Osm
            $Marker_Txt = ' ';
            $MarkerArray[] = array('lat'=> $temp_lat,'lon'=>$temp_lon,'popup_height'=>'100', 'popup_width'=>'150', 'marker'=>$Icon[name], 'text'=>$Marker_Txt);
          }
-	   }  
+       }
+       $this->traceText(DEBUG_INFO, "Found Marker ".count($MarkerArray));  
        endwhile;
      }
      else if ($a_import == 'wpgmg'){
@@ -446,8 +462,7 @@ class Osm
       }
       else {
         $PopUp = 'false';
-      }
-      
+      }    
     }    
     
     // import data from tagged posts
@@ -614,7 +629,7 @@ class Osm
     // are there markers in the map wished loaded from a file
     'marker_file'     => 'NoFile', // 'absolut address'
     'marker_file_proxy' => 'NoFile', // 'absolut address'
-  	'marker_file_list' => 'NoFileList', // 'absolut address for a list of marker files''
+    'marker_file_list' => 'NoFileList', // 'absolut address for a list of marker files''
     // are there markers in the map wished loaded from post tags
     'marker_all_posts'=> 'n',      // 'y' or 'Y'
     'marker_name'     => 'NoName',
@@ -766,7 +781,7 @@ class Osm
         define (OL_LIBS_LOADED, 1);
       }
   
-      if ($type == 'Mapnik' || $type == 'Osmarender' || $type == 'CycleMap' || $type == 'All' || $type == 'AllOsm' || $type == 'Ext'){
+      if ($type == 'Mapnik' || $type == 'mapnik_ssl' || $type == 'Osmarender' || $type == 'basemap_at' || $type == 'stamen_watercolor' || $type == 'stamen_toner' || $type == 'CycleMap' || $type == 'All' || $type == 'AllOsm' || $type == 'Ext'){
 	    if (OSM_LIBS_LOADED == 0) {
           $output .= '<script type="text/javascript" src="'.Osm_OSM_LibraryLocation.'"></script>';
           define (OSM_LIBS_LOADED, 1);
@@ -933,10 +948,10 @@ class Osm
          $temp_popup .= 'http://yournavigation.org/?tlat=' . $temp_lat . '&tlon=' . $temp_lon;
        }
        else {
-         $temp_popup .= 'missing routing service!'.$marker_routing;
+         $temp_popup .= __("Missing routing service!", "OSM-plugin").$marker_routing;
          Osm::traceText(DEBUG_ERROR, "e_missing_rs_error");
        }
-       $temp_popup .= '">' . __("Route from your location to this place", "Osm") . '</a></div>';
+       $temp_popup .= '">' . __("Route from your location to this place", "OSM-plugin") . '</a></div>';
      }
 
      if (($temp_popup_custom_field == 'osm_dummy') && ($m_txt_01 == 'none') && ($marker_routing == 'no')){
@@ -1024,7 +1039,7 @@ class Osm
         define (OL_LIBS_LOADED, 1);
       }
   
-    if ($type == 'Mapnik' || $type == 'Osmarender' || $type == 'CycleMap' || $type == 'All' || $type == 'AllOsm' || $type == 'Ext'){
+    if ($type == 'Mapnik' || $type == 'mapnik_ssl' || $type == 'Osmarender' || $type == 'CycleMap' || $type == 'basemap_at' || $type == 'stamen_watercolor' || $type == 'stamen_toner' || $type == 'All' || $type == 'AllOsm' || $type == 'Ext'){
 	  if (OSM_LIBS_LOADED == 0) {
         $output .= '<script type="text/javascript" src="'.Osm_OSM_LibraryLocation.'"></script>';
         define (OSM_LIBS_LOADED, 1);

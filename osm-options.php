@@ -39,25 +39,25 @@
     <col width="120">
   </colgroup>
  <tr>
-  <td align="center"><p><img src="<?php echo OSM_PLUGIN_URL ?>/icons/marker_blue.png" alt="Blue Marker"><br><input type="radio" name="Art" value="marker_blue.png"></p></td>
-  <td align="center"><p><img src="<?php echo OSM_PLUGIN_URL ?>/icons/wpttemp-green.png" alt="Green Waypoint"><br><input type="radio" name="Art" value="wpttemp-green.png"></p></td>
-  <td align="center"><p><img src="<?php echo OSM_PLUGIN_URL ?>/icons/wpttemp-red.png" alt="Red Waypoint"><br><input type="radio" name="Art" value="wpttemp-red.png"></p></td>
-  <td align="center"><p><img src="<?php echo OSM_PLUGIN_URL ?>/icons/wpttemp-yellow.png" alt="Yellow Marker"><br><input type="radio" name="Art" value="wpttemp-yellow.png"></p></td>
-  <td align="center"><p><img src="<?php echo OSM_PLUGIN_URL ?>/icons/geocache.png" alt="Geocache"><br><input type="radio" name="Art" value="geocache.png"></p></td>
+  <td align="center"><p><img src="<?php echo OSM_PLUGIN_URL ?>/icons/marker_blue.png" alt="<?php _e('Blue Marker','OSM-plugin') ?>"><br><input type="radio" name="Art" value="marker_blue.png"></p></td>
+  <td align="center"><p><img src="<?php echo OSM_PLUGIN_URL ?>/icons/wpttemp-green.png" alt="<?php _e('Green Waypoint','OSM-plugin') ?>"><br><input type="radio" name="Art" value="wpttemp-green.png"></p></td>
+  <td align="center"><p><img src="<?php echo OSM_PLUGIN_URL ?>/icons/wpttemp-red.png" alt="<?php _e('Red Waypoint','OSM-plugin') ?>"><br><input type="radio" name="Art" value="wpttemp-red.png"></p></td>
+  <td align="center"><p><img src="<?php echo OSM_PLUGIN_URL ?>/icons/wpttemp-yellow.png" alt="<?php _e('Yellow Marker','OSM-plugin') ?>"><br><input type="radio" name="Art" value="wpttemp-yellow.png"></p></td>
+  <td align="center"><p><img src="<?php echo OSM_PLUGIN_URL ?>/icons/geocache.png" alt="<?php _e('Geocache','OSM-plugin') ?>"><br><input type="radio" name="Art" value="geocache.png"></p></td>
  </tr>
  <tr>
-  <td align="center"><p><img src="<?php echo OSM_PLUGIN_URL ?>/icons/car.png" alt="Car Marker"><br><input type="radio" name="Art" value="car.png"></p></td>
-  <td align="center"><p><img src="<?php echo OSM_PLUGIN_URL ?>/icons/bus.png" alt="Bus Waypoint"><br><input type="radio" name="Art" value="bus.png"></p></td>
-  <td align="center"><p><img src="<?php echo OSM_PLUGIN_URL ?>/icons/bicycling.png" alt="Bicycling Waypoint"><br><input type="radio" name="Art" value="bicycling.png"></p></td>
-  <td align="center"><p><img src="<?php echo OSM_PLUGIN_URL ?>/icons/airport.png" alt="Airport Marker"><br><input type="radio" name="Art" value="airport.png"></p></td>
-  <td align="center"><p><img src="<?php echo OSM_PLUGIN_URL ?>/icons/motorbike.png" alt="Motorbike"><br><input type="radio" name="Art" value="motorbike.png"></p></td>
+  <td align="center"><p><img src="<?php echo OSM_PLUGIN_URL ?>/icons/car.png" alt="<?php _e('Car','OSM-plugin') ?>"><br><input type="radio" name="Art" value="car.png"></p></td>
+  <td align="center"><p><img src="<?php echo OSM_PLUGIN_URL ?>/icons/bus.png" alt="<?php _e('Bus','OSM-plugin') ?>"><br><input type="radio" name="Art" value="bus.png"></p></td>
+  <td align="center"><p><img src="<?php echo OSM_PLUGIN_URL ?>/icons/bicycling.png" alt="<?php _e('Bicycling Waypoint','OSM-plugin') ?>"><br><input type="radio" name="Art" value="bicycling.png"></p></td>
+  <td align="center"><p><img src="<?php echo OSM_PLUGIN_URL ?>/icons/airport.png" alt="<?php _e('Airport','OSM-plugin') ?>"><br><input type="radio" name="Art" value="airport.png"></p></td>
+  <td align="center"><p><img src="<?php echo OSM_PLUGIN_URL ?>/icons/motorbike.png" alt="<?php _e('Motorbike','OSM-plugin') ?>"><br><input type="radio" name="Art" value="motorbike.png"></p></td>
  </tr>
  <tr>
-  <td align="center"><p><img src="<?php echo OSM_PLUGIN_URL ?>/icons/hotel.png" alt="Hotel Marker"><br><input type="radio" name="Art" value="hotel.png"></p></td>
-  <td align="center"><p><img src="<?php echo OSM_PLUGIN_URL ?>/icons/hostel.png" alt="Hostel Waypoint"><br><input type="radio" name="Art" value="hostel.png"></p></td>
-  <td align="center"><p><img src="<?php echo OSM_PLUGIN_URL ?>/icons/guest_house.png" alt="Guesthouse Waypoint"><br><input type="radio" name="Art" value="guest_house.png"></p></td>
-  <td align="center"><p><img src="<?php echo OSM_PLUGIN_URL ?>/icons/camping.png" alt="Camping Marker"><br><input type="radio" name="Art" value="camping.png"></p></td>
-  <td align="center"><p><img src="<?php echo OSM_PLUGIN_URL ?>/icons/styria_linux.png" alt="Styria Tux"><br><input type="radio" name="Art" value="styria_linux.png"></p></td>
+  <td align="center"><p><img src="<?php echo OSM_PLUGIN_URL ?>/icons/hotel.png" alt="<?php _e('Hotel','OSM-plugin') ?>"><br><input type="radio" name="Art" value="hotel.png"></p></td>
+  <td align="center"><p><img src="<?php echo OSM_PLUGIN_URL ?>/icons/hostel.png" alt="<?php _e('Hostel','OSM-plugin') ?>"><br><input type="radio" name="Art" value="hostel.png"></p></td>
+  <td align="center"><p><img src="<?php echo OSM_PLUGIN_URL ?>/icons/guest_house.png" alt="<?php _e('Guesthouse','OSM-plugin') ?>"><br><input type="radio" name="Art" value="guest_house.png"></p></td>
+  <td align="center"><p><img src="<?php echo OSM_PLUGIN_URL ?>/icons/camping.png" alt="<?php _e('Camping','OSM-plugin') ?>"><br><input type="radio" name="Art" value="camping.png"></p></td>
+  <td align="center"><p><img src="<?php echo OSM_PLUGIN_URL ?>/icons/styria_linux.png" alt="<?php _e('Styria Tux','OSM-plugin') ?>"><br><input type="radio" name="Art" value="styria_linux.png"></p></td>
  </tr>
 </form>
 </table>

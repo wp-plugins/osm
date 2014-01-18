@@ -1,9 +1,9 @@
 === OSM - OpenStreetMap ===
 Contributors: MiKa
-Tags: map, OpenStreetMap, Google Maps, googlemaps, geo, KML, GPX, geotag, geolocation, geocache, geocaching, OSM, travelogue, template tag, travelblog, OpenLayers, Open Layers, Open Street Map, CloudMade, YourNavigation, OpenRouteService, marker, POI, geocode, geotagging, google earth, Leaflet, location, Route, Tracks, WMS, Open Sea Map, OpenWeatherMap, Weather, OpenSeaMap
+Tags: map, OpenStreetMap, Google Maps, googlemaps, geo, KML, GPX, geotag, geolocation, geocache, geocaching, OSM, travelogue, template tag, travelblog, OpenLayers, Open Layers, Open Street Map, CloudMade, YourNavigation, OpenRouteService, marker, POI, geocode, geotagging, google earth, Leaflet, location, Route, Tracks, WMS, Open Sea Map, OpenWeatherMap, Weather, OpenSeaMap, stamen, toner, watercolor, basemap, ssl
 Requires at least: 2.8
 Tested up to: 3.8
-Stable tag: 2.4.1
+Stable tag: 2.5
 
 OpenStreetMap / OpenSeaMap plugin to embed maps. No API key! No Google API!
 Customize your maps with routes, marker, geotagged posts, weather, icons ... 
@@ -17,12 +17,13 @@ If you want to get detailed information about the OSM-plugin visit these pages:
 * Forum EN: [Forum EN](http://wp-osm-plugin.hanblog.net/forum/forum-en/ "OSM-plugin forum EN")
 * Forum DE: [Forum DE](http://wp-osm-plugin.hanblog.net/forum/forum-de/ "OSM-plugin forum DE")
 * Blog: [HanBlog.net](http://wp-osm-plugin.hanblog.net/blog "WP OSM Plugin Blog")
+* Twitter: [@WP_OSM_Plugin](https://twitter.com/wp_osm_plugin "@WP_OSM_Plugin")
 
 If you are facing difficulties after an update, get the previous OSM Plugin version at [WP-OSM-Plugin Page](http://wp-osm-plugin.hanblog.net/ "OSM-plugin").
 
 Features of the OSM-plugin:
 
-* embeds OpenStreetMap, OpenSeaMap and Google Maps maps to your posts/pages
+* embeds OpenStreetMap, OpenSeaMap, BaseMap, Stamen and Google Maps maps to your posts/pages
 * embeds external maps to your posts/pages
 * visualizes weather in a map
 * visualizes several tracks / routes in different colours (gpx and kml)
@@ -39,12 +40,15 @@ Languages:
 * Deutsch
 * Japanese [by Sykane]
 * French [by Tounoki]
+* Russian [by Вячеслав Стренадко/Vyacheslav Strenadko]
 
 Licenses of the maps:
 
 * OpenStreetMap: [OpenStreetMap License](http://wiki.openstreetmap.org/wiki/OpenStreetMap_License) 
 * Google Maps: [Google Maps Terms of Service](http://code.google.com/intl/de-DE/apis/maps/terms.html)
 * OpenWeatherMap: [OpenWeatherMap License](http://openweathermap.org/copyright)
+* Stamen Maps: [Stamen License](http://maps.stamen.com)
+* BaseMap:  [BaseMap License](http://basemap.at)
 * Ext Maps: Depends on the map you are including - check it before including it!
 
 == Installation ==
@@ -69,6 +73,13 @@ There must be not format tag (like href ...) in the shortcode.
 
 
 == Changelog ==
+= 2.5 =
+* NEW: SSL support
+* NEW: GUI improvements
+* NEW: basemap tiles (Austrian gov)
+* NEW: stamen tiles (watercolor and toner)
+* NEW: Russian translations
+* FIX: pink tiles at some FF versions
 = 2.4.1 =
 * FIX: New Server for OpenSeaMap
 * NEW: load OpenLayers locally (preperatin for SSL in backend)
