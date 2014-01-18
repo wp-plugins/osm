@@ -3,7 +3,7 @@ Contributors: MiKa
 Tags: map, OpenStreetMap, Google Maps, googlemaps, geo, KML, GPX, geotag, geolocation, geocache, geocaching, OSM, travelogue, template tag, travelblog, OpenLayers, Open Layers, Open Street Map, CloudMade, YourNavigation, OpenRouteService, marker, POI, geocode, geotagging, google earth, Leaflet, location, Route, Tracks, WMS, Open Sea Map, OpenWeatherMap, Weather, OpenSeaMap, stamen, toner, watercolor, basemap, ssl
 Requires at least: 2.8
 Tested up to: 3.8
-Stable tag: 2.5
+Stable tag: 2.5.1
 
 OpenStreetMap / OpenSeaMap plugin to embed maps. No API key! No Google API!
 Customize your maps with routes, marker, geotagged posts, weather, icons ... 
@@ -73,6 +73,8 @@ There must be not format tag (like href ...) in the shortcode.
 
 
 == Changelog ==
+= 2.5.1 =
+* FIX: Fix for FF (pink tiles)
 = 2.5 =
 * NEW: SSL support
 * NEW: GUI improvements
