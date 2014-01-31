@@ -9,7 +9,7 @@ Author URI: http://www.HanBlog.net
 Minimum WordPress Version Required: 2.8
 */
 
-/*  (c) Copyright 2013  Michael Kang
+/*  (c) Copyright 2014  Michael Kang
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -27,21 +27,21 @@ Minimum WordPress Version Required: 2.8
 */
 load_plugin_textdomain('OSM-plugin', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/');
 
-define ("PLUGIN_VER", "V2.5.1");
+define ("PLUGIN_VER", "V2.5.2");
 
 // modify anything about the marker for tagged posts here
 // instead of the coding.
 define ("POST_MARKER_PNG", "marker_posts.png");
-define (POST_MARKER_PNG_HEIGHT, 2);
-define (POST_MARKER_PNG_WIDTH, 2);
+define ('POST_MARKER_PNG_HEIGHT', 2);
+define ('POST_MARKER_PNG_WIDTH', 2);
 
 define ("GCSTATS_MARKER_PNG", "geocache.png");
-define (GCSTATS_MARKER_PNG_HEIGHT, 25);
-define (GCSTATS_MARKER_PNG_WIDTH, 25);
+define ('GCSTATS_MARKER_PNG_HEIGHT', 25);
+define ('GCSTATS_MARKER_PNG_WIDTH', 25);
 
 define ("INDIV_MARKER", "marker_blue.png");
-define (INDIV_MARKER_PNG_HEIGHT, 25);
-define (INDIV_MARKER_PNG_WIDTH, 25);
+define ('INDIV_MARKER_PNG_HEIGHT', 25);
+define ('INDIV_MARKER_PNG_WIDTH', 25);
 
 // these defines are given by OpenStreetMap.org
 define ("URL_INDEX", "http://www.openstreetmap.org/index.html?");
@@ -49,8 +49,8 @@ define ("URL_LAT","&mlat=");
 define ("URL_LON","&mlon=");
 define ("URL_ZOOM_01","&zoom=[");
 define ("URL_ZOOM_02","]");
-define (ZOOM_LEVEL_MAX,18); // standard is 17, only mapnik is 18
-define (ZOOM_LEVEL_MIN,1);
+define ('ZOOM_LEVEL_MAX',18); // standard is 17, only mapnik is 18
+define ('ZOOM_LEVEL_MIN',1);
 
 // other geo plugin defines
 // google-maps-geocoder
@@ -58,21 +58,21 @@ define ("WPGMG_LAT", "lat");
 define ("WPGMG_LON", "lng");
 
 // some general defines
-define (LAT_MIN,-90);
-define (LAT_MAX,90);
-define (LON_MIN,-180);
-define (LON_MAX,180);
+define ('LAT_MIN',-90);
+define ('LAT_MAX',90);
+define ('LON_MIN',-180);
+define ('LON_MAX',180);
 
 // tracelevels
-define (DEBUG_OFF, 0);
-define (DEBUG_ERROR, 1);
-define (DEBUG_WARNING, 2);
-define (DEBUG_INFO, 3);
-define (HTML_COMMENT, 10);
+define ('DEBUG_OFF', 0);
+define ('DEBUG_ERROR', 1);
+define ('DEBUG_WARNING', 2);
+define ('DEBUG_INFO', 3);
+define ('HTML_COMMENT', 10);
 
 // Load OSM library mode
-define (SERVER_EMBEDDED, 1);
-define (SERVER_WP_ENQUEUE, 2);
+define ('SERVER_EMBEDDED', 1);
+define ('SERVER_WP_ENQUEUE', 2);
 
 define('OSM_PRIV_WP_CONTENT_URL', site_url() . '/wp-content' );
 define('OSM_PRIV_WP_CONTENT_DIR', ABSPATH . 'wp-content' );
@@ -117,8 +117,6 @@ if ( ! function_exists( 'fb_restrict_mime_types' ) ) {
     return $mime_types;
   }
 }
-
-
 
 // If the function exists this file is called as post-upload-ui.
 // We don't do anything then.
@@ -421,7 +419,7 @@ class Osm
          }	 
          else{ // plain osm without link to the post
            $Marker_Txt = ' ';
-           $MarkerArray[] = array('lat'=> $temp_lat,'lon'=>$temp_lon,'popup_height'=>'100', 'popup_width'=>'150', 'marker'=>$Icon[name], 'text'=>$Marker_Txt);
+           $MarkerArray[] = array('lat'=> $temp_lat,'lon'=>$temp_lon,'popup_height'=>'100', 'popup_width'=>'150', 'marker'=>$Icon["name"], 'text'=>$Marker_Txt);
          }
        }
        $this->traceText(DEBUG_INFO, "Found Marker ".count($MarkerArray));  
@@ -436,7 +434,7 @@ class Osm
          include('osm-import.php');
          if ($temp_lat != '' && $temp_lon != '') {
            list($temp_lat, $temp_lon) = $this->checkLatLongRange('$marker_all_posts',$temp_lat, $temp_lon);          
-           $MarkerArray[] = array('lat'=> $temp_lat,'lon'=>$temp_lon,'marker'=>$Icon[name],'popup_height'=>'100', 'popup_width'=>'200');
+           $MarkerArray[] = array('lat'=> $temp_lat,'lon'=>$temp_lon,'marker'=>$Icon["name"],'popup_height'=>'100', 'popup_width'=>'200');
          }  
        endwhile;
      }
@@ -457,7 +455,7 @@ class Osm
 
     if ($a_type  == 'osm_l'){
       $LayerName = 'TaggedPosts';
-      if ($Icon[name] != 'NoName'){ // <= ToDo
+      if ($Icon["name"] != 'NoName'){ // <= ToDo
         $PopUp = 'true';     
       }
       else {
@@ -481,14 +479,14 @@ class Osm
       $LayerName     = 'GeoCaches';
       $PopUp = 'true';
       $Icon = Osm::getIconsize(GCSTATS_MARKER_PNG);
-      $Icon[name] = GCSTATS_MARKER_PNG;
+      $Icon["name"] = GCSTATS_MARKER_PNG;
     }
     // import data from ecf
     else if ($a_type == 'ecf'){
       $LayerName = 'Comments';
       $PopUp = 'true';
       $Icon = Osm::getIconsize(INDIV_MARKER);
-      $Icon[name] = INDIV_MARKER;
+      $Icon["name"] = INDIV_MARKER;
     }
     else{
       $this->traceText(DEBUG_ERROR, "e_import_unknwon");
@@ -511,9 +509,9 @@ class Osm
     else if ($a_import == 'gcstats'){
       if (function_exists('gcStats__getInterfaceVersion')) {
         $Val = gcStats__getMinMaxLat($a_import_UserName);
-        $a_Lat = ($Val[min] + $Val[max]) / 2;
+        $a_Lat = ($Val["min"] + $Val["max"]) / 2;
         $Val = gcStats__getMinMaxLon($a_import_UserName);
-        $a_Long = ($Val[min] + $Val[max]) / 2;
+        $a_Long = ($Val["min"] + $Val["max"]) / 2;
       }
       else{
        $this->traceText(DEBUG_WARNING, "getMapCenter() could not connect to gcStats plugin");
@@ -589,7 +587,7 @@ class Osm
     "wpttemp-red.png"    => array("height"=>24,"width"=>"24","offset_height"=>"-24","offset_width"=>"0"),
   );
 
-  if ($Icons[$a_IconName][height] == ''){
+  if ($Icons[$a_IconName]["height"] == ''){
     $Icon = array("height"=>24,"width"=>"24");
     $this->traceText(DEBUG_ERROR, "e_unknown_icon");
     $this->traceText(DEBUG_INFO, "Error: (marker_name: ".$a_IconName.")!"); 
@@ -691,49 +689,52 @@ class Osm
 
     if (Osm::isOsmIcon($marker_name) == 1){
        $Icon = Osm::getIconsize($marker_name);
-       $Icon[name]  = $marker_name;
+       $Icon["name"]  = $marker_name;
     }
     else  {
-      $Icon[height] = $marker_height;
-      $Icon[width]  = $marker_width; 
-      $Icon[name]  = $marker_name;
+      $Icon["height"] = $marker_height;
+      $Icon["width"]  = $marker_width; 
+      $Icon["name"]  = $marker_name;
       if ($marker_focus == 0){ // center is default
-        $Icon[offset_height] = round(-$marker_height/2);
-        $Icon[offset_width] = round(-$marker_width/2);
+        $Icon["offset_height"] = round(-$marker_height/2);
+        $Icon["offset_width"] = round(-$marker_width/2);
       }
       else if ($marker_focus == 1){ // left bottom
-        $Icon[offset_height] = -$marker_height;
-        $Icon[offset_width]  = 0;
+        $Icon["offset_height"] = -$marker_height;
+        $Icon["offset_width"]  = 0;
       }
       else if ($marker_focus == 2){ // left top
-        $Icon[offset_height] = 0;
-        $Icon[offset_width]  = 0;
+        $Icon["offset_height"] = 0;
+        $Icon["offset_width"]  = 0;
       }
       else if ($marker_focus == 3){ // right top
-        $Icon[offset_height] = 0;
-        $Icon[offset_width]  = -$marker_width;
+        $Icon["offset_height"] = 0;
+        $Icon["offset_width"]  = -$marker_width;
       }
       else if ($marker_focus == 4){ // right bottom
-        $Icon[offset_height] = -$marker_height;
-        $Icon[offset_width]  = -$marker_width;
+        $Icon["offset_height"] = -$marker_height;
+        $Icon["offset_width"]  = -$marker_width;
       }
       else if ($marker_focus == 5){ // center bottom
-        $Icon[offset_height] = -$marker_height;
-        $Icon[offset_width] = round(-$marker_width/2);
+        $Icon["offset_height"] = -$marker_height;
+        $Icon["offset_width"] = round(-$marker_width/2);
       }
-      if ($Icon[height] == 0 || $Icon[width] == 0){
+      if ($Icon["height"] == 0 || $Icon["width"] == 0){
         Osm::traceText(DEBUG_ERROR, "e_marker_size"); //<= ToDo
-        $Icon[height] = 24;
-        $Icon[width]  = 24;
+        $Icon["height"] = 24;
+        $Icon["width"]  = 24;
       }
     }
 
-    list($import_type, $import_UserName) = explode(',', $import);
-    if ($import_UserName == ''){
+    $arry_import = explode(',', $import);
+    $import_type = strtolower($arry_import[0]);
+    if(count($arry_import) > 1)
+      $import_UserName = $arry_import[1];
+    else{
       $import_UserName = 'DummyName';
     }
-    $import_type = strtolower($import_type);
-	  $array_control = explode( ',', $control);
+
+    $array_control = explode( ',', $control);
    
     list($lat, $long) = Osm::getMapCenter($lat, $long, $import_type, $import_UserName);
     if ($lat != 'auto' && $long != 'auto'){
@@ -776,37 +777,37 @@ class Osm
 
     
 	if (Osm_LoadLibraryMode == SERVER_EMBEDDED){
-	  if (OL_LIBS_LOADED == 0) {
-        $output .= '<script type="text/javascript" src="'.Osm_OL_LibraryLocation.'"></script>';
-        define (OL_LIBS_LOADED, 1);
-      }
+          if(!defined('OL_LIBS_LOADED')) {
+            $output .= '<script type="text/javascript" src="'.Osm_OL_LibraryLocation.'"></script>';
+            define ('OL_LIBS_LOADED', 1);
+        }
   
       if ($type == 'Mapnik' || $type == 'mapnik_ssl' || $type == 'Osmarender' || $type == 'basemap_at' || $type == 'stamen_watercolor' || $type == 'stamen_toner' || $type == 'CycleMap' || $type == 'All' || $type == 'AllOsm' || $type == 'Ext'){
-	    if (OSM_LIBS_LOADED == 0) {
+        if(!defined('OSM_LIBS_LOADED')) {
           $output .= '<script type="text/javascript" src="'.Osm_OSM_LibraryLocation.'"></script>';
-          define (OSM_LIBS_LOADED, 1);
+          define ('OSM_LIBS_LOADED', 1);
         }
       }
       elseif ($type == 'OpenSeaMap'){
-	    if (OSM_LIBS_LOADED == 0) {
+        if(!defined('OSM_LIBS_LOADED')) {
           $output .= '<script type="text/javascript" src="'.Osm_OSM_LibraryLocation.'"></script>';
           $output .= '<script type="text/javascript" src="'.Osm_harbours_LibraryLocation.'"></script>';
           $output .= '<script type="text/javascript" src="'.Osm_map_utils_LibraryLocation.'"></script>';
           $output .= '<script type="text/javascript" src="'.Osm_utilities_LibraryLocation.'"></script>';
-          define (OSM_LIBS_LOADED, 1);
+          define ('OSM_LIBS_LOADED', 1);
         }
       }
       elseif ($type == 'OpenWeatherMap'){
-      	if (OSM_LIBS_LOADED == 0) {
-      		$output .= '<script type="text/javascript" src="'.Osm_OSM_LibraryLocation.'"></script>';
-      		$output .= '<script type="text/javascript" src="'.Osm_openweather_LibraryLocation.'"></script>';
-      		define (OSM_LIBS_LOADED, 1);
+      	if(!defined('OSM_LIBS_LOADED'))  {
+      	  $output .= '<script type="text/javascript" src="'.Osm_OSM_LibraryLocation.'"></script>';
+      	  $output .= '<script type="text/javascript" src="'.Osm_openweather_LibraryLocation.'"></script>';
+          define ('OSM_LIBS_LOADED', 1);
       	}
       }
-      if ($type == 'GooglePhysical' || $type == 'GoogleStreet' || $type == 'GoogleHybrid' || $type == 'GoogleSatellite' || $type == 'All' || $type == 'AllGoogle' || $a_type == 'Ext' || $type == 'Google Physical' || $type == 'Google Street' || $type == 'Google Hybrid' || $type == 'Google Satellite'){
-	    if (GOOGLE_LIBS_LOADED == 0) {
+      if ($type == 'GooglePhysical' || $type == 'GoogleStreet' || $type == 'GoogleHybrid' || $type == 'GoogleSatellite' || $type == 'All' || $type == 'AllGoogle'){
+	    if(!defined('GOOGLE_LIBS_LOADED == 0')) {
           $output .= '<script type="text/javascript" src="'.Osm_GOOGLE_LibraryLocation.'"></script>';
-          define (GOOGLE_LIBS_LOADED, 1);
+          define ('GOOGLE_LIBS_LOADED', 1);
         }
       }
       $output .= '<script type="text/javascript" src="'.OSM_PLUGIN_JS_URL.'osm-plugin-lib.js"></script>';
@@ -1034,34 +1035,34 @@ class Osm
 
     
 	if (Osm_LoadLibraryMode == SERVER_EMBEDDED){
-	  if (OL_LIBS_LOADED == 0) {
-    	$output .= '<script type="text/javascript" src="'.Osm_OL_LibraryLocation.'"></script>';
-        define (OL_LIBS_LOADED, 1);
-      }
+          if(!defined('OL_LIBS_LOADED')) {
+            $output .= '<script type="text/javascript" src="'.Osm_OL_LibraryLocation.'"></script>';
+            define ('OL_LIBS_LOADED', 1);
+          }
   
     if ($type == 'Mapnik' || $type == 'mapnik_ssl' || $type == 'Osmarender' || $type == 'CycleMap' || $type == 'basemap_at' || $type == 'stamen_watercolor' || $type == 'stamen_toner' || $type == 'All' || $type == 'AllOsm' || $type == 'Ext'){
-	  if (OSM_LIBS_LOADED == 0) {
+      if(!defined('OSM_LIBS_LOADED')) {
         $output .= '<script type="text/javascript" src="'.Osm_OSM_LibraryLocation.'"></script>';
-        define (OSM_LIBS_LOADED, 1);
+        define ('OSM_LIBS_LOADED', 1);
       }
     }
     elseif ($type == 'OpenSeaMap'){
-	  if (OSM_LIBS_LOADED == 0) {
+      if(!defined('OSM_LIBS_LOADED')) {
         $output .= '<script type="text/javascript" src="'.Osm_OSM_LibraryLocation.'"></script>';
         $output .= '<script type="text/javascript" src="'.Osm_harbours_LibraryLocation.'"></script>';
         $output .= '<script type="text/javascript" src="'.Osm_map_utils_LibraryLocation.'"></script>';
         $output .= '<script type="text/javascript" src="'.Osm_utilities_LibraryLocation.'"></script>';
-        define (OSM_LIBS_LOADED, 1);
+        define ('OSM_LIBS_LOADED', 1);
       }
     }
     elseif ($type == 'OpenWeatherMap'){
-    	if (OSM_LIBS_LOADED == 0) {
+        if(!defined('OSM_LIBS_LOADED')) {
     		$output .= '<script type="text/javascript" src="'.Osm_OSM_LibraryLocation.'"></script>';
     		$output .= '<script type="text/javascript" src="'.Osm_openweather_LibraryLocation.'"></script>';
-    		define (OSM_LIBS_LOADED, 1);
+    		define ('OSM_LIBS_LOADED', 1);
     	}
     }    
-    if ($type == 'GooglePhysical' || $type == 'GoogleStreet' || $type == 'GoogleHybrid' || $type == 'GoogleSatellite' || $type == 'All' || $type == 'AllGoogle' || $a_type == 'Ext' || $type == 'Google Physical' || $type == 'Google Street' || $type == 'Google Hybrid' || $type == 'Google Satellite'){
+    if ($type == 'GooglePhysical' || $type == 'GoogleStreet' || $type == 'GoogleHybrid' || $type == 'GoogleSatellite' || $type == 'All' || $type == 'AllGoogle'){
 	  if (GOOGLE_LIBS_LOADED == 0) {
         $output .= '<script type="text/javascript" src="'.Osm_GOOGLE_LibraryLocation.'"></script>';
         define (GOOGLE_LIBS_LOADED, 1);
@@ -1115,12 +1116,12 @@ class Osm
       //wp_enqueue_script('OlScript', 'http://www.openlayers.org/api/OpenLayers.js');
       //wp_enqueue_script('OsnScript', 'http://www.openstreetmap.org/openlayers/OpenStreetMap.js');
 	  wp_enqueue_script('OlScript',Osm_OL_LibraryLocation);
-      wp_enqueue_script('OsnScript',Osm_OSM_LibraryLocation);
-      wp_enqueue_script('OsnScript',Osm_GOOGLE_LibraryLocation);
-      wp_enqueue_script('OsnScript',OSM_PLUGIN_JS_URL.'osm-plugin-lib.js');
-      define (OSM_LIBS_LOADED, 1);
-      define (OL_LIBS_LOADED, 1);
-      define (GOOGLE_LIBS_LOADED, 1);
+          wp_enqueue_script('OsnScript',Osm_OSM_LibraryLocation);
+          wp_enqueue_script('OsnScript',Osm_GOOGLE_LibraryLocation);
+          wp_enqueue_script('OsnScript',OSM_PLUGIN_JS_URL.'osm-plugin-lib.js');
+          define ('OSM_LIBS_LOADED', 1);
+          define ('OL_LIBS_LOADED', 1);
+          define ('GOOGLE_LIBS_LOADED', 1);
 	}
 	else{
 	  // Errormsg is traced at another place

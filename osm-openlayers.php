@@ -12,7 +12,7 @@ class Osm_OpenLayers
   function addGmlLayer($a_LayerName, $a_FileName, $a_Colour, $a_Type)
   {
     Osm::traceText(DEBUG_INFO, "addGmlLayer(".$a_LayerName.",".$a_FileName.",".$a_Colour.",".$a_Type.")");
-    
+    $Layer = '';
     // Add the Layer with the GPX Track
     $Layer .= '  var lgml = new OpenLayers.Layer.Vector("'.$a_LayerName.'",{';
     $Layer .= '   strategies: [new OpenLayers.Strategy.Fixed()],';
@@ -61,6 +61,7 @@ class Osm_OpenLayers
   {
     Osm::traceText(DEBUG_INFO, "addOsmLayer(".$a_LayerName.",".$a_Type.",".$a_OverviewMapZoom.")");
 
+    $Layer = '';
     if ($a_theme == 'private'){
       $Layer .= ' OpenLayers.ImgPath = "'.OSM_OPENLAYERS_THEMES_URL.'";';
     }
@@ -316,6 +317,7 @@ class Osm_OpenLayers
   {
     Osm::traceText(DEBUG_INFO, "AddClickHandler(".$a_msgBox.")");
     $a_msgBox = strtolower($a_msgBox);
+    $Layer = '';
 
 //++ //++ set marker
     $Layer .= '  var markerslayer = new OpenLayers.Layer.Markers( "Markers" );';
@@ -323,8 +325,7 @@ class Osm_OpenLayers
     $Layer .= '  var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);';
     $Layer .= '  var click_icon = new OpenLayers.Icon("http://www.openlayers.org/dev/img/marker.png",size,offset); ';  
     $Layer .= '  map.addLayer(markerslayer);';
-//--
-    
+//--  
     $Layer .= 'OpenLayers.Control.Click = OpenLayers.Class(OpenLayers.Control, {';               
     $Layer .= ' 	                defaultHandlerOptions: {';
     $Layer .= ' 	                    "single": true,';
@@ -501,6 +502,7 @@ class Osm_OpenLayers
   {
     Osm::traceText(DEBUG_INFO, "addMarkerListLayer(".$a_LayerName.",".$Icon[name].",".$Icon[width].",".$Icon[height].",".$a_MarkerArray.",".$Icon[offset_width].",".$Icon[offset_height].",".$a_DoPopUp.")");
 
+    $Layer = '';
     $Layer .= 'var markers = new OpenLayers.Layer.Markers( "'.$a_LayerName.'" );';
     $Layer .= 'map.addLayer(markers);';
     
@@ -545,6 +547,7 @@ class Osm_OpenLayers
   {
     Osm::traceText(DEBUG_INFO, "addLineLayer(".$a_LayerName);
 
+    $Layer = '';
     $Layer .= 'var LonList = new Array()  ';
     $Layer .= 'var LatList = new Array()  ';
     $NumOfMarker = count($a_MarkerArray);
@@ -560,6 +563,8 @@ class Osm_OpenLayers
   function addTextLayer($a_MarkerName, $a_marker_file)
   {
     Osm::traceText(DEBUG_INFO, "addTextLayer(".$a_marker_file.")");   
+
+    $Layer = '';
     $Layer .= 'var pois = new OpenLayers.Layer.Text( "'.$a_MarkerName.'",';
     $Layer .= '        { location:"'.$a_marker_file.'",';
     $Layer .= '          projection: map.displayProjection';
@@ -572,7 +577,7 @@ class Osm_OpenLayers
    function addDiscs($centerListArray,$radiusListArray,$centerOpacityListArray,$centerColorListArray,
                      $borderWidthListArray,$borderColorListArray,$borderOpacityListArray,$fillColorListArray,$fillOpacityListArray) {
 
-   
+   $layer = '';
    $layer ='var discLayer = new OpenLayers.Layer.Vector("Disc Layer");';
    $layer.='var lineLayer = new OpenLayers.Layer.Vector("Line Layer");';
 
@@ -595,6 +600,7 @@ class Osm_OpenLayers
 // lines ++
    function addLines($PointListArray,$a_LineColor,$a_LineWidth)  
    {   
+     $layer = '';
      $layer.='var lineLayer = new OpenLayers.Layer.Vector("Line Layer");';
      $layer.='var Points = new Array();';
      $layer.='var lineWidth = '.$a_LineWidth.';';
@@ -615,6 +621,7 @@ class Osm_OpenLayers
   function setMapCenterAndZoom($a_lat, $a_lon, $a_zoom)
   {
     Osm::traceText(DEBUG_INFO, "setMapCenterAndZoom(".$a_lat.",".$a_lon.",".$a_zoom.")");
+    $Layer = '';
 
     if (strtolower($a_zoom) == ('auto')){
       $a_zoom = 'null';
