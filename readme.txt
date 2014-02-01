@@ -1,9 +1,9 @@
 === OSM - OpenStreetMap ===
 Contributors: MiKa
-Tags: map, OpenStreetMap, Google Maps, googlemaps, geo, KML, GPX, geotag, geolocation, geocache, geocaching, OSM, travelogue, OpenLayers, Open Layers, Open Street Map, CloudMade, YourNavigation, marker, POI, geocode, geotagging, google earth, location, Route, Tracks, WMS, Open Sea Map, OpenWeatherMap, Weather, OpenSeaMap, stamen, toner, watercolor, basemap, ssl
+Tags: map, OpenStreetMap, Google Maps, googlemaps, geo, KML, GPX, geotag, geolocation, geocache, geocaching, OSM, travelogue, OpenLayers, Open Layers, Open Street Map, CloudMade, marker, POI, geocode, geotagging, google earth, location, Route, Tracks, WMS, OpenWeatherMap, Weather, OpenSeaMap, stamen, toner, watercolor, basemap, ssl
 Requires at least: 2.8
 Tested up to: 3.8.1
-Stable tag: 2.5.2
+Stable tag: 2.5.3
 
 OpenStreetMap / OpenSeaMap plugin to embed maps. No API key! No Google API!
 Customize your maps with routes, marker, geotagged posts, weather, icons ... 
@@ -71,6 +71,8 @@ There must be not format tag (like href ...) in the shortcode.
 
 
 == Changelog ==
+= 2.5.3 =
+* FIX: google maps with space in the argument do not work
 = 2.5.2 =
 * FIX: Notice: Undefined offset
 = 2.5.1 =
