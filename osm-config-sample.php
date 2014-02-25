@@ -5,6 +5,7 @@ define ("Osm_LoadLibraryMode", SERVER_EMBEDDED);
 // OpenStreetMap scripts and tiles
 //define ("Osm_OSM_LibraryLocation", 'http://www.openstreetmap.org/openlayers/OpenStreetMap.js');
 define ("Osm_OSM_LibraryLocation", OSM_PLUGIN_URL.'js/OSM/openlayers/OpenStreetMap.js');
+
 //if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) {
 //  define ("Osm_Mapnik_Tiles_a", 'https://a.tile.openstreetmap.org');
 //  define ("Osm_Mapnik_Tiles_b", 'https://b.tile.openstreetmap.org');
@@ -34,13 +35,14 @@ define ("Osm_OSM_LibraryLocation", OSM_PLUGIN_URL.'js/OSM/openlayers/OpenStreetM
 // OpenLayers scripts
 //define ("Osm_OL_LibraryLocation", 'http://www.openlayers.org/api/OpenLayers.js');
 //define ("Osm_OL_LibraryLocation", 'http://openlayers.org/api/2.12/OpenLayers.js');
-define ("Osm_OL_LibraryPath", OSM_PLUGIN_URL.'js/OL/2.12/');
-define ("Osm_OL_LibraryLocation", OSM_PLUGIN_URL."js/OL/2.12/OpenLayers.js");
+define ("Osm_OL_LibraryPath", OSM_PLUGIN_URL.'js/OL/2.13.1/');
+define ("Osm_OL_LibraryLocation", OSM_PLUGIN_URL."js/OL/2.13.1/OpenLayers.js");
 // Google
 if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) {
   define ("Osm_GOOGLE_LibraryLocation", 'https://maps.google.com/maps/api/js?sensor=false');}
 else{
-  define ("Osm_GOOGLE_LibraryLocation", 'http://maps.google.com/maps/api/js?sensor=false');
+//  define ("Osm_GOOGLE_LibraryLocation", 'http://maps.google.com/maps/api/js?sensor=false');
+define ("Osm_GOOGLE_LibraryLocation", 'http://maps.google.com/maps/api/js?v=3&amp;sensor=false');
 }
 // OpenSeaMap scripts
 define ("Osm_harbours_LibraryLocation", OSM_PLUGIN_URL.'js/OSeaM/harbours.js');
