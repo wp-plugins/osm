@@ -2,10 +2,18 @@
 /* www.Fotomobil.at/wp-osm-plugin                             */
 /* note: there is also some style information in the php-file */
 
-.entry .olMapViewport img, .entry-content img, .widget img {
+.entry .olMapViewport img{
   max-width: none !important; 
   max-height: none !important;
   vertical-align: none !important;
+}
+
+
+
+.OSM_Map img { 
+  max-width: none !important; 
+  max-height: none !important; 
+  vertical-align: none;
 }
 
 
