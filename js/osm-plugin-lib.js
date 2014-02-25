@@ -3,27 +3,11 @@
   plugin: http://wp-osm-plugin.HanBlog.net
   blog:   http://www.HanBlog.net
 */
-function osm_MarkerPopUpClick(a_evt)
-{
-    if (this.popup == null){
-        this.popup = this.createPopup(this.closeBox);
-        map.addPopup(this.popup);
-        this.popup.show();
-    }
-    else{// Close all pop-ups
-        for (var i = 0; i < map.popups.length; i++){
-            map.popups[i].hide();
-        }
-        this.popup.toggle();
-    }
-    OpenLayers.Event.stop(a_evt);
-}
-
 
 // Display Disc / Circles
-function osm_getFeatureDiscCenter(a_discLayer, a_lon, a_lat, a_radius, a_centeropac, a_centercol, a_strw, a_strcol, a_stropac, a_fillcol, a_fillopac) 
+function osm_getFeatureDiscCenter(a_tileLayer, a_discLayer, a_lon, a_lat, a_radius, a_centeropac, a_centercol, a_strw, a_strcol, a_stropac, a_fillcol, a_fillopac) 
 {
-   var lonLat = new OpenLayers.LonLat(a_lon, a_lat).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
+    var lonLat = new OpenLayers.LonLat(a_lon, a_lat).transform(a_tileLayer.displayProjection, a_tileLayer.projection);
 
     var discStyle    = { strokeColor: a_strcol,
                          strokeOpacity: a_stropac,
@@ -38,9 +22,11 @@ function osm_getFeatureDiscCenter(a_discLayer, a_lon, a_lat, a_radius, a_centero
                          fillOpacity: a_centeropac
                        };
 
+    var radius = a_radius / Math.cos(a_lat*(Math.PI/180));
+
     var disc = OpenLayers.Geometry.Polygon.createRegularPolygon(
                                              new OpenLayers.Geometry.Point(lonLat.lon, lonLat.lat),
-                                             a_radius,
+                                             radius,
                                              200); // nombre de faces
                  
     var center = OpenLayers.Geometry.Polygon.createRegularPolygon(
@@ -55,12 +41,13 @@ function osm_getFeatureDiscCenter(a_discLayer, a_lon, a_lat, a_radius, a_centero
 }
 
 // Draw line
-function osm_setLinePoints(a_lineLayer, a_strw, a_strcol, a_stropac, a_Points)
+function osm_setLinePoints(a_tileLayer, a_lineLayer, a_strw, a_strcol, a_stropac, a_Points)
 {
   var Points = new Array();
 
   for (var i = 0; i < a_Points.length; i++) {
-    var lonLat = new OpenLayers.LonLat(a_Points[i]["lon"], a_Points[i]["lat"]).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
+   // var lonLat = new OpenLayers.LonLat(a_Points[i]["lon"], a_Points[i]["lat"]).transform(new OpenLayers.Projection("EPSG:4326"), a_tileLayer.getProjectionObject());
+   var lonLat = new OpenLayers.LonLat(a_Points[i]["lon"], a_Points[i]["lat"]).transform(a_tileLayer.displayProjection, a_tileLayer.projection);
     Points[i] = new OpenLayers.Geometry.Point(lonLat.lon, lonLat.lat);
   }
   var line = new OpenLayers.Geometry.LineString(Points);
@@ -74,36 +61,6 @@ function osm_setLinePoints(a_lineLayer, a_strw, a_strcol, a_stropac, a_Points)
   a_lineLayer.addFeatures([lineFeature]);
 }
 
-// Functions for KML files
-function osm_onPopupClose(evt) {
-  select.unselectAll();
-}
-
-function osm_onFeatureSelect(event) {
-  var feature = event.feature;
-  var content = "<b>"+feature.attributes.name + "</b> <br>" + feature.attributes.description;
-
-  if (content.search("<script") != -1) {
-     content = "Content contained Javascript! Escaped content below.<br>" + content.replace(/</g, "&lt;");
-  }
-  
-  popup = new OpenLayers.Popup.FramedCloud("OSM Plugin",
-    feature.geometry.getBounds().getCenterLonLat(),
-      new OpenLayers.Size(100,100),
-      content,
-      null, true, osm_onPopupClose);
-  feature.popup = popup;
-  map.addPopup(popup);
- }
-
-function osm_onFeatureUnselect(event) {
-  var feature = event.feature;
-  if(feature.popup) {
-    map.removePopup(feature.popup);
-    feature.popup.destroy();
-    delete feature.popup;
-  }   
-}
 
 // Clickhandler / Shorcode generator
 
@@ -154,6 +111,42 @@ function osm_getRadioValue(a_Form){
     return "undefined";
   }
   return "not implemented";
+}
+
+function getTileURL(bounds) {
+  var res = this.map.getResolution();
+  var x = Math.round((bounds.left - this.maxExtent.left) / (res * this.tileSize.w));
+  var y = Math.round((this.maxExtent.top - bounds.top) / (res * this.tileSize.h));
+  var z = this.map.getZoom();
+  var limit = Math.pow(2, z);
+  if (y < 0 || y >= limit) {
+    return null;
+  } 
+  else {
+    x = ((x % limit) + limit) % limit;
+    url = this.url;
+    path= z + "/" + x + "/" + y + "." + this.type;
+    if (url instanceof Array) {
+      url = this.selectUrl(path, url);
+    }
+    return url+path;
+  }
+}
+
+// http://trac.openlayers.org/changeset/9023
+function osm_getTileURL(bounds) {
+    var res = this.map.getResolution();
+    var x = Math.round((bounds.left - this.maxExtent.left) / (res * this.tileSize.w));
+    var y = Math.round((this.maxExtent.top - bounds.top) / (res * this.tileSize.h));
+    var z = this.map.getZoom();
+    var limit = Math.pow(2, z);
+
+    if (y < 0 || y >= limit) {
+        return OpenLayers.Util.getImagesLocation() + "404.png";
+    } else {
+        x = ((x % limit) + limit) % limit;
+        return this.url + z + "/" + x + "/" + y + "." + this.type;
+    }
 }
 
 
