@@ -251,15 +251,13 @@ class Osm_OpenLayers
       $Layer .= 'var layerSeamark  = new OpenLayers.Layer.TMS("Seezeichen", "http://t1.openseamap.org/seamark/", { numZoomLevels: 18, type: "png", getURL: getTileURL, tileOptions: {crossOriginKeyword: null}, isBaseLayer: false, displayOutsideMaxExtent: true});';
       $Layer .= 'var layerPois = new OpenLayers.Layer.Vector("Haefen", { projection: new OpenLayers.Projection("EPSG:4326"), visibility: true, displayOutsideMaxExtent:true});';
       $Layer .= 'layerPois.setOpacity(0.8);';
-      $Layer .= 'var layerOSM_Attr = new OpenLayers.Layer.Vector("OSM-plugin",{attribution:"<a href=\"http://wp-osm-plugin.hanblog.net\">OSM plugin</a>"});';
-      $Layer .= ''.$a_LayerName.'.addLayers([layerMapnik, layerSeamark, layerPois, layerOSM_Attr]);';
+      $Layer .= ''.$a_LayerName.'.addLayers([layerMapnik, layerSeamark, layerPois]);';
       $Layer .= ''.$a_LayerName.'.addControl(new OpenLayers.Control.LayerSwitcher());';
     }
     else if ($a_Type == 'OpenWeatherMap'){
     	$Layer .= 'var layerMapnik   = new OpenLayers.Layer.OSM.Mapnik("Mapnik");';
     	$Layer .= 'var layerWeather = new OpenLayers.Layer.Vector.OWMWeather("Weather");';
-    	$Layer .= 'var layerOSM_Attr = new OpenLayers.Layer.Vector("OSM-plugin",{attribution:"<a href=\"http://wp-osm-plugin.hanblog.net\">OSM plugin</a>"});';
-    	$Layer .= ''.$a_LayerName.'.addLayers([layerMapnik, layerWeather,layerOSM_Attr]);';
+    	$Layer .= ''.$a_LayerName.'.addLayers([layerMapnik, layerWeather]);';
     	$Layer .= ''.$a_LayerName.'.addControl(new OpenLayers.Control.LayerSwitcher());';
     }
     else if ($a_Type == 'stamen_watercolor'){
@@ -453,7 +451,7 @@ class Osm_OpenLayers
     $Layer .= '   BorderColourField = " map_border=\"thin solid "+ BorderColour + "\"";';  
     $Layer .= '  }';
 
-    $Layer .= ' div.innerHTML = "[osm_map lat=\"" + Centerlonlat.lat + "\" long=\"" + Centerlonlat.lon + "\" zoom=\"" + zoom + "\" width=\"600\" height=\"450\"" + MarkerField + GpxFileField + GpxColourField + BorderColourField + MarkerFileField + MapControlField + MarkerTextField_01 + MarkerTextField_02 + MarkerTextField_03 + MarkerTextField_04 + NaviField + ZIndexField + ControlStyleField + " type=\""+LayerName+"\"]";';
+    $Layer .= ' div.innerHTML = "[osm_map lat=\"" + Centerlonlat.lat + "\" lon=\"" + Centerlonlat.lon + "\" zoom=\"" + zoom + "\" width=\"600\" height=\"450\"" + MarkerField + GpxFileField + GpxColourField + BorderColourField + MarkerFileField + MapControlField + MarkerTextField_01 + MarkerTextField_02 + MarkerTextField_03 + MarkerTextField_04 + NaviField + ZIndexField + ControlStyleField + " type=\""+LayerName+"\"]";';
 
     $Layer .= '  markerslayer.clearMarkers();';
     $Layer .= '    var lonlat = new OpenLayers.LonLat(Centerlonlat.lon,Centerlonlat.lat); ';
@@ -483,7 +481,7 @@ class Osm_OpenLayers
     $Layer .= '  }';
 
     $Layer .= ' if (document.post.osm_mode.value == "sc_gen"){';
-    $Layer .= ' GenTxt = "[osm_map lat=\"" + Centerlonlat.lat + "\" long=\"" + Centerlonlat.lon + "\" zoom=\"" + zoom + "\" width=\"600\" height=\"450\" " + ThemeField + MarkerField + TypeField + "]";';  
+    $Layer .= ' GenTxt = "[osm_map lat=\"" + Centerlonlat.lat + "\" lon=\"" + Centerlonlat.lon + "\" zoom=\"" + zoom + "\" width=\"600\" height=\"450\" " + ThemeField + MarkerField + TypeField + "]";';  
     $Layer .= '  }';
     $Layer .= ' if (document.post.osm_mode.value == "geotagging"){';
     $Layer .= ' GenTxt = "For geotagging your post/page create a custom field. <br>Name: OSM_geo_data <br>Value: "+Clicklonlat.lat+","+Clicklonlat.lon;';  
@@ -493,7 +491,7 @@ class Osm_OpenLayers
       $Layer .= ' div.innerHTML = GenTxt;';
     }
     else if( $a_msgBox == 'lat_long'){
-      $Layer .= ' alert("Lat= " + Clicklonlat.lat + " Long= " + Clicklonlat.lon);';   
+      $Layer .= ' alert("Lat= " + Clicklonlat.lat + " Lon= " + Clicklonlat.lon);';   
     }
     $Layer .= ' 	                }';
     $Layer .= ' 	';
