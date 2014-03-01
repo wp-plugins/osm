@@ -20,7 +20,8 @@
     // size of the map
     'width'     => '450', 'height' => '300', 
     // address of the center in the map
-		'lat'       => '', 'long'  => '',    
+    'lat'       => '', 'long'  => '',
+    'lon'       => '',    
     // the zoomlevel of the map 
     'zoom'      => '7',     
     // Mapnik, CycleMap, ...           
@@ -95,6 +96,17 @@
     if ($marker_name == 'NoName'){
       $marker_name  = POST_MARKER_PNG;
     }
+
+    // All is replaced by AllOsm
+    if ($type == 'All'){
+      $type  = 'AllOsm';
+    }
+
+    // replace lon with long
+    if ($lon != ''){
+      $long  = $lon;
+    }
+
 
     if (Osm_icon::isOsmIcon($marker_name) == 1){
        $Icon = Osm_icon::getIconsize($marker_name);
@@ -187,7 +199,7 @@
             define ('OL_LIBS_LOADED', 1);
         }
   
-      if ($type == 'Mapnik' || $type == 'mapnik_ssl' || $type == 'Osmarender' || $type == 'basemap_at' || $type == 'stamen_watercolor' || $type == 'stamen_toner' || $type == 'CycleMap' || $type == 'All' || $type == 'AllOsm' || $type == 'Ext'){
+      if ($type == 'Mapnik' || $type == 'mapnik_ssl' || $type == 'Osmarender' || $type == 'basemap_at' || $type == 'stamen_watercolor' || $type == 'stamen_toner' || $type == 'CycleMap' || $type == 'AllOsm' || $type == 'Ext'){
         if(!defined('OSM_LIBS_LOADED')) {
           $output .= '<script type="text/javascript" src="'.Osm_OSM_LibraryLocation.'"></script>';
           define ('OSM_LIBS_LOADED', 1);
@@ -209,7 +221,7 @@
           define ('OSM_LIBS_LOADED', 1);
       	}
       }
-      if ($type == 'GooglePhysical' || $type == 'GoogleStreet' || $type == 'GoogleHybrid' || $type == 'GoogleSatellite' || $type == 'All' || $type == 'AllGoogle' || $a_type == 'Ext'){
+      if ($type == 'GooglePhysical' || $type == 'GoogleStreet' || $type == 'GoogleHybrid' || $type == 'GoogleSatellite' || $type == 'AllGoogle' || $a_type == 'Ext'){
 	    if(!defined('GOOGLE_LIBS_LOADED')) {
           $output .= '<script type="text/javascript" src="'.Osm_GOOGLE_LibraryLocation.'"></script>';
           define ('GOOGLE_LIBS_LOADED', 1);
@@ -227,7 +239,7 @@
       $output .= '/* <![CDATA[ */';
       $output .= '(function($) {';
 
-      if ($type == 'GooglePhysical' || $type == 'GoogleStreet' || $type == 'GoogleHybrid' || $type == 'GoogleSatellite' || $type == 'All' || $type == 'AllGoogle'){
+      if ($type == 'GooglePhysical' || $type == 'GoogleStreet' || $type == 'GoogleHybrid' || $type == 'GoogleSatellite' || $type == 'AllGoogle'){
         $output .= Osm_OpenLayers::addGoogleTileLayer($MapName, $type);
       }
       else{
