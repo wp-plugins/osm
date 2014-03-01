@@ -3,7 +3,7 @@ Contributors: MiKa
 Tags: map, OpenStreetMap, Google Maps, googlemaps, geo, KML, GPX, geotag, geolocation, geocache, geocaching, OSM, travelogue, OpenLayers, Open Layers, Open Street Map, CloudMade, marker, POI, geocode, geotagging, location, Route, Tracks, WMS, OpenWeatherMap, Weather, OpenSeaMap, stamen, toner, watercolor, basemap, ssl
 Requires at least: 2.8
 Tested up to: 3.8.1
-Stable tag: 2.6.1
+Stable tag: 2.6.2
 
 OpenStreetMap / OpenSeaMap / OpenWeather plugin to embed maps. No API key! No Google API!
 Customize your maps with routes, marker, geotagged posts, weather, icons ... 
@@ -71,7 +71,7 @@ There must be not format tag (like href ...) in the shortcode.
 
 
 == Changelog ==
-= 2.6.1 =
+= 2.6.2 =
 * FIX: Shortcode generator used GoogleStreet instead of Mapnik
 * FIX: OSM Plugin was linked twice at OpenWeather and OpenSeaMap
 * FIX: All is replaced by AllOsm automatically
