@@ -182,7 +182,7 @@
     $output .= '<link rel="stylesheet" type="text/css" href="'.OSM_PLUGIN_URL.'/css/osm_map.css" />';
     $output .= '<style type="text/css">';
     if ($z_index != 'none'){ // fix for NextGen-Gallery
-      $output .= '.entry .olMapViewport img {z-index: '.$z_index.' !important;}';   
+      $output .= '.entry, .olMapViewport, img {z-index: '.$z_index.' !important;}';   
       $output .= '.olControlNoSelect {z-index: '.$z_index.'+1.'.' !important;}';    
       $output .= '.olControlAttribution {z-index: '.$z_index.'+1.'.' !important;}';
     }      
@@ -384,6 +384,8 @@
      list($temp_lat, $temp_lon) = Osm::checkLatLongRange('Marker',$temp_lat, $temp_lon); 
      $MarkerArray[] = array('lat'=> $temp_lat,'lon'=>$temp_lon,'text'=>$temp_popup,'popup_height'=>'150', 'popup_width'=>'150');
      $output .= Osm_OpenLayers::addMarkerListLayer($MapName, $Icon,$MarkerArray,$DoPopUp);
+     //$output .= Osm_OpenLayers::addMarkerListLayerClust($MapName, $Icon,$MarkerArray,$DoPopUp);
+
     }
 
     // set center and zoom of the map

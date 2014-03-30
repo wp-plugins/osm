@@ -150,3 +150,138 @@ function osm_getTileURL(bounds) {
 }
 
 
+function AddMarker(a_tileLayer, a_marker_distance)
+{
+    var ll;
+    var feature;
+    var marker;
+
+    var popup_maxwidth = 999;
+    var popup_maxheight = 250;
+
+    // Combine marker with a distance lower then 12 pixels
+    var PopUpArray = CombineNearMarker(a_marker_distance, a_tileLayer);
+
+    // Create marker
+    for (var i = 0; i < PopUpArray.length; i++)
+    {
+        // Convert coordinates
+        ll = new OpenLayers.LonLat(PopUpArray[i].Lon, PopUpArray[i].Lat).transform(a_tileLayer.displayProjection, a_tileLayer.projection);
+
+        // Create pop-up
+        feature = new OpenLayers.Feature(markers, ll, data);
+        feature.closeBox = true;
+        feature.popupClass = OpenLayers.Class(OpenLayers.Popup.FramedCloud,
+        {
+            "autoSize": true,
+            /*
+             * For "panMapIfOutOfView" and "keepInMap" see:
+             * http://permalink.gmane.org/gmane.comp.gis.openlayers.user/25702
+             */ 
+            "panMapIfOutOfView": false,
+            "keepInMap": false,
+            "contentDisplayClass": "olPopupContent",
+            maxSize: new OpenLayers.Size(popup_maxwidth, popup_maxheight)
+        });
+        //feature.data.overflow = "hidden";
+
+        // Create pop-up text
+        var TextArray = PopUpArray[i].Text;
+        var Text = 0;
+        for (var j = 0; j < TextArray.length; j++)
+        {
+        	if(j == 0)
+        	    Text = TextArray[j];
+        	else
+        		Text += "<br>" + TextArray[j];
+        }
+
+        feature.data.popupContentHTML = Text;
+
+        a_tileLayer.addPopup(feature.createPopup(feature.closeBox));
+        feature.popup.toggle();
+
+        // Create marker
+        if (PopUpArray[i].Count > 1) // If we have a combined marker than take an onther icon
+        {
+            marker = new OpenLayers.Marker(ll, data2.icon.clone());
+        }
+        else
+        {
+            marker = new OpenLayers.Marker(ll, data.icon.clone());
+        }
+
+        marker.feature = feature;
+        marker.events.register("mousedown", feature, markerClick);
+        markers.addMarker(marker);
+    }
+}
+
+function CombineNearMarker(PixelDiff, a_tileLayer)
+{
+    var px1 = a_tileLayer.getLonLatFromPixel(new OpenLayers.Pixel(0, 0));
+    var px2 = a_tileLayer.getLonLatFromPixel(new OpenLayers.Pixel(PixelDiff, 0));
+    var PixelLonLatDiff = Math.abs(px1.lon - px2.lon);
+
+    var PopUpArray = new Array();
+    var isNowPopUp = 0;
+
+    // Read all markers
+    for (var i = 0; i < MarkerArray.length; i++)
+    {
+        isNowPopUp = 0;
+
+        // Get the position of marker1 coordinates in pixel
+        var ll = new OpenLayers.LonLat(MarkerArray[i].Lon, MarkerArray[i].Lat).transform(a_tileLayer.displayProjection, a_tileLayer.projection);
+        var pixel = a_tileLayer.getPixelFromLonLat(ll);
+        var LonTemp1 = ll.lon;
+        var LatTemp1 = ll.lat;
+
+        // Use only the visible markers
+        if (pixel.x >= 0 && pixel.x <= a_tileLayer.size.w && pixel.y >= 0 && pixel.y <= a_tileLayer.size.h)
+        {
+            // Check if marker near to this marker exist
+            for (var j = 0; j < PopUpArray.length; j++)
+            {
+                // Get the position of marker2 coordinates in pixel
+                var ll = new OpenLayers.LonLat(PopUpArray[j].Lon, PopUpArray[j].Lat).transform(a_tileLayer.displayProjection, a_tileLayer.projection);
+                var LonTemp2 = ll.lon;
+                var LatTemp2 = ll.lat;
+
+                // Calculate difference of these two marker in pixel
+                var LonDiff = Math.abs(LonTemp1 - LonTemp2);
+                var LatDiff = Math.abs(LatTemp1 - LatTemp2);
+
+                // Check the distance
+                if (LonDiff <= PixelLonLatDiff && LatDiff <= PixelLonLatDiff)
+                {
+                    var Count = PopUpArray[j].Count;
+                    // Add this link to the existing marker
+                    PopUpArray[j].Text[Count] = MarkerArray[i].Text;
+                    // Calculate the mean position of these combined markers
+                    PopUpArray[j].Lat = (PopUpArray[j].Lat + MarkerArray[i].Lat) / 2;
+                    PopUpArray[j].Lon = (PopUpArray[j].Lon + MarkerArray[i].Lon) / 2;
+                    Count++;
+                    PopUpArray[j].Count = Count;
+                    isNowPopUp = 1;
+                }
+            }
+
+            // Add a new marker to the list
+            if (isNowPopUp == 0)
+            {
+                PopUpArray.push(
+                {
+                    Text: new Array(MarkerArray[i].Text),
+                    Lon: MarkerArray[i].Lon,
+                    Lat: MarkerArray[i].Lat,
+                    Count: 1
+                });
+            }
+        }
+    }
+
+    return PopUpArray;
+}
+
+

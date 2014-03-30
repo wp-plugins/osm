@@ -37,6 +37,12 @@ define ("Osm_OSM_LibraryLocation", OSM_PLUGIN_URL.'js/OSM/openlayers/OpenStreetM
 //define ("Osm_OL_LibraryLocation", 'http://openlayers.org/api/2.12/OpenLayers.js');
 define ("Osm_OL_LibraryPath", OSM_PLUGIN_URL.'js/OL/2.13.1/');
 define ("Osm_OL_LibraryLocation", OSM_PLUGIN_URL."js/OL/2.13.1/OpenLayers.js");
+
+// http://ol3js.org/en/master/build/ol.css
+// http://ol3js.org/en/v3.0.0-beta.1/build/ol.js
+define ("Osm_OL_3_CSS", 'http://ol3js.org/en/v3.0.0-beta.1/build/ol.css');
+define ("Osm_OL_3_LibraryLocation", 'http://ol3js.org/en/master/build/ol.js');
+
 // Google
 if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) {
   define ("Osm_GOOGLE_LibraryLocation", 'https://maps.google.com/maps/api/js?sensor=false');}

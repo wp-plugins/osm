@@ -106,7 +106,7 @@ class Osm_OpenLayers
     var '.$a_LayerName.' = new OpenLayers.Map("'.$a_LayerName.'", {projection: "EPSG:3857", displayProjection: "EPSG:4326",
         layers: [new OpenLayers.Layer.Google("Google Physical",
                 {type: google.maps.MapTypeId.TERRAIN, zoomMethod: null, animationEnabled: false}),
-                new OpenLayers.Layer.Vector("OSM-plugin",{attribution:"<a href=\"http://wp-osm-plugin.hanblog.net\">OSM-Plugin<br><br></a>"})]});
+                new OpenLayers.Layer.Vector("OSM-plugin",{attribution:"<a href=\"http://mapicons.nicolasmollet.com/\">Icon</a> and <a href=\"http://wp-osm-plugin.hanblog.net\">OSM-Plugin<br><br></a>"})]});
     ';
     }
     else if ($a_Type == 'GoogleStreet'){
@@ -117,7 +117,7 @@ class Osm_OpenLayers
          displayProjection: "EPSG:4326",
          layers: [new OpenLayers.Layer.Google("Google Streets",
                    {zoomMethod: null, animationEnabled: false}),
-                  new OpenLayers.Layer.Vector("OSM-plugin",{attribution:"<a href=\"http://wp-osm-plugin.hanblog.net\">OSM-Plugin<br><br></a>"})]});
+                  new OpenLayers.Layer.Vector("OSM-plugin",{attribution:"<a href=\"http://mapicons.nicolasmollet.com/\">Icon</a> and <a href=\"http://wp-osm-plugin.hanblog.net\">OSM-Plugin<br><br></a>"})]});
       ';
     }
     else if ($a_Type == 'GoogleHybrid'){
@@ -125,7 +125,7 @@ class Osm_OpenLayers
     var '.$a_LayerName.' = new OpenLayers.Map("'.$a_LayerName.'", {projection: "EPSG:3857", displayProjection: "EPSG:4326",
         layers: [new OpenLayers.Layer.Google("Google Hybrid",
                 {type: google.maps.MapTypeId.HYBRID, zoomMethod: null, animationEnabled: false, numZoomLevels: 20}),
-                 new OpenLayers.Layer.Vector("OSM-plugin",{attribution:"<a href=\"http://wp-osm-plugin.hanblog.net\">OSM-Plugin<br><br></a>"})]});
+                 new OpenLayers.Layer.Vector("OSM-plugin",{attribution:"<a href=\"http://mapicons.nicolasmollet.com/\">Icon</a> and <a href=\"http://wp-osm-plugin.hanblog.net\">OSM-Plugin<br><br></a>"})]});
     ';
     }
     else if ($a_Type == 'GoogleSatellite'){
@@ -134,7 +134,7 @@ class Osm_OpenLayers
     var '.$a_LayerName.' = new OpenLayers.Map("'.$a_LayerName.'", {projection: "EPSG:3857", displayProjection: "EPSG:4326",
         layers: [new OpenLayers.Layer.Google("Google Satellite",
                 {type: google.maps.MapTypeId.SATELLITE, zoomMethod: null, animationEnabled: false, numZoomLevels: 22}),
-            new OpenLayers.Layer.Vector("OSM-plugin",{attribution:"<a href=\"http://wp-osm-plugin.hanblog.net\">OSM-Plugin<br><br></a>"})]});
+            new OpenLayers.Layer.Vector("OSM-plugin",{attribution:"<a href=\"http://mapicons.nicolasmollet.com/\">Icon</a> and <a href=\"http://wp-osm-plugin.hanblog.net\">OSM-Plugin<br><br></a>"})]});
     ';
     }
     else if ($a_Type == 'AllGoogle'){
@@ -158,7 +158,7 @@ class Osm_OpenLayers
                 "Google Satellite",
                 {type: google.maps.MapTypeId.SATELLITE, numZoomLevels: 22, zoomMethod: null}
             ),
-            new OpenLayers.Layer.Vector("OSM-plugin",{attribution:"<a href=\"http://wp-osm-plugin.hanblog.net\">OSM-Plugin<br><br></a>"})
+            new OpenLayers.Layer.Vector("OSM-plugin",{attribution:"<a href=\"http://mapicons.nicolasmollet.com/\">Icon</a> and <a href=\"http://wp-osm-plugin.hanblog.net\">OSM-Plugin<br><br></a>"})
         ]});
     '.$a_LayerName.'.addControl(new OpenLayers.Control.LayerSwitcher());
     ';
@@ -242,7 +242,7 @@ class Osm_OpenLayers
                   });
       ';
       $Layer .= 'layerbasemap_at.metadata = {link: "http://www.basemap.at/"};';
-      $Layer .= 'var layerOSM_Attr = new OpenLayers.Layer.Vector("OSM-plugin",{attribution:"<a href=\"http://basemap.at\">basemap.at</a> and <a href=\"http://wp-osm-plugin.hanblog.net\">OSM-Plugin</a>"});';
+      $Layer .= 'var layerOSM_Attr = new OpenLayers.Layer.Vector("OSM-plugin",{attribution:"<a href=\"http://mapicons.nicolasmollet.com/\">Icon</a> and <a href=\"http://basemap.at\">basemap.at</a> and <a href=\"http://wp-osm-plugin.hanblog.net\">OSM-Plugin</a>"});';
       $Layer .= ''.$a_LayerName.'.addLayers([layerbasemap_at, layerosm, layerOSM_Attr]);';
       $Layer .= ''.$a_LayerName.'.addControl(new OpenLayers.Control.LayerSwitcher());';
     }
@@ -283,7 +283,7 @@ class Osm_OpenLayers
       }
       else if (($a_Type == 'Ext') || ($a_Type == 'ext')) {
         $Layer .= 'var lmap = new OpenLayers.Layer.'.$a_ExtType.'("'.$a_ExtName.'","'.$a_ExtAddress.'",{'.$a_ExtInit.', attribution: "OpenLayers with"});';
-        $Layer .= 'var layerOSM_Attr = new OpenLayers.Layer.Vector("OSM-plugin",{attribution:"<a href=\"http://wp-osm-plugin.hanblog.net\">OSM plugin</a>"});';
+        $Layer .= 'var layerOSM_Attr = new OpenLayers.Layer.Vector("OSM-plugin",{attribution:"<a href=\"http://mapicons.nicolasmollet.com/\">Icon</a> and <a href=\"http://wp-osm-plugin.hanblog.net\">OSM plugin</a>"});';
         $Layer .= ''.$a_LayerName.'.addLayers([lmap,layerOSM_Attr]);';
       }
     }
@@ -461,11 +461,15 @@ class Osm_OpenLayers
     }
     else if( $a_msgBox == 'metabox_sc_gen'){
     $Layer .= ' MarkerField = "";';
-    $Layer .= ' ThemeField = "";';
-    $Layer .= ' TypeField = "";';
+    $Layer .= ' ThemeField  = "";';
+    $Layer .= ' TypeField   = "";';
+    $Layer .= ' ImportField = "";';
     $Layer .= ' if (document.post.osm_map_type.value != "none"){';
-    $Layer .= ' TypeField = " type=\""+ document.post.osm_map_type.value + "\"";';  
-    $Layer .= '  }';
+    $Layer .= '   ImportField = " type=\""+ document.post.osm_map_type.value + "\"";';  
+    $Layer .= ' }';
+    $Layer .= ' if ((document.post.osm_import.value != "none") && (document.post.osm_import.value != "single")){';
+    $Layer .= ' TypeField = " import=\""+ document.post.osm_import.value + "\"";';  
+    $Layer .= ' }';
     $Layer .= ' if (document.post.osm_marker.value != "none"){';
     $Layer .= ' MarkerField = " marker=\""+Clicklonlat.lat+","+Clicklonlat.lon+
 "\" marker_name=\"" + document.post.osm_marker.value + "\"";';  
@@ -505,6 +509,7 @@ class Osm_OpenLayers
   function addMarkerListLayer($a_MapName, $Icon ,$a_MarkerArray, $a_DoPopUp)
   {
     Osm::traceText(DEBUG_INFO, "addMarkerListLayer(".$a_MapName.",".$Icon[name].",".$Icon[width].",".$Icon[height].",".$a_MarkerArray.",".$Icon[offset_width].",".$Icon[offset_height].",".$a_DoPopUp.")");
+
     $Layer = '';
     $Layer .= 'var MarkerLayer = new OpenLayers.Layer.Markers("Marker");';
     $Layer .= $a_MapName.'.addLayer(MarkerLayer);';

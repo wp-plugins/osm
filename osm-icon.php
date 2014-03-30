@@ -43,6 +43,33 @@ class Osm_icon
     "wpttemp-yellow.png" => array("height"=>24,"width"=>"24","offset_height"=>"-24","offset_width"=>"0"),
     "wpttemp-green.png"  => array("height"=>24,"width"=>"24","offset_height"=>"-24","offset_width"=>"0"),
     "wpttemp-red.png"    => array("height"=>24,"width"=>"24","offset_height"=>"-24","offset_width"=>"0"),
+    "mic_photo_icon.png" => array("height"=>37,"width"=>"32","offset_height"=>"-37","offset_width"=>"-16"),
+    "mic_yel_restaurant_chinese_01.png"    => array("height"=>37,"width"=>"32","offset_height"=>"-37","offset_width"=>"-16"),
+    "mic_yel_icecream_01.png"       => array("height"=>37,"width"=>"32","offset_height"=>"-37","offset_width"=>"-16"),
+    "mic_yel_campingtents_01.png"   => array("height"=>37,"width"=>"32","offset_height"=>"-37","offset_width"=>"-16"),
+    "mic_toilets_disability_01.png" => array("height"=>37,"width"=>"32","offset_height"=>"-37","offset_width"=>"-16"),
+    "mic_shark_icon.png"            => array("height"=>37,"width"=>"32","offset_height"=>"-37","offset_width"=>"-16"),
+    "mic_red_pizzaria_01.png"       => array("height"=>37,"width"=>"32","offset_height"=>"-37","offset_width"=>"-16"),
+    "mic_parasailing_01.png"        => array("height"=>37,"width"=>"32","offset_height"=>"-37","offset_width"=>"-16"),
+    "mic_green_horseriding_01.png"  => array("height"=>37,"width"=>"32","offset_height"=>"-37","offset_width"=>"-16"),
+    "mic_cycling_icon.png"          => array("height"=>37,"width"=>"32","offset_height"=>"-37","offset_width"=>"-16"),
+    "mic_coldfoodcheckpoint_01.png" => array("height"=>37,"width"=>"32","offset_height"=>"-37","offset_width"=>"-16"),
+    "mic_blue_tweet_01.png"         => array("height"=>37,"width"=>"32","offset_height"=>"-37","offset_width"=>"-16"),
+    "mic_blue_information_01.png"   => array("height"=>37,"width"=>"32","offset_height"=>"-37","offset_width"=>"-16"),
+    "mic_blue_horseriding_01.png"   => array("height"=>37,"width"=>"32","offset_height"=>"-37","offset_width"=>"-16"),
+    "mic_black_train_01.png"        => array("height"=>37,"width"=>"32","offset_height"=>"-37","offset_width"=>"-16"),
+    "mic_black_steamtrain_01.png"   => array("height"=>37,"width"=>"32","offset_height"=>"-37","offset_width"=>"-16"),
+    "mic_black_powerplant_01.png"   => array("height"=>37,"width"=>"32","offset_height"=>"-37","offset_width"=>"-16"),
+    "mic_black_parking_bicycle-2_01.png"    => array("height"=>37,"width"=>"32","offset_height"=>"-37","offset_width"=>"-16"),
+    "mic_black_cctv_01.png"         => array("height"=>37,"width"=>"32","offset_height"=>"-37","offset_width"=>"-16"),
+    "mic_blue_toilets_01.png"       => array("height"=>37,"width"=>"32","offset_height"=>"-37","offset_width"=>"-16"),
+    "mic_blue_scubadiving_01.png"   => array("height"=>37,"width"=>"32","offset_height"=>"-37","offset_width"=>"-16"),
+    "mic_orange_motorbike_01.png"   => array("height"=>37,"width"=>"32","offset_height"=>"-37","offset_width"=>"-16"),
+    "mic_orange_sailing_1.png"   => array("height"=>37,"width"=>"32","offset_height"=>"-37","offset_width"=>"-16"),
+    "mic_orange_fishing_01.png"   => array("height"=>37,"width"=>"32","offset_height"=>"-37","offset_width"=>"-16"),
+    "mic_blue_mobilephonetower_01.png"   => array("height"=>37,"width"=>"32","offset_height"=>"-37","offset_width"=>"-16"),
+    "mic_orange_hiking_01.png"   => array("height"=>37,"width"=>"32","offset_height"=>"-37","offset_width"=>"-16"),	
+	
   );
 
   if ($Icons[$a_IconName]["height"] == ''){
@@ -69,7 +96,22 @@ class Osm_icon
     $a_IconName == "services.png" || $a_IconName == "styria_linux.png" ||
     $a_IconName == "marker_posts.png" || $a_IconName == "restaurant.png" ||
     $a_IconName == "toilets.png" || $a_IconName == "wpttemp-yellow.png" ||
-    $a_IconName == "wpttemp-green.png" || $a_IconName == "wpttemp-red.png"){
+    $a_IconName == "wpttemp-green.png" || $a_IconName == "wpttemp-red.png" ||
+    $a_IconName == "mic_photo_icon.png" || $a_IconName == "mic_yel_restaurant_chinese_01.png" ||
+    $a_IconName == "mic_yel_icecream_01.png" || $a_IconName == "mic_yel_campingtents_01.png" ||
+    $a_IconName == "mic_toilets_disability_01.png" || $a_IconName == "mic_shark_icon.png" ||
+    $a_IconName == "mic_red_pizzaria_01.png" || $a_IconName == "mic_parasailing_01.png" ||
+    $a_IconName == "mic_green_horseriding_01.png" || $a_IconName == "mic_cycling_icon.png" ||
+    $a_IconName == "mic_coldfoodcheckpoint_01.png" || $a_IconName == "mic_blue_tweet_01.png" ||
+    $a_IconName == "mic_blue_information_01.png" || $a_IconName == "mic_blue_horseriding_01.png" ||
+    $a_IconName == "mic_black_train_01.png" || $a_IconName == "mic_black_steamtrain_01.png" ||
+    $a_IconName == "mic_black_powerplant_01.png" || $a_IconName == "mic_black_parking_bicycle-2_01.png" ||
+    $a_IconName == "mic_black_cctv_01.png" ||
+    $a_IconName == "mic_blue_toilets_01.png" || $a_IconName == "mic_blue_scubadiving_01.png" ||
+	$a_IconName == "mic_orange_motorbike_01.png" || $a_IconName == "mic_orange_sailing_1.png" ||
+	$a_IconName == "mic_orange_fishing_01.png" || $a_IconName == "mic_blue_mobilephonetower_01.png" ||
+	$a_IconName == "mic_orange_hiking_01.png"
+){
     return 1;
    }
    else {
