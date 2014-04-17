@@ -2,7 +2,7 @@
 Contributors: MiKa
 Tags: map, OpenStreetMap, Google Maps, googlemaps, geo, KML, GPX, geotag, geolocation, geocache, geocaching, OSM, travelogue, OpenLayers, Open Layers, Open Street Map, CloudMade, marker, POI, geocode, geotagging, location, Route, Tracks, WMS, OpenWeatherMap, Weather, OpenSeaMap, stamen, toner, watercolor, basemap, ssl, exif, meta
 Requires at least: 2.8
-Tested up to: 3.8.1
+Tested up to: 3.9
 Stable tag: 2.7
 
 OpenStreetMap / OpenSeaMap / OpenWeather plugin to embed maps. No Google API key!
