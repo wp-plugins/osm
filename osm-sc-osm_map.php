@@ -334,7 +334,35 @@
     }
   
    // just add single marker 
-   if ($marker  != 'No'){  
+   if ($marker  == 'OSM_geo'){ 
+     global $post;
+     $Data = get_post_meta($post->ID, 'OSM_geo_data', true); 
+     $PostMarker = get_post_meta($post->ID, 'OSM_geo_icon', true);
+
+     $Data = preg_replace('/\s*,\s*/', ',',$Data);
+     // get pairs of coordination
+     $GeoData_Array = explode( ' ', $Data );
+     list($temp_lat, $temp_lon) = explode(',', $GeoData_Array[0]); 
+
+     $DoPopUp = 'false';
+
+     // set the center of the map to the first geotag
+     $lat = $temp_lat;
+     $long = $temp_lon;
+
+     if (Osm_icon::isOsmIcon($PostMarker) == 1){
+       $Icon = Osm_icon::getIconsize($PostMarker);
+       $Icon["name"]  = $PostMarker;
+     }
+     else {
+      $this->traceText(DEBUG_ERROR, "e_not_osm_icon");
+     }
+
+     list($temp_lat, $temp_lon) = Osm::checkLatLongRange('Marker',$temp_lat, $temp_lon); 
+     $MarkerArray[] = array('lat'=> $temp_lat,'lon'=>$temp_lon,'text'=>$temp_popup,'popup_height'=>'150', 'popup_width'=>'150');
+     $output .= Osm_OpenLayers::addMarkerListLayer($MapName, $Icon,$MarkerArray,$DoPopUp);
+   }
+   else if ($marker  != 'No'){  
      global $post;
      $DoPopUp = 'true';
      list($temp_lat, $temp_lon, $temp_popup_custom_field) = explode(',', $marker);

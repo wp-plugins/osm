@@ -3,7 +3,7 @@ Contributors: MiKa
 Tags: map, OpenStreetMap, Google Maps, googlemaps, geo, KML, GPX, geotag, geolocation, geocache, geocaching, OSM, travelogue, OpenLayers, Open Layers, Open Street Map, CloudMade, marker, POI, geocode, geotagging, location, Route, Tracks, WMS, OpenWeatherMap, Weather, OpenSeaMap, stamen, toner, watercolor, basemap, ssl, exif, meta
 Requires at least: 2.8
 Tested up to: 3.9
-Stable tag: 2.7
+Stable tag: 2.7.1
 
 OpenStreetMap / OpenSeaMap / OpenWeather plugin to embed maps. No Google API key!
 Customize your maps with routes, marker, geotagged posts, weather, icons, EXIF photos ... 
@@ -45,9 +45,7 @@ Licenses of the maps:
 * Stamen Maps: [Stamen License](http://maps.stamen.com)
 * BaseMap:  [BaseMap License](http://basemap.at)
 * Ext Maps: Depends on the map you are including - check it before including it!
-* Icons: [Map Icons Collection](http://mapicons.nicolasmollet.com/about/license/)
-
-Note:You have to credit [Map Icons Collection](http://mapicons.nicolasmollet.com/about/license/) if you use a marker that starts with "mic_"  
+* Icons: [Map Icons Collection](http://mapicons.nicolasmollet.com/about/license/)  
 
 == Installation ==
 
@@ -71,6 +69,11 @@ There must be not format tag (like href ...) in the shortcode.
 
 
 == Changelog ==
+= 2.7.1 =
+* NEW: Add marker argument OSM_geo
+* NEW: Add customfield OSM_geo_icon
+* NEW: Russian translation 
+* FIX: Internal:  use content_url() function instead WP_CONTENT_URL
 = 2.7 =
 * FIX: z-index argument was not considered
 * NEW: Map Icons Collection is included

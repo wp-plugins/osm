@@ -3,7 +3,7 @@
 Plugin Name: OSM
 Plugin URI: http://wp-osm-plugin.HanBlog.net
 Description: Embeds maps in your blog and adds geo data to your posts.  Find samples and a forum on the <a href="http://wp-osm-plugin.HanBlog.net">OSM plugin page</a>.  Simply create the shortcode to add it in your post at [<a href="options-general.php?page=osm.php">Settings</a>]
-Version: 2.7
+Version: 2.7.1
 Author: MiKa
 Author URI: http://www.HanBlog.net
 Minimum WordPress Version Required: 2.8
@@ -27,7 +27,7 @@ Minimum WordPress Version Required: 2.8
 */
 load_plugin_textdomain('OSM-plugin', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/');
 
-define ("PLUGIN_VER", "V2.7");
+define ("PLUGIN_VER", "V2.7.1");
 
 // modify anything about the marker for tagged posts here
 // instead of the coding.
@@ -75,14 +75,14 @@ define ('SERVER_EMBEDDED', 1);
 define ('SERVER_WP_ENQUEUE', 2);
 
 define('OSM_PRIV_WP_CONTENT_URL', site_url() . '/wp-content' );
-define('OSM_PRIV_WP_CONTENT_DIR', ABSPATH . 'wp-content' );
+define('OSM_PRIV_WP_CONTENT_DIR', content_url() . 'wp-content' );
 define('OSM_PRIV_WP_PLUGIN_URL', OSM_PRIV_WP_CONTENT_URL. '/plugins' );
 define('OSM_PRIV_WP_PLUGIN_DIR', OSM_PRIV_WP_CONTENT_DIR . '/plugins' );
 define('OSM_PLUGIN_URL', OSM_PRIV_WP_PLUGIN_URL."/osm/");
 define('OSM_PLUGIN_ICONS_URL', OSM_PLUGIN_URL."icons/");
 define('URL_POST_MARKER', OSM_PLUGIN_URL.POST_MARKER_PNG);
 define('OSM_PLUGIN_THEMES_URL', OSM_PLUGIN_URL."themes/");
-define('OSM_OPENLAYERS_THEMES_URL', WP_CONTENT_URL. '/uploads/osm/theme/' );
+define('OSM_OPENLAYERS_THEMES_URL', content_url(). '/uploads/osm/theme/' );
 define('OSM_PLUGIN_JS_URL', OSM_PLUGIN_URL."js/");
 
 global $wp_version;
@@ -203,9 +203,10 @@ function osm_map_create_function( $post ) {
         <option value="mic_blue_scubadiving_01.png"><?php _e('Scubadiving','OSM-plugin');echo ' ';_e('blue','OSM-plugin') ?></option>
         <option value="mic_orange_motorbike_01.png"><?php _e('Motorbike','OSM-plugin');echo ' ';_e('orange','OSM-plugin') ?></option>
         <option value="mich_orange_sailing_1.png"><?php _e('Sailing','OSM-plugin');echo ' ';_e('orange','OSM-plugin') ?></option>
-        <option value="mic_orange_fishing_01"><?php _e('Fishing','OSM-plugin');echo ' ';_e('orange','OSM-plugin') ?></option>
-        <option value="mic_blue_mobilephonetower_01"><?php _e('Mobilephonetower','OSM-plugin');echo ' ';_e('blue','OSM-plugin') ?></option>
-        <option value="mic_orange_hiking_01"><?php _e('Hiking','OSM-plugin');echo ' ';_e('orange','OSM-plugin') ?></option>
+        <option value="mic_orange_fishing_01.png"><?php _e('Fishing','OSM-plugin');echo ' ';_e('orange','OSM-plugin') ?></option>
+        <option value="mic_blue_mobilephonetower_01.png"><?php _e('Mobilephonetower','OSM-plugin');echo ' ';_e('blue','OSM-plugin') ?></option>
+        <option value="mic_orange_hiking_01.png"><?php _e('Hiking','OSM-plugin');echo ' ';_e('orange','OSM-plugin') ?></option>
+        <option value="mic_blue_bridge_old_01.png"><?php _e('Bridge','OSM-plugin');echo ' ';_e('blue','OSM-plugin') ?></option>
     </select><br>
     <b>4. <?php _e('map type','OSM-plugin') ?></b>:
     <select name="osm_map_type">

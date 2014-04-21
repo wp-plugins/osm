@@ -26,8 +26,10 @@
     $this->ErrorMsg->add('e_import_unknwon',  __('Import type is unknown!', 'OSM-plugin'));  
     $this->ErrorMsg->add('e_unknown_icon',  __('Invalid marker_name!', 'OSM-plugin'));  
 	// these messages are related to the config file
-	$this->ErrorMsg->add('e_library_config',  __('Could not load OSM library, check LoadLibraryMode @ wp-content/plugins/osm/osm-config.php!', 'OSM-plugin'));  
-	$this->ErrorMsg->add('e_invalid_control',  __('Invalid usage of control tag!', 'OSM-plugin'));  
-	$this->ErrorMsg->add('e_gpx_list_error',  __('Num of Gpx files does not match to num of Gpx colours!', 'OSM-plugin'));  
-  $this->ErrorMsg->add('e_missing_rs_error',  __('Missing the routingservice at marker_routing argument!', 'OSM-plugin'));
+    $this->ErrorMsg->add('e_library_config',  __('Could not load OSM library, check LoadLibraryMode @ wp-content/plugins/osm/osm-config.php!', 'OSM-plugin'));  
+    $this->ErrorMsg->add('e_invalid_control',  __('Invalid usage of control tag!', 'OSM-plugin'));  
+    $this->ErrorMsg->add('e_gpx_list_error',  __('Num of Gpx files does not match to num of Gpx colours!', 'OSM-plugin'));  
+    $this->ErrorMsg->add('e_missing_rs_error',  __('Missing the routingservice at marker_routing argument!', 'OSM-plugin'));
+    $this->ErrorMsg->add('e_not_osm_icon',  __('Not valid WP OSM Plugin icon!', 'OSM-plugin'));
+
 ?>

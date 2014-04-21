@@ -68,8 +68,8 @@ class Osm_icon
     "mic_orange_sailing_1.png"   => array("height"=>37,"width"=>"32","offset_height"=>"-37","offset_width"=>"-16"),
     "mic_orange_fishing_01.png"   => array("height"=>37,"width"=>"32","offset_height"=>"-37","offset_width"=>"-16"),
     "mic_blue_mobilephonetower_01.png"   => array("height"=>37,"width"=>"32","offset_height"=>"-37","offset_width"=>"-16"),
-    "mic_orange_hiking_01.png"   => array("height"=>37,"width"=>"32","offset_height"=>"-37","offset_width"=>"-16"),	
-	
+    "mic_orange_hiking_01.png"   => array("height"=>37,"width"=>"32","offset_height"=>"-37","offset_width"=>"-16"),
+    "mic_blue_bridge_old_01.png"   => array("height"=>37,"width"=>"32","offset_height"=>"-37","offset_width"=>"-16"),	
   );
 
   if ($Icons[$a_IconName]["height"] == ''){
@@ -106,7 +106,7 @@ class Osm_icon
     $a_IconName == "mic_blue_information_01.png" || $a_IconName == "mic_blue_horseriding_01.png" ||
     $a_IconName == "mic_black_train_01.png" || $a_IconName == "mic_black_steamtrain_01.png" ||
     $a_IconName == "mic_black_powerplant_01.png" || $a_IconName == "mic_black_parking_bicycle-2_01.png" ||
-    $a_IconName == "mic_black_cctv_01.png" ||
+    $a_IconName == "mic_black_cctv_01.png" || $a_IconName == "mic_blue_bridge_old_01.png" ||
     $a_IconName == "mic_blue_toilets_01.png" || $a_IconName == "mic_blue_scubadiving_01.png" ||
 	$a_IconName == "mic_orange_motorbike_01.png" || $a_IconName == "mic_orange_sailing_1.png" ||
 	$a_IconName == "mic_orange_fishing_01.png" || $a_IconName == "mic_blue_mobilephonetower_01.png" ||
