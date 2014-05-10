@@ -1,12 +1,11 @@
 === OSM - OpenStreetMap ===
 Contributors: MiKa
-Tags: map, OpenStreetMap, Google Maps, googlemaps, geo, KML, GPX, geotag, geolocation, geocache, geocaching, OSM, travelogue, OpenLayers, Open Layers, Open Street Map, CloudMade, marker, POI, geocode, geotagging, location, Route, Tracks, WMS, OpenWeatherMap, Weather, OpenSeaMap, stamen, toner, watercolor, basemap, ssl, exif, meta
+Tags: map, OpenStreetMap, Google Maps, googlemaps, geo, KML, GPX, geotag, geolocation, geocache, geocaching, OSM, travelogue, OpenLayers, Open Layers, Open Street Map, CloudMade, marker, POI, geocode, geotagging, location, Route, Tracks, WMS, OpenWeatherMap, Weather, OpenSeaMap, stamen, toner, watercolor, basemap, ssl, exif, meta, widget
 Requires at least: 2.8
-Tested up to: 3.9
-Stable tag: 2.7.1
+Tested up to: 3.9.1
+Stable tag: 2.8
 
-OpenStreetMap / OpenSeaMap / OpenWeather plugin to embed maps. No Google API key!
-Customize your maps with routes, marker, geotagged posts, weather, icons, EXIF photos ... 
+Customize maps in your post, pages and widgets. Add geotag to your blog and site. Use GPX, KML, CSV, TXT ... 
 
 == Description ==
 If you want to download the OSM-plugin you are right here!
@@ -20,6 +19,7 @@ If you want to get detailed information about the OSM-plugin visit these pages:
 Features of the OSM-plugin:
 
 * OpenStreetMap, OpenSeaMap, OpenWeatherMap, BaseMap (AT), Stamen, WMS in posts/pages
+* Integration in post / page / widget
 * HTML Popup Marker
 * GPX, KML and Textfiles (incl. upload in Mediathek)
 * Display Photos with EXIF meta data in the map 
@@ -69,6 +69,11 @@ There must be not format tag (like href ...) in the shortcode.
 
 
 == Changelog ==
+= 2.8 =
+* NEW: OSM Widget for geotagged posts / pages
+* NEW: set width and height relative (perc.)
+* NEW: new icons added
+* FIX: Invalid argument supplied for foreach()
 = 2.7.1 =
 * NEW: Add marker argument OSM_geo
 * NEW: Add customfield OSM_geo_icon

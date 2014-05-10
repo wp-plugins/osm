@@ -2,8 +2,8 @@
 /*
 Plugin Name: OSM
 Plugin URI: http://wp-osm-plugin.HanBlog.net
-Description: Embeds maps in your blog and adds geo data to your posts.  Find samples and a forum on the <a href="http://wp-osm-plugin.HanBlog.net">OSM plugin page</a>.  Simply create the shortcode to add it in your post at [<a href="options-general.php?page=osm.php">Settings</a>]
-Version: 2.7.1
+Description: Embeds maps in your blog and adds geo data to your posts.  Find samples and a forum on the <a href="http://wp-osm-plugin.HanBlog.net">OSM plugin page</a>.  
+Version: 2.8
 Author: MiKa
 Author URI: http://www.HanBlog.net
 Minimum WordPress Version Required: 2.8
@@ -234,13 +234,16 @@ function osm_map_create_function( $post ) {
     </b>
     </p>
 <?php echo Osm::sc_showMap(array('msg_box'=>'metabox_sc_gen','lat'=>'50','long'=>'18.5','zoom'=>'3', 'type'=>'mapnik_ssl', 'width'=>'450','height'=>'300', 'map_border'=>'thin solid grey', 'theme'=>'dark', 'control'=>'mouseposition,scaleline')); ?>
-  <br>
-<b><font color="#FF0000">
-    <?php $url = 'http://wordpress.org/support/view/plugin-reviews/osm'; 
-          $link = sprintf( __( 'There are neither a donation button nor a pay version. If you like OSM, support it with YOUR RATE <a href="%s" target="_blank">here</a> !', 'OSM-plugin' ), esc_url( $url ) );
+<!--  <br><b><font color="#FF0000"> -->
+  <?php 
+/*
+    $url = 'http://wordpress.org/support/view/plugin-reviews/osm'; 
+        $link = sprintf( __( 'There are neither a donation button nor a pay version. If you like OSM, support it with YOUR RATE <a href="%s" target="_blank">here</a> !', 'OSM-plugin' ), esc_url( $url ) );
       echo $link;
-    ?></font></b><br>
-    <?php _e('This red message will disappear again with OSM Plugin V2.8!','OSM-plugin') ?>
+*/    ?>
+<!--  </font></b> 
+    <br> -->
+    <?php /* _e('This red message will disappear again with OSM Plugin V2.8!','OSM-plugin') */ ?>
     <br>
   <h3><span style="color:green"><?php _e('Copy the generated shortcode/customfield/argument: ','OSM-plugin') ?></span></h3>
   <div id="ShortCode_Div"><?php _e('If you click into the map this text is replaced','OSM-plugin') ?>
@@ -267,6 +270,7 @@ class Osm
     add_action('wp_head', array(&$this, 'wp_head'));
     add_action('admin_menu', array(&$this, 'admin_menu'));
     add_action('wp_print_scripts',array(&$this, 'show_enqueue_script'));
+    add_action('widgets_init', 'register_osm_widget' );
 
     // add the WP shortcode
     add_shortcode('osm_map',array(&$this, 'sc_showMap'));
@@ -454,25 +458,26 @@ class Osm
               $temp_lon = '';
             }
          }    
-         if ($a_import_osm_custom_tax_incl_name != 'Osm_All')
+         if ($a_import_osm_custom_tax_incl_name != 'Osm_All'){ // get rid of  Invalid argument supplied for foreach()
            $mycustomcategories = get_the_terms( $post->ID, $a_import_osm_custom_tax_incl_name);
-         foreach( $mycustomcategories as $term ) {
-           $taxonomies[0] = $term->term_taxonomy_id;
-           // Get rid of the other data stored in the object
-           unset($term);
-         }
-         foreach( $taxonomies as $taxid ) {
-           $termsObjects = wp_get_object_terms($post->ID, $a_custom_taxonomy);
-           foreach ($termsObjects as $termsObject) {
-             $currentCustomCat[] = $termsObject->name;
+           foreach( $mycustomcategories as $term ) {
+             $taxonomies[0] = $term->term_taxonomy_id;
+             // Get rid of the other data stored in the object
+             unset($term);
            }
-           if (($a_import_osm_custom_tax_incl_name  != 'Osm_All') &&  ! in_array($a_import_osm_custom_tax_incl_name, $currentCustomCat)) {
-             $temp_lat = '';
-             $temp_lon = '';
-           }
-           if (strtolower($currentCustomCat) == (strtolower($a_import_osm_cat_excl_name))){
-             $temp_lat = '';
-             $temp_lon = '';
+           foreach( $taxonomies as $taxid ) {
+             $termsObjects = wp_get_object_terms($post->ID, $a_custom_taxonomy);
+             foreach ($termsObjects as $termsObject) {
+               $currentCustomCat[] = $termsObject->name;
+             }
+             if (($a_import_osm_custom_tax_incl_name  != 'Osm_All') &&  ! in_array($a_import_osm_custom_tax_incl_name, $currentCustomCat)) {
+               $temp_lat = '';
+               $temp_lon = '';
+             }
+             if (strtolower($currentCustomCat) == (strtolower($a_import_osm_cat_excl_name))){
+               $temp_lat = '';
+               $temp_lon = '';
+             }
            }
          }
        }
@@ -622,40 +627,49 @@ class Osm
  // check Lat and Long
   function getMapCenter($a_Lat, $a_Long, $a_import, $a_import_UserName){
     if ($a_import == 'wpgmg'){
-      $a_Lat  = OSM_getCoordinateLat($a_import);
-      $a_Long = OSM_getCoordinateLong($a_import);
+      $Lat  = OSM_getCoordinateLat($a_import);
+      $Lon = OSM_getCoordinateLong($a_import);
     }
     else if ($a_import == 'gcstats'){
       if (function_exists('gcStats__getInterfaceVersion')) {
         $Val = gcStats__getMinMaxLat($a_import_UserName);
-        $a_Lat = ($Val["min"] + $Val["max"]) / 2;
+        $Lat = ($Val["min"] + $Val["max"]) / 2;
         $Val = gcStats__getMinMaxLon($a_import_UserName);
-        $a_Long = ($Val["min"] + $Val["max"]) / 2;
+        $Lon = ($Val["min"] + $Val["max"]) / 2;
       }
       else{
        $this->traceText(DEBUG_WARNING, "getMapCenter() could not connect to gcStats plugin");
-       $a_Lat  = 0;$a_Long = 0;
+       $Lat  = 0;$Long = 0;
       }
     }
     else if ($a_Lat == '' || $a_Long == ''){
-      $a_Lat  = OSM_getCoordinateLat('osm');
-      $a_Long = OSM_getCoordinateLong('osm');
+      $Lat = OSM_getCoordinateLat('osm');
+      $Lon = OSM_getCoordinateLong('osm');
     }
-    return array($a_Lat,$a_Long);
+    else {
+      $Lat = $a_Lat;
+      $Lon = $a_Long;
+    }
+    return array($Lat,$Lon);
   }
     
   // check Lat and Long
-  function checkLatLongRange($a_CallingId, $a_Lat, $a_Long)
+  function checkLatLongRange($a_CallingId, $a_Lat, $a_Long, $a_traceError = "yes")
   {
+    Osm::traceText(DEBUG_INFO, "checkLatLongRange(".$a_CallingId.",".$a_Lat.",".$a_Long.",".$a_traceError.")");
     if ($a_Lat >= LAT_MIN && $a_Lat <= LAT_MAX && $a_Long >= LON_MIN && $a_Long <= LON_MAX &&
                     preg_match('!^[^0-9]+$!', $a_Lat) != 1 && preg_match('!^[^0-9]+$!', $a_Long) != 1){
-      return array($a_Lat,$a_Long);              
+     // all is fine
     }
     else{
-      $this->traceText(DEBUG_ERROR, "e_lat_lon_range");
-      $this->traceText(DEBUG_INFO, "Error: ".$a_CallingId." Lat".$a_Lat." or Long".$a_Long);
-      $a_Lat  = 0;$a_Long = 0;
+      if ($a_traceError == "yes"){
+        $this->traceText(DEBUG_ERROR, "e_lat_lon_range");
+        $this->traceText(DEBUG_INFO, "Error: ".$a_CallingId." Lat".$a_Lat." or Long".$a_Long);
+      }
+      $a_Lat  = 0;
+      $a_Long = 0;
     }
+    return array($a_Lat,$a_Long);
   }
 
   function getGPXName($filepath){
@@ -719,19 +733,50 @@ class Osm
   }
 }	// End class Osm
 
+include('osm-widget.php');
+
+
+// register OSM_Widget widget
+function register_osm_widget() {
+    register_widget( 'OSM_Tagged_Widget' );
+}
+
 $pOsm = new Osm();
+
+function OSM_isGeotagged(){
+  global $post;
+  $Data = get_post_meta($post->ID, 'OSM_geo_data', true); 
+  $PostMarker = get_post_meta($post->ID, 'OSM_geo_icon', true);
+  $Data = preg_replace('/\s*,\s*/', ',',$Data);
+  // get pairs of coordination
+  $GeoData_Array = explode( ' ', $Data );
+  list($temp_lat, $temp_lon) = explode(',', $GeoData_Array[0]);
+  list($temp_lat, $temp_lon) = Osm::checkLatLongRange('Marker',$temp_lat, $temp_lon,'no');
+  if (($temp_lat != 0) || ($temp_lon != 0)){
+    return 1;
+  }
+  else {
+    return 0;
+  }   
+}
+
 
 // This is meant to be the interface used
 // in your WP-template
 
-// returns Lat data of coordination
+// returns Lat data of the first (!) coordination
 function OSM_getCoordinateLat($a_import)
 {
   global $post;
-
   $a_import = strtolower($a_import);
   if ($a_import == 'osm' || $a_import == 'osm_l'){
-	list($lat, $lon) = explode(',', get_post_meta($post->ID, get_option('osm_custom_field','OSM_geo_data'), true));
+         $Data = get_post_meta($post->ID, get_option('osm_custom_field','OSM_geo_data'), true);
+         // remove space before and after comma
+         $Data = preg_replace('/\s*,\s*/', ',',$Data);
+         // get pairs of coordination
+         $GeoData_Array = explode( ' ', $Data );
+  	 list($lat, $lon) = explode(',', $GeoData_Array[0]);
+	//list($lat, $lon) = explode(',', get_post_meta($post->ID, get_option('osm_custom_field','OSM_geo_data'), true));
   }
   else if ($a_import == 'wpgmg'){
 	$lat = get_post_meta($post->ID, WPGMG_LAT, true);
@@ -753,10 +798,16 @@ function OSM_getCoordinateLong($a_import)
   
   $a_import = strtolower($a_import);
   if ($a_import == 'osm' || $a_import == 'osm_l'){
-	  list($lat, $lon) = explode(',', get_post_meta($post->ID, get_option('osm_custom_field','OSM_geo_data'), true));
+    $Data = get_post_meta($post->ID, get_option('osm_custom_field','OSM_geo_data'), true);
+    // remove space before and after comma
+    $Data = preg_replace('/\s*,\s*/', ',',$Data);
+    // get pairs of coordination
+    $GeoData_Array = explode( ' ', $Data );
+    list($lat, $lon) = explode(',', $GeoData_Array[0]);
+    //list($lat, $lon) = explode(',', get_post_meta($post->ID, get_option('osm_custom_field','OSM_geo_data'), true));
   }
   else if ($a_import == 'wpgmg'){
-	  list($lon) = get_post_meta($post->ID,WPGMG_LON, true);
+    list($lon) = get_post_meta($post->ID,WPGMG_LON, true);
   }
   else {
     $this->traceText(DEBUG_ERROR, "e_php_getlon_missing_arg");

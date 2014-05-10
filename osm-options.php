@@ -30,7 +30,7 @@
 <form name="Markerform" action="">
 <h3><?php _e('If you want to add a marker choose one of the supported:','OSM-plugin') ?></h3>
   <li><?php _e('the marker is placed where you click into the map','OSM-plugin') ?></li>
-  <li><?php _e('alternativly you can also add privat marker from the upload folder (see ','OSM-plugin') ?> <a target="_new" href="http://wiki.openstreetmap.org/wiki/Wp-osm-plugin#adding_a_single_marker">osm-wiki page</a>)</li>
+  <li><?php _e('alternativly you can also add privat marker from the upload folder (see ','OSM-plugin') ?> <a target="_new" href="http://wp-osm-plugin.hanblog.net/exsamples/display-a-marker/">osm plugin page</a>)</li>
   <colgroup>
     <col width="120">
     <col width="120">
@@ -149,18 +149,14 @@
 <h3><?php _e('Some usefull sites for this plugin:','OSM-plugin') ?></h3>
 <ol>
   <li><?php _e('for advanced samples visit the ','OSM-plugin') ?><a target="_new" href="http://wp-osm-plugin.HanBlog.net">osm-plugin page</a>.</li>
-  <li><?php _e('for detailed information about usage visit the ','OSM-plugin') ?><a target="_new" href="http://wiki.openstreetmap.org/wiki/Wp-osm-plugin">osm-wiki page</a>.</li>
-  <li><?php _e('for questions, bugs and other feedback visit the','OSM-plugin') ?> <a target="_new" href="http://wp-osm-plugin.HanBlog.net">osm-plugin forum</a>.</li>
-  <li><?php _e('find news and articles about the plugin at the ','OSM-plugin') ?><a target="_new" href="http://www.HanBlog.net">osm-author page</a>.</li>
+  <li><?php _e('for questions, bugs and other feedback visit the','OSM-plugin') ?> <a target="_new" href="http://wp-osm-plugin.hanblog.net/forum/forum-en/">EN forum</a>, <a target="_new" href="http://wp-osm-plugin.hanblog.net/forum/forum-de/">DE forum</a></li>
+  <li><?php _e('Follow us on twitter: ','OSM-plugin') ?><a target="_new" href="https://twitter.com/wp_osm_plugin">wp-osm-plugin</a>.</li>
   <li><?php _e('download the last version at WordPress.org ','OSM-plugin') ?><a target="_new" href="http://wordpress.org/extend/plugins/osm/">osm-plugin download</a>.</li>
 </ol>
 <h3><?php _e('If you want to express thanks for this plugin ...','OSM-plugin') ?></h3>
 <ol>
-  <li><?php _e('do not donate money but submit a photo at the ','OSM-plugin') ?><a target="_new" href="http://www.Fotomobil.at">Fotomobil.at</a> <?php _e('project.','OSM-plugin') ?></li>
-  <li><?php _e('put a link to the osm-plugin page on your site ','OSM-plugin') ?><a target="_new" href="http://wp-osm-plugin.HanBlog.net">WP-OSM-Plugin.HanBlog.net</a>.</li>
-  <li><?php _e('or simply leave a message with a link to your page at ','OSM-plugin') ?><a target="_new" href="http://wp-osm-plugin.HanBlog.net">wp-osm-plugin-forum</a>.</li>
+  <li><?php _e('give this plugin a good ranking at ','OSM-plugin') ?><a target="_new" href="http://wordpress.org/support/view/plugin-reviews/osm">WordPress.org</a>.</li>
   <li><?php _e('post an article about ','OSM-plugin') ?><a target="_new" href="http://www.OpenStreetMap.org">OpenStreetMap</a><?php _e(' on your blog.','OSM-plugin') ?></li>
-  <li><?php _e('give this plugin a good ranking at ','OSM-plugin') ?><a target="_new" href="http://wordpress.org/extend/plugins/osm/">WordPress.org</a>.</li>
 </ol>
 <form method="post">
  <?php

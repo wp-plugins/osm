@@ -87,10 +87,41 @@
       $this->traceText(DEBUG_INFO, "Error: (Zoomlevel: ".$zoom.")!");
       $zoom = 0;   
     }
-    if ($width < 1 || $height < 1){
-      Osm::traceText(DEBUG_ERROR, "e_map_size");
-      Osm::traceText(DEBUG_INFO, "Error: ($width: ".$width." $height: ".$height.")!");
-      $width = 450; $height = 300;
+ 
+    $pos = strpos($width, "%");
+    if ($pos == false) {
+      if ($width < 1){
+        Osm::traceText(DEBUG_ERROR, "e_map_size");
+        Osm::traceText(DEBUG_INFO, "Error: ($width: ".$width.")!");
+        $width = 450;
+      }
+      $width_str = $width."px"; // make it 30px
+    } else {// it's 30%
+      $width_perc = substr($width, 0, $pos ); // make it 30 
+      if (($width_perc < 1) || ($width_perc >100)){
+        Osm::traceText(DEBUG_ERROR, "e_map_size");
+        Osm::traceText(DEBUG_INFO, "Error: ($width: ".$width.")!");
+        $width = "100%";
+      }
+      $width_str = substr($width, 0, $pos+1 ); // make it 30% 
+    }
+
+    $pos = strpos($height, "%");
+    if ($pos == false) {
+      if ($height < 1){
+        Osm::traceText(DEBUG_ERROR, "e_map_size");
+        Osm::traceText(DEBUG_INFO, "Error: ($height: ".$height.")!");
+        $height = 300;
+      }
+      $height_str = $height."px"; // make it 30px
+    } else {// it's 30%
+      $height_perc = substr($height, 0, $pos ); // make it 30 
+      if (($height_perc < 1) || ($height_perc >100)){
+        Osm::traceText(DEBUG_ERROR, "e_map_size");
+        Osm::traceText(DEBUG_INFO, "Error: ($height: ".$height.")!");
+        $height = "100%";
+      }
+      $height_str = substr($height, 0, $pos+1 ); // make it 30% 
     }
 
     if ($marker_name == 'NoName'){
@@ -190,7 +221,7 @@
     $output .= '#'.$MapName.' img{clear: both; padding: 0px; margin: 0px; border: 0px; width: 100%; height: 100%; position: absolute; margin-top:0px; margin-right:0px;margin-left:0px; margin-bottom:0px;}';
     $output .= '</style>';
 
-    $output .= '<div id="'.$MapName.'" class="OSM_Map" style="width:'.$width.'px; height:'.$height.'px; overflow:hidden;padding:0px;border:'.$map_border.';">';
+    $output .= '<div id="'.$MapName.'" class="OSM_Map" style="width:'.$width_str.'; height:'.$height_str.'; overflow:hidden;padding:0px;border:'.$map_border.';">';
 
     
 	if (Osm_LoadLibraryMode == SERVER_EMBEDDED){
@@ -362,6 +393,36 @@
      $MarkerArray[] = array('lat'=> $temp_lat,'lon'=>$temp_lon,'text'=>$temp_popup,'popup_height'=>'150', 'popup_width'=>'150');
      $output .= Osm_OpenLayers::addMarkerListLayer($MapName, $Icon,$MarkerArray,$DoPopUp);
    }
+   // just add osm widget
+   else if ($marker  == 'OSM_geo_widget'){ 
+     global $post;
+     $Data = get_post_meta($post->ID, 'OSM_geo_data', true); 
+     $PostMarker = get_post_meta($post->ID, 'OSM_geo_icon', true);
+
+     $Data = preg_replace('/\s*,\s*/', ',',$Data);
+     // get pairs of coordination
+     $GeoData_Array = explode( ' ', $Data );
+     list($temp_lat, $temp_lon) = explode(',', $GeoData_Array[0]); 
+     $DoPopUp = 'false';
+
+     if (Osm_icon::isOsmIcon($PostMarker) == 1){
+       $Icon = Osm_icon::getIconsize($PostMarker);
+       $Icon["name"]  = $PostMarker;
+     }
+     else { // if no marker is set for the post
+       $Icon = Osm_icon::getIconsize($marker_name);
+       $Icon["name"]  = $marker_name;
+     }
+
+     list($temp_lat, $temp_lon) = Osm::checkLatLongRange('Marker',$temp_lat, $temp_lon,'no');
+     if (($temp_lat != 0) || ($temp_lon != 0)){
+       // set the center of the map to the first geotag
+       $lat = $temp_lat;
+       $long = $temp_lon;
+       $MarkerArray[] = array('lat'=> $temp_lat,'lon'=>$temp_lon,'text'=>$temp_popup,'popup_height'=>'150', 'popup_width'=>'150');
+       $output .= Osm_OpenLayers::addMarkerListLayer($MapName, $Icon,$MarkerArray,$DoPopUp);
+     }
+   }
    else if ($marker  != 'No'){  
      global $post;
      $DoPopUp = 'true';
@@ -417,6 +478,7 @@
     }
 
     // set center and zoom of the map
+
     $output .= Osm_OpenLayers::setMapCenterAndZoom($MapName, $lat, $long, $zoom);
 
     $output .= '})(jQuery)';
