@@ -21,7 +21,7 @@ class OSM_Tagged_Widget extends WP_Widget {
     $zoom   = $instance['zoom'];
     $border_col   = $instance['border_col'];
 
-    if (OSM_isGeotagged()){ 
+    if ((OSM_isGeotagged()) && (is_singular())){ 
       echo $args['before_widget'];
       if ( ! empty( $title ) ){
         echo $args['before_title'] . $title . $args['after_title'];

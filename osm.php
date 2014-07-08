@@ -3,7 +3,7 @@
 Plugin Name: OSM
 Plugin URI: http://wp-osm-plugin.HanBlog.net
 Description: Embeds maps in your blog and adds geo data to your posts.  Find samples and a forum on the <a href="http://wp-osm-plugin.HanBlog.net">OSM plugin page</a>.  
-Version: 2.8
+Version: 2.8.1
 Author: MiKa
 Author URI: http://www.HanBlog.net
 Minimum WordPress Version Required: 2.8
@@ -27,7 +27,7 @@ Minimum WordPress Version Required: 2.8
 */
 load_plugin_textdomain('OSM-plugin', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/');
 
-define ("PLUGIN_VER", "V2.7.1");
+define ("PLUGIN_VER", "V2.8.1");
 
 // modify anything about the marker for tagged posts here
 // instead of the coding.
@@ -49,7 +49,8 @@ define ("URL_LAT","&mlat=");
 define ("URL_LON","&mlon=");
 define ("URL_ZOOM_01","&zoom=[");
 define ("URL_ZOOM_02","]");
-define ('ZOOM_LEVEL_MAX',18); // standard is 17, only mapnik is 18
+define ('ZOOM_LEVEL_GOOGLE_MAX',22);
+define ('ZOOM_LEVEL_MAX',18);       // standard is 17, only mapnik is 18
 define ('ZOOM_LEVEL_MIN',1);
 
 // other geo plugin defines
@@ -76,8 +77,11 @@ define ('SERVER_WP_ENQUEUE', 2);
 
 define('OSM_PRIV_WP_CONTENT_URL', site_url() . '/wp-content' );
 define('OSM_PRIV_WP_CONTENT_DIR', content_url() . 'wp-content' );
-define('OSM_PRIV_WP_PLUGIN_URL', OSM_PRIV_WP_CONTENT_URL. '/plugins' );
-define('OSM_PRIV_WP_PLUGIN_DIR', OSM_PRIV_WP_CONTENT_DIR . '/plugins' );
+//define('OSM_PRIV_WP_PLUGIN_URL', OSM_PRIV_WP_CONTENT_URL. '/plugins' );
+//define('OSM_PRIV_WP_PLUGIN_DIR', OSM_PRIV_WP_CONTENT_DIR . '/plugins' );
+define('OSM_PRIV_WP_PLUGIN_URL', plugins_url() );
+define('OSM_PRIV_WP_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
+
 define('OSM_PLUGIN_URL', OSM_PRIV_WP_PLUGIN_URL."/osm/");
 define('OSM_PLUGIN_ICONS_URL', OSM_PLUGIN_URL."icons/");
 define('URL_POST_MARKER', OSM_PLUGIN_URL.POST_MARKER_PNG);
@@ -500,7 +504,8 @@ class Osm
                  $Category_Txt = $cat->name.': ';
                }
              }
-             $Marker_Txt = '<a href="'.get_permalink($post->ID).'">'.$Category_Txt.get_the_title($post->ID).'  </a>';
+             $Marker_Txt = '<a href="'.get_permalink($post->ID).'">'.$Category_Txt.get_the_title($post->ID).'  </a><br>';
+             $Marker_Txt .= get_the_excerpt($post->ID);
              $MarkerArray[] = array('lat'=> $tag_lat,'lon'=>$tag_lon,'popup_height'=>'100', 'popup_width'=>'150', 'marker'=>$Icon[name], 'text'=>$Marker_Txt, 'Marker'=>$PostMarker);
            }	 
            else{ // plain osm without link to the post

@@ -82,12 +82,16 @@
 
 	  ), $atts));
    
-    if (($zoom < ZOOM_LEVEL_MIN || $zoom > ZOOM_LEVEL_MAX) && ($zoom != 'auto')){
+    $map_spec_zoom_level_max = ZOOM_LEVEL_MAX;
+    if ($type == 'GooglePhysical' || $type == 'GoogleStreet' || $type == 'GoogleHybrid' || $type == 'GoogleSatellite'){
+      $map_spec_zoom_level_max = ZOOM_LEVEL_GOOGLE_MAX;
+    }
+    if (($zoom < ZOOM_LEVEL_MIN || $zoom > $map_spec_zoom_level_max) && ($zoom != 'auto')){
       $this->traceText(DEBUG_ERROR, "e_zoomlevel_range");
       $this->traceText(DEBUG_INFO, "Error: (Zoomlevel: ".$zoom.")!");
       $zoom = 0;   
     }
- 
+
     $pos = strpos($width, "%");
     if ($pos == false) {
       if ($width < 1){
@@ -453,11 +457,11 @@
        if ($marker_routing == 'ors' || $marker_routing == 'openrouteservice') {  
          $temp_popup .= 'http://openrouteservice.org/index.php?end=' . $temp_lon . ',' . $temp_lat . '&zoom=' . $zoom . '&pref=Fastest&lang=' . substr(get_locale(),0,2) . '&noMotorways=false&noTollways=false';
        } 
-       elseif ($marker_routing == 'cm' || $marker_routing == 'cloudmade') {  
-         $temp_popup .= 'http://maps.cloudmade.com/?lat=' . $temp_lat . '&lng=' . $temp_lon . '&zoom=' . $zoom . '&directions=' . $temp_lat . ',' . $temp_lon . '&travel=car&styleId=1&active_page=0&opened_tab=1';
-       }
        elseif ($marker_routing == 'yn' || $marker_routing == 'yournavigation') {  
          $temp_popup .= 'http://yournavigation.org/?tlat=' . $temp_lat . '&tlon=' . $temp_lon;
+       }
+       elseif ($marker_routing == 'osrm' || $marker_routing == 'cm' || $marker_routing == 'cloudmade') {
+         $temp_popup .= 'http://map.project-osrm.org/?dest=' . $temp_lat . ',' . $temp_lon;
        }
        else {
          $temp_popup .= __("Missing routing service!", "OSM-plugin").$marker_routing;
@@ -465,7 +469,6 @@
        }
        $temp_popup .= '">' . __("Route from your location to this place", "OSM-plugin") . '</a></div>';
      }
-
      if (($temp_popup_custom_field == 'osm_dummy') && ($m_txt_01 == 'none') && ($marker_routing == 'no')){
        $DoPopUp = 'false';
      }
