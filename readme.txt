@@ -1,9 +1,9 @@
 === OSM - OpenStreetMap ===
 Contributors: MiKa
-Tags: map, OpenStreetMap, Google Maps, googlemaps, geo, KML, GPX, geotag, geolocation, geocache, geocaching, OSM, travelogue, OpenLayers, Open Layers, Open Street Map, CloudMade, marker, POI, geocode, geotagging, location, Route, Tracks, WMS, OpenWeatherMap, Weather, OpenSeaMap, stamen, basemap, ssl, exif, meta, widget
+Tags: map, OpenStreetMap, Google Maps, googlemaps, geo, KML, GPX, geotag, geolocation, geocache, geocaching, OSM, travelogue, OpenLayers, Open Layers, Open Street Map, CloudMade, marker, POI, geocode, geotagging, location, Tracks, WMS, OpenWeatherMap, Weather, OpenSeaMap, stamen, basemap, exif, meta, widget
 Requires at least: 2.8
 Tested up to: 4.1
-Stable tag: 2.9.3
+Stable tag: 2.9.4
 
 Customize maps in your post, pages and widgets. Add geotag to your blog and site. Use GPX, KML, CSV, TXT ... 
 
@@ -29,13 +29,14 @@ Features of the OSM-plugin:
 * uses OpenLayers Library
 * SSL connection (https)
 
-Languages:
+Languages - thanks to:
 
 * English
 * Deutsch
 * Japanese [by Sykane]
 * French [by Tounoki]
 * Russian [by Вячеслав Стренадко/Vyacheslav Strenadko]
+* Italian [by Andrea Giacomelli]
 
 Licenses of the maps:
 
@@ -69,6 +70,11 @@ There must be not format tag (like href ...) in the shortcode.
 
 
 == Changelog ==
+= 2.9.4 =
+* NEW: directly set geotag at edit post
+* NEW: icon added
+* NEW: italian translation
+* FIX: map image style
 = 2.9.3 =
 * NEW: icons added
 * NEW: icon preview at shortcode generator when you set a marker

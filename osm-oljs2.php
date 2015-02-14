@@ -356,7 +356,7 @@ class Osm_OpenLayers
     return $Layer;
   }
 
-  function AddClickHandler($a_MapName, $a_msgBox)
+  function AddClickHandler($a_MapName, $a_msgBox, $a_post_id)
   {
     Osm::traceText(DEBUG_INFO, "AddClickHandler(".$a_msgBox.")");
     $a_msgBox = strtolower($a_msgBox);
@@ -405,27 +405,25 @@ class Osm_OpenLayers
     $Layer .= ' 
        div = document.getElementById("ShortCode_Div");
 
-       var MarkerName    = osm_getRadioValue("Markerform");
-       var GpxColour     = osm_getRadioValue("GPXcolourform");
+       var MarkerName    = document.Markerform.osm_marker.value;
+       var AddFileOption = document.Addfileform.osm_add_file.value;
        var BorderColour  = osm_getRadioValue("Bordercolourform");
        var NaviName      = osm_getRadioValue("Naviform");
        var CntrStyle     = osm_getRadioValue("ControlStyleform");
 
-       MarkerField = "";
        NaviField = "";
+       MarkerField = "";
        MarkerTextField_01 = "";
        MarkerTextField_02 = "";
        MarkerTextField_03 = "";
        MarkerTextField_04 = "";
-       GpxFileField = "";
-       GpxColourField = "";
-       MarkerFileField = "";
+       FileField = "";
        MapControlField = "";
        BorderColourField = "";
        ControlStyleField = "";
        ZIndexField = "";
     
-       if (MarkerName != "undefined"){
+       if (MarkerName != "none"){
          MarkerField = " marker=\""+Clicklonlat.lat+","+Clicklonlat.lon+"\" marker_name=\"" + MarkerName + "\"";
 
          if (NaviName != "undefined"){
@@ -443,35 +441,47 @@ class Osm_OpenLayers
          if (document.Markertextform.MarkerText_04.value != "MusterCountry"){
            MarkerTextField_04 = " m_txt_04=\""+ document.Markertextform.MarkerText_04.value + "\"";
          }
-       }'; // if (MarkerName != "undefined")
+       }'; // if (MarkerName != "none")
 
-    $Layer .= ' if (document.GPXfileform.GpxFile.value != "http://"){';
-    $Layer .= '   GpxFileField = " gpx_file=\""+ document.GPXfileform.GpxFile.value + "\"";';  
-    $Layer .= '  }';
-    $Layer .= ' if (GpxColour != "undefined"){';
-    $Layer .= '   GpxColourField = " gpx_colour=\""+ GpxColour + "\"";';  
-    $Layer .= '  }';
-    $Layer .= ' if (CntrStyle != "undefined"){';
-    $Layer .= '   ControlStyleField = " theme=\""+ CntrStyle + "\"";';  
-    $Layer .= '  }';
-    $Layer .= ' if (document.ZIndexform.ZIndex.checked){';
-    $Layer .= '   ZIndexField = " z_index=\""+ document.ZIndexform.ZIndex.value + "\"";';  
-    $Layer .= '  }';    
-    $Layer .= ' if (document.Markerfileform.MarkerFile.value != "http://"){';
-    $Layer .= '   MarkerFileField = " marker_file=\""+ document.Markerfileform.MarkerFile.value + "\"";';  
-    $Layer .= '  }';
-
-    $Layer .= ' if (document.MapControlform.MapControl.checked){';
-    $Layer .= '   MapControlField = " control=\""+ document.MapControlform.MapControl.value;';  
-    $Layer .= '  }';
-    $Layer .= ' if (document.MapControlform.Mouseposition.checked){';
-    $Layer .= '   if (document.MapControlform.MapControl.checked){';
-    $Layer .= '     MapControlField = MapControlField + "," + document.MapControlform.Mouseposition.value;';  
-    $Layer .= '    }';
-    $Layer .= '    else{';
-    $Layer .= '      MapControlField = " control=\""+ document.MapControlform.Mouseposition.value;';  
-    $Layer .= '    }';
-    $Layer .= '  }';
+    $Layer .= ' 
+       if ((AddFileOption != "none") && (document.Addfileform.FileURL.value != "http://")){
+         if (AddFileOption == "kml") {
+           FileField = " kml_file=\""+ document.Addfileform.FileURL.value + "\"";
+         }
+         if (AddFileOption == "gpx_red") {
+           FileField = " gpx_file=\""+ document.Addfileform.FileURL.value + "\" gpx_colour=\"red\"";
+         }
+         if (AddFileOption == "gpx_green") {
+           FileField = " gpx_file=\""+ document.Addfileform.FileURL.value + "\" gpx_colour=\"green\"";
+         }
+         if (AddFileOption == "gpx_blue") {
+           FileField = " gpx_file=\""+ document.Addfileform.FileURL.value + "\" gpx_colour=\"blue\"";
+         }
+         if (AddFileOption == "gpx_black") {
+           FileField = " gpx_file=\""+ document.Addfileform.FileURL.value + "\" gpx_colour=\"black\"";
+         }
+         if (AddFileOption == "text") {
+           FileField = " marker_file=\""+ document.Addfileform.FileURL.value + "\"";
+         }
+       }  
+    ';  
+    $Layer .= ' if (CntrStyle != "undefined"){
+                  ControlStyleField = " theme=\""+ CntrStyle + "\"";
+                }';
+    $Layer .= ' if (document.ZIndexform.ZIndex.checked){
+                  ZIndexField = " z_index=\""+ document.ZIndexform.ZIndex.value + "\"";  
+                }';    
+    $Layer .= ' if (document.MapControlform.MapControl.checked){
+                  MapControlField = " control=\""+ document.MapControlform.MapControl.value;  
+                }';
+    $Layer .= ' if (document.MapControlform.Mouseposition.checked){
+                  if (document.MapControlform.MapControl.checked){
+                    MapControlField = MapControlField + "," + document.MapControlform.Mouseposition.value;  
+                  }
+                  else{
+                   MapControlField = " control=\""+ document.MapControlform.Mouseposition.value;  
+                  }
+                }';
     $Layer .= ' if ((document.MapControlform.Mouseposition.checked) || (document.MapControlform.MapControl.checked)) {';
     $Layer .= '  MapControlField = MapControlField + "\"";';
     $Layer .= '  }';
@@ -480,10 +490,10 @@ class Osm_OpenLayers
     $Layer .= '   BorderColourField = " map_border=\"thin solid "+ BorderColour + "\"";';  
     $Layer .= '  }';
 
-    $Layer .= ' div.innerHTML = "[osm_map lat=\"" + Centerlonlat.lat + "\" lon=\"" + Centerlonlat.lon + "\" zoom=\"" + zoom + "\" width=\"100%\" height=\"450\"" + MarkerField + GpxFileField + GpxColourField + BorderColourField + MarkerFileField + MapControlField + MarkerTextField_01 + MarkerTextField_02 + MarkerTextField_03 + MarkerTextField_04 + NaviField + ZIndexField + ControlStyleField + " type=\""+LayerName+"\"]";';
+    $Layer .= ' div.innerHTML = "[osm_map lat=\"" + Centerlonlat.lat + "\" lon=\"" + Centerlonlat.lon + "\" zoom=\"" + zoom + "\" width=\"100%\" height=\"450\"" + FileField + BorderColourField + MapControlField + MarkerField + MarkerTextField_01 + MarkerTextField_02 + MarkerTextField_03 + MarkerTextField_04 + NaviField + ZIndexField + ControlStyleField + " type=\""+LayerName+"\"]";';
 
     $Layer .= ' markerslayer.clearMarkers();';
-    $Layer .= ' if (MarkerName != "undefined"){';
+    $Layer .= ' if (MarkerName != "none"){';
 
     $Layer .= '	  var icon_Obj = osm_getIconSize(MarkerName);';
 
@@ -502,6 +512,7 @@ class Osm_OpenLayers
       ThemeField  = "";
       TypeField   = "";
       MapTypeField = "";
+
       var MarkerName    = document.post.osm_marker.value;
       if (document.post.osm_map_type.value != "none"){
         MapTypeField = " type=\""+ document.post.osm_map_type.value + "\"";
@@ -522,23 +533,49 @@ class Osm_OpenLayers
         ThemeField = " control=\"mouseposition,scaleline\" map_border=\"thin solid orange\" theme=\"ol_orange\"";
       }
 
-      if (document.post.osm_mode.value == "sc_gen"){
-        GenTxt = "[osm_map lat=\"" + Centerlonlat.lat + "\" lon=\"" + Centerlonlat.lon + "\" zoom=\"" + zoom + "\" width=\"100%\" height=\"450\" " + ThemeField + MarkerField + TypeField + MapTypeField + "]";
-      }
-      if (document.post.osm_mode.value == "geotagging"){
-        if (MarkerName != "none"){
-          GenTxt = "For geotagging your post/page create a custom field. <br>Name: OSM_geo_data <br>Value: "+Clicklonlat.lat+","+Clicklonlat.lon+" <br><br>Name: OSM_geo_icon <br>Value: " + MarkerName;
-        }
-        else {
-          GenTxt = "For geotagging your post/page create a custom field. <br>Name: OSM_geo_data <br>Value: "+Clicklonlat.lat+","+Clicklonlat.lon;
-        }
-      }
+      GenTxt = "[osm_map lat=\"" + Centerlonlat.lat + "\" lon=\"" + Centerlonlat.lon + "\" zoom=\"" + zoom + "\" width=\"100%\" height=\"450\" " + ThemeField + MarkerField + TypeField + MapTypeField + "]";
+      
       div = document.getElementById("ShortCode_Div");
       div.innerHTML = GenTxt;
     ';
     $Layer .= ' 
       markerslayer.clearMarkers();
       if ((((document.post.osm_import.value == "single") || (document.post.osm_import.value == "none")) || (document.post.osm_mode.value == "geotagging")) && (document.post.osm_marker.value != "none")){
+        var icon_Obj = osm_getIconSize(MarkerName);
+        var icon_size = new OpenLayers.Size(icon_Obj.width,icon_Obj.height);
+        var icon_offset = new OpenLayers.Pixel(icon_Obj.offset_width, icon_Obj.offset_height);
+        var icon_url = "'.OSM_PLUGIN_ICONS_URL.'" + MarkerName;
+        var click_icon = new OpenLayers.Icon(icon_url,icon_size,icon_offset); 
+        var icon_lonlat = new OpenLayers.LonLat(Clicklonlat.lon,Clicklonlat.lat).transform('.$a_MapName.'.displayProjection, '.$a_MapName.'.projection);
+        markerslayer.addMarker(new OpenLayers.Marker(icon_lonlat,click_icon.clone()));
+      }';
+    }
+    else if( $a_msgBox == 'metabox_geotag_gen'){
+    $Layer .= ' 
+      MarkerField = "";
+
+      var MarkerName = document.post.osm_marker_geotag.value;
+
+      if (document.post.osm_marker_geotag.value != "none"){
+        MarkerField = " marker=\""+Clicklonlat.lat+","+Clicklonlat.lon+"\" marker_name=\"" + MarkerName + "\"";  
+      }
+
+      osm_ajax_object.lat = Clicklonlat.lat;
+      osm_ajax_object.lon = Clicklonlat.lon;
+      osm_ajax_object.post_id = '.$a_post_id.';
+      if (MarkerName != "none"){
+        osm_ajax_object.icon = MarkerName;
+        GenTxt = "Location: "+Clicklonlat.lat+","+Clicklonlat.lon+" <br>Icon: " + MarkerName + "<br><b>3. Press [Save] to store!</b>";
+      }
+      else {
+        GenTxt = "Location: "+Clicklonlat.lat+","+Clicklonlat.lon + "<br><b>3. Press [Save] to store!</b>";
+      }
+      div = document.getElementById("Geotag_Div");
+      div.innerHTML = GenTxt;
+    ';
+    $Layer .= ' 
+      markerslayer.clearMarkers();
+      if (document.post.osm_marker_geotag.value != "none"){
         var icon_Obj = osm_getIconSize(MarkerName);
         var icon_size = new OpenLayers.Size(icon_Obj.width,icon_Obj.height);
         var icon_offset = new OpenLayers.Pixel(icon_Obj.offset_width, icon_Obj.offset_height);

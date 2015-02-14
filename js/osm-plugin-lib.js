@@ -210,6 +210,26 @@ function osm_getRadioValue(a_Form){
   return "not implemented";
 }
 
+function osm_saveGeotag(){
+  if ((osm_ajax_object.lat == '') || (osm_ajax_object.lon == '')){
+    alert('Place geotag in the map before save');
+  }
+  else
+  {
+    var data = {
+      action: 'act_saveGeotag',
+      lat: osm_ajax_object.lat,
+      lon: osm_ajax_object.lon,
+      icon: osm_ajax_object.icon,
+      post_id: osm_ajax_object.post_id,
+    };
+    jQuery.post(osm_ajax_object.ajax_url, data, function(response) {
+      div = document.getElementById("Geotag_Div");
+      div.innerHTML = "Saved geotag!";
+    });
+  }
+}
+
 function getTileURL(bounds) {
   var res = this.map.getResolution();
   var x = Math.round((bounds.left - this.maxExtent.left) / (res * this.tileSize.w));

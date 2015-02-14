@@ -221,8 +221,10 @@
       $output .= '.olControlNoSelect {z-index: '.$z_index.'+1.'.' !important;}';    
       $output .= '.olControlAttribution {z-index: '.$z_index.'+1.'.' !important;}';
     }      
-    $output .= '#'.$MapName.' {clear: both; padding: 0px; margin: 0px; border: 0px; width: 100%; height: 100%; margin-top:0px; margin-right:0px;margin-left:0px; margin-bottom:0px; left: 0px;}';
-    $output .= '#'.$MapName.' img{clear: both; padding: 0px; margin: 0px; border: 0px; width: 100%; height: 100%; position: absolute; margin-top:0px; margin-right:0px;margin-left:0px; margin-bottom:0px;}';
+    $output .= '#'.$MapName.' {clear: both; padding: 0px; margin: 0px; border: 0px; width: 100%; height: 100%; margin-top:0px; margin-right:0px;margin-left:0px; margin-bottom:0px; left: 0px; border-radius:0px;
+box-shadow: none;}';
+    $output .= '#'.$MapName.' img{clear: both; padding: 0px; margin: 0px; border: 0px; width: 100%; height: 100%; position: absolute; margin-top:0px; margin-right:0px;margin-left:0px; margin-bottom:0px; border-radius:0px;
+box-shadow: none;}';
     $output .= '</style>';
 
     $output .= '<div id="'.$MapName.'" class="OSM_Map" style="width:'.$width_str.'; height:'.$height_str.'; overflow:hidden;padding:0px;border:'.$map_border.';">';
@@ -286,8 +288,9 @@
 
     // add a clickhandler if needed
     $msg_box = strtolower($msg_box);
-    if ( $msg_box == 'sc_gen' || $msg_box == 'lat_long' || $msg_box == 'metabox_sc_gen'){
-      $output .= Osm_OpenLayers::AddClickHandler($MapName, $msg_box);
+    if ( $msg_box == 'sc_gen' || $msg_box == 'lat_long' || $msg_box == 'metabox_sc_gen'|| $msg_box == 'metabox_geotag_gen'){
+      global $post;
+      $output .= Osm_OpenLayers::AddClickHandler($MapName, $msg_box, $post->ID);
     }
 
     // Add the Layer with GPX Track

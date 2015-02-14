@@ -105,8 +105,11 @@ class Osm_icon
     $a_IconName == "mic_black_pinother_02.png" || $a_IconName == "mic_green_campingcar_01.png" ||
     $a_IconName == "mic_brown_pickup_camper_01.png" || $a_IconName == "mic_brown_van_01.png" ||
     $a_IconName == "mic_green_pinother_02.png" || $a_IconName == "mic_red_pinother_02.png" ||
-    $a_IconName == "mic_blue_pickup_camper_01.png"
-){
+    $a_IconName == "mic_blue_pickup_camper_01.png" || $a_IconName == "mic_green_vineyard-2_01.png" ||
+    $a_IconName == "mic_green_arbol_01.png" || $a_IconName == "mic_black_finish_01.png" ||
+    $a_IconName == "mic_black_finish2_01.png" || $a_IconName == "mic_black_start-race-2_01.png" ||
+    $a_IconName == "mic_green_garden_01.png" || $a_IconName == "mic_blue_drinkingwater_01.png" ||
+    $a_IconName == "mic_orange_archery_01.png" || $a_IconName == "mic_black_archery_01.png" ){
     return 1;
    }
    else {
