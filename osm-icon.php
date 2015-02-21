@@ -102,7 +102,8 @@ class Osm_icon
     $a_IconName == "mic_green_palm-tree-export_01.png" || $a_IconName == "mic_blue_shower_01.png" ||
     $a_IconName == "mic_blue_lighthouse-2_01.png" || $a_IconName == "mic_black_memorial_01.png" ||
     $a_IconName == "mic_black_pinother_01.png" || $a_IconName == "mic_black_pin-export_01.png" ||
-    $a_IconName == "mic_black_pinother_02.png" || $a_IconName == "mic_green_campingcar_01.png" ||
+    $a_IconName == "mic_black_pinother_02.png" || $a_IconName == "mic_blue_pinother_02.png" ||
+    $a_IconName == "mic_green_campingcar_01.png" ||
     $a_IconName == "mic_brown_pickup_camper_01.png" || $a_IconName == "mic_brown_van_01.png" ||
     $a_IconName == "mic_green_pinother_02.png" || $a_IconName == "mic_red_pinother_02.png" ||
     $a_IconName == "mic_blue_pickup_camper_01.png" || $a_IconName == "mic_green_vineyard-2_01.png" ||

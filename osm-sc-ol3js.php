@@ -26,8 +26,8 @@
     $output = '<div id="'.$MapName.'" class="OSM_Map" style="width:'.$width.'px; height:'.$height.'px; overflow:hidden;">';
 
     if(!defined('OL3_LIBS_LOADED')) {
-      $output .= '<link rel="stylesheet" href="http://openlayers.org/en/v3.0.0/css/ol.css" type="text/css"> ';
-      $output .= '<script src="http://openlayers.org/en/v3.0.0/build/ol.js" type="text/javascript"></script> ';
+      $output .= '<link rel="stylesheet" href="'.Osm_OL_3_CSS.'" type="text/css"> ';
+      $output .= '<script src="'.Osm_OL_3_LibraryLocation.'" type="text/javascript"></script> ';
       define ('OL3_LIBS_LOADED', 1);
     }
  

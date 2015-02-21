@@ -1,5 +1,5 @@
 <?php
-/*  (c) Copyright 2015  Michael Kang (wp-osm-plugin.HanBlog.Net)
+/*  (c) Copyright 2015  MiKa (wp-osm-plugin.HanBlog.Net)
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -506,7 +506,153 @@ class Osm_OpenLayers
     $Layer .= '  }';
 
     }
-    else if( $a_msgBox == 'metabox_sc_gen'){
+    else if( $a_msgBox == 'metabox_marker_sc_gen'){
+    $Layer .= ' 
+      MarkerField = "";
+      ThemeField  = "";
+      MapTypeField = "";
+
+      MarkerName = document.post.osm_marker_marker.value;
+
+      if (document.post.osm_marker_map_type.value != "Mapnik"){
+        MapTypeField = " type=\"" + document.post.osm_marker_map_type.value + "\""; 
+      }
+
+      if (document.post.osm_marker_marker.value != "none"){
+        MarkerField = " marker=\""+Clicklonlat.lat+","+Clicklonlat.lon+"\" marker_name=\"" + MarkerName + "\"";  
+      }
+      if (document.post.osm_marker_theme.value == "dark"){
+        ThemeField = " control=\"mouseposition,scaleline\" map_border=\"thin solid grey\" theme=\"dark\"";
+      }
+      else if (document.post.osm_marker_theme.value == "blue"){
+        ThemeField = " control=\"mouseposition,scaleline\" map_border=\"thin solid blue\" theme=\"ol\"";  
+      }
+      else if (document.post.osm_marker_theme.value == "orange"){
+        ThemeField = " control=\"mouseposition,scaleline\" map_border=\"thin solid orange\" theme=\"ol_orange\"";
+      }
+
+      GenTxt = "[osm_map lat=\"" + Centerlonlat.lat + "\" lon=\"" + Centerlonlat.lon + "\" zoom=\"" + zoom + "\" width=\"100%\" height=\"450\" " + ThemeField + MarkerField + MapTypeField + "]"; 
+
+      div = document.getElementById("ShortCode_Div");
+      div.innerHTML = GenTxt;
+    ';
+    $Layer .= ' 
+      markerslayer.clearMarkers();
+      if (document.post.osm_marker_marker.value != "none"){
+        var icon_Obj = osm_getIconSize(MarkerName);
+        var icon_size = new OpenLayers.Size(icon_Obj.width,icon_Obj.height);
+        var icon_offset = new OpenLayers.Pixel(icon_Obj.offset_width, icon_Obj.offset_height);
+        var icon_url = "'.OSM_PLUGIN_ICONS_URL.'" + MarkerName;
+        var click_icon = new OpenLayers.Icon(icon_url,icon_size,icon_offset); 
+        var icon_lonlat = new OpenLayers.LonLat(Clicklonlat.lon,Clicklonlat.lat).transform('.$a_MapName.'.displayProjection, '.$a_MapName.'.projection);
+        markerslayer.addMarker(new OpenLayers.Marker(icon_lonlat,click_icon.clone()));
+      }';
+    }
+    else if( $a_msgBox == 'metabox_file_sc_gen'){
+    $Layer .= ' 
+      var ThemeField  = "";
+      var TypeField   = "";
+      var MapTypeField = "";
+      var FileField = "";
+
+      var AddFileOption = document.post.osm_file_add_file.value;
+      var FileUrl = document.post.file_FileURL.value;
+
+      if (document.post.osm_file_map_type.value != "Mapnik"){
+        MapTypeField = " type=\"" + document.post.osm_file_map_type.value + "\""; 
+      }
+
+      if (document.post.osm_file_theme.value == "dark"){
+        ThemeField = " control=\"mouseposition,scaleline\" map_border=\"thin solid grey\" theme=\"dark\"";
+      }
+      else if (document.post.osm_file_theme.value == "blue"){
+        ThemeField = " control=\"mouseposition,scaleline\" map_border=\"thin solid blue\" theme=\"ol\"";  
+      }
+      else if (document.post.osm_file_theme.value == "orange"){
+        ThemeField = " control=\"mouseposition,scaleline\" map_border=\"thin solid orange\" theme=\"ol_orange\"";
+      }
+
+
+       if ((AddFileOption != "none") && (document.post.file_FileURL.value != "http://")){
+         if (AddFileOption == "kml") {
+           FileField = " kml_file=\""+ FileUrl + "\"";
+         }
+         if (AddFileOption == "gpx_red") {
+           FileField = " gpx_file=\""+ FileUrl + "\" gpx_colour=\"red\"";
+         }
+         if (AddFileOption == "gpx_green") {
+           FileField = " gpx_file=\""+ FileUrl + "\" gpx_colour=\"green\"";
+         }
+         if (AddFileOption == "gpx_blue") {
+           FileField = " gpx_file=\""+ FileUrl + "\" gpx_colour=\"blue\"";
+         }
+         if (AddFileOption == "gpx_black") {
+           FileField = " gpx_file=\""+ FileUrl + "\" gpx_colour=\"black\"";
+         }
+         if (AddFileOption == "text") {
+           FileField = " marker_file=\""+ FileUrl + "\"";
+         }
+       } 
+
+      GenTxt = "[osm_map lat=\"" + Centerlonlat.lat + "\" lon=\"" + Centerlonlat.lon + "\" zoom=\"" + zoom + "\" width=\"100%\" height=\"450\" " + ThemeField + FileField + MapTypeField + "]"; 
+
+      div = document.getElementById("ShortCode_Div");
+      div.innerHTML = GenTxt;
+    ';
+    $Layer .= ' 
+      markerslayer.clearMarkers();
+      if ((((document.post.osm_import.value == "single") || (document.post.osm_import.value == "none")) || (document.post.osm_mode.value == "geotagging")) && (document.post.osm_marker.value != "none")){
+        var icon_Obj = osm_getIconSize(MarkerName);
+        var icon_size = new OpenLayers.Size(icon_Obj.width,icon_Obj.height);
+        var icon_offset = new OpenLayers.Pixel(icon_Obj.offset_width, icon_Obj.offset_height);
+        var icon_url = "'.OSM_PLUGIN_ICONS_URL.'" + MarkerName;
+        var click_icon = new OpenLayers.Icon(icon_url,icon_size,icon_offset); 
+        var icon_lonlat = new OpenLayers.LonLat(Clicklonlat.lon,Clicklonlat.lat).transform('.$a_MapName.'.displayProjection, '.$a_MapName.'.projection);
+        markerslayer.addMarker(new OpenLayers.Marker(icon_lonlat,click_icon.clone()));
+      }';
+    }
+    else if( $a_msgBox == 'metabox_geotag_sc_gen'){
+    $Layer .= ' 
+      MarkerField = "";
+      ThemeField  = "";
+      MapTypeField = "";
+      Linefield = "";
+      PostTypeField ="";
+
+      var MarkerName    = document.post.osm_geotag_marker.value;
+
+      if (document.post.osm_geotag_map_type.value != "Mapnik"){
+        MapTypeField = " type=\"" + document.post.osm_geotag_map_type.value + "\""; 
+      }
+
+      if (document.post.osm_geotag_line.value != "none"){
+        Linefield = " import_osm_line_color=\""+ document.post.osm_geotag_line.value + "\"";
+      }
+
+      if (document.post.osm_geotag_posttype.value != "post"){
+        PostTypeField = " post_type=\""+document.post.osm_geotag_posttype.value+"\"";
+      }
+
+      if (document.post.osm_geotag_marker.value != "none"){
+        MarkerField = " marker_name=\"" + MarkerName + "\"";  
+      }
+      if (document.post.osm_geotag_theme.value == "dark"){
+        ThemeField = " map_border=\"thin solid grey\" theme=\"dark\"";
+      }
+      if (document.post.osm_geotag_theme.value == "blue"){
+        ThemeField = " map_border=\"thin solid blue\" theme=\"ol\"";  
+      }
+      if (document.post.osm_geotag_theme.value == "orange"){
+        ThemeField = " map_border=\"thin solid orange\" theme=\"ol_orange\"";
+      }
+
+      GenTxt = "[osm_map lat=\"" + Centerlonlat.lat + "\" lon=\"" + Centerlonlat.lon + "\" zoom=\"" + zoom + "\" width=\"100%\" height=\"450\" " + "import=\"osm_l\"" + PostTypeField + Linefield + ThemeField + MarkerField + MapTypeField + "]"; 
+
+      div = document.getElementById("ShortCode_Div");
+      div.innerHTML = GenTxt;
+    ';
+    }
+    else if( $a_msgBox == 'metabox_geometry_sc_gen'){
     $Layer .= ' 
       MarkerField = "";
       ThemeField  = "";
@@ -533,8 +679,8 @@ class Osm_OpenLayers
         ThemeField = " control=\"mouseposition,scaleline\" map_border=\"thin solid orange\" theme=\"ol_orange\"";
       }
 
-      GenTxt = "[osm_map lat=\"" + Centerlonlat.lat + "\" lon=\"" + Centerlonlat.lon + "\" zoom=\"" + zoom + "\" width=\"100%\" height=\"450\" " + ThemeField + MarkerField + TypeField + MapTypeField + "]";
-      
+      GenTxt = "[osm_map lat=\"" + Centerlonlat.lat + "\" lon=\"" + Centerlonlat.lon + "\" zoom=\"" + zoom + "\" width=\"100%\" height=\"450\" " + ThemeField + MarkerField + TypeField + MapTypeField + "]"; 
+
       div = document.getElementById("ShortCode_Div");
       div.innerHTML = GenTxt;
     ';
