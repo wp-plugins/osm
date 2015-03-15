@@ -3,7 +3,7 @@
 Plugin Name: OSM
 Plugin URI: http://wp-osm-plugin.HanBlog.net
 Description: Embeds maps in your blog and adds geo data to your posts.  Find samples and a forum on the <a href="http://wp-osm-plugin.HanBlog.net">OSM plugin page</a>.  
-Version: 3.0
+Version: 3.1
 Author: MiKa
 Author URI: http://MiKa.HanBlog.net
 Minimum WordPress Version Required: 2.8
@@ -27,7 +27,7 @@ Minimum WordPress Version Required: 2.8
 */
 load_plugin_textdomain('OSM-plugin', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/');
 
-define ("PLUGIN_VER", "V3.0");
+define ("PLUGIN_VER", "V3.1");
 
 // modify anything about the marker for tagged posts here
 // instead of the coding.
@@ -99,7 +99,9 @@ if (@(!include('osm-config.php'))){
 }
 
 // do not edit this
-define ("Osm_TraceLevel", DEBUG_ERROR);
+//define ("Osm_TraceLevel", DEBUG_ERROR);
+define ("Osm_TraceLevel", DEBUG_OFF);
+
 //define ("Osm_TraceLevel", DEBUG_INFO);
 
 // If the function exists this file is called as upload_mimes.
@@ -390,6 +392,7 @@ class Osm
          // how many tags do we have in this post?
          $NumOfGeoTagsInPost = count($GeoData_Array);
          $PostMarker = get_post_meta($post->ID, 'OSM_geo_icon', true);
+         $PostMarker = Osm_icon::replaceOldIcon($PostMarker);
          for ($TagNum = 0; $TagNum < $NumOfGeoTagsInPost; $TagNum++){
            list($tag_lat, $tag_lon) = explode(',', $GeoData_Array[$TagNum]); 
            list($tag_lat, $tag_lon) = $this->checkLatLongRange('$marker_all_posts',$tag_lat, $tag_lon);
@@ -658,7 +661,6 @@ function OSM_isGeotagged(){
   //$Data = get_post_meta($post->ID, 'OSM_geo_data', true); 
   $CustomFieldName = get_option('osm_custom_field','OSM_geo_data');
   $Data = get_post_meta($post->ID, $CustomFieldName, true); 
-  $PostMarker = get_post_meta($post->ID, 'OSM_geo_icon', true);
   $Data = preg_replace('/\s*,\s*/', ',',$Data);
   // get pairs of coordination
   $GeoData_Array = explode( ' ', $Data );

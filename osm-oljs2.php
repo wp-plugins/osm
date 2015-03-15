@@ -106,7 +106,7 @@ class Osm_OpenLayers
     var '.$a_LayerName.' = new OpenLayers.Map("'.$a_LayerName.'", {projection: "EPSG:3857", displayProjection: "EPSG:4326",
         layers: [new OpenLayers.Layer.Google("Google Physical",
                 {type: google.maps.MapTypeId.TERRAIN, zoomMethod: null, animationEnabled: false, numZoomLevels: 23, MAX_ZOOM_LEVEL: 22}),
-                new OpenLayers.Layer.Vector("OSM-plugin",{attribution:"<a href=\"http://mapicons.nicolasmollet.com/\">Icon</a> and <a href=\"http://wp-osm-plugin.hanblog.net\">OSM-Plugin<br><br></a>"})]});
+                new OpenLayers.Layer.Vector("OSM-plugin",{attribution:" <a href=\"http://wp-osm-plugin.hanblog.net\">OSM-Plugin<br><br></a>"})]});
     ';
     }
     else if ($a_Type == 'GoogleStreet'){
@@ -117,7 +117,7 @@ class Osm_OpenLayers
          displayProjection: "EPSG:4326",
          layers: [new OpenLayers.Layer.Google("Google Streets",
                    {zoomMethod: null, animationEnabled: false, numZoomLevels: 23, MAX_ZOOM_LEVEL: 22}),
-                  new OpenLayers.Layer.Vector("OSM-plugin",{attribution:"<a href=\"http://mapicons.nicolasmollet.com/\">Icon</a> and <a href=\"http://wp-osm-plugin.hanblog.net\">OSM-Plugin<br><br></a>"})]});
+                  new OpenLayers.Layer.Vector("OSM-plugin",{attribution:" <a href=\"http://wp-osm-plugin.hanblog.net\">OSM-Plugin<br><br></a>"})]});
       ';
     }
     else if ($a_Type == 'GoogleHybrid'){
@@ -125,7 +125,7 @@ class Osm_OpenLayers
     var '.$a_LayerName.' = new OpenLayers.Map("'.$a_LayerName.'", {projection: "EPSG:3857", displayProjection: "EPSG:4326",
         layers: [new OpenLayers.Layer.Google("Google Hybrid",
                 {type: google.maps.MapTypeId.HYBRID, zoomMethod: null, animationEnabled: false, numZoomLevels: 23, MAX_ZOOM_LEVEL: 22}),
-                 new OpenLayers.Layer.Vector("OSM-plugin",{attribution:"<a href=\"http://mapicons.nicolasmollet.com/\">Icon</a> and <a href=\"http://wp-osm-plugin.hanblog.net\">OSM-Plugin<br><br></a>"})]});
+                 new OpenLayers.Layer.Vector("OSM-plugin",{attribution:" <a href=\"http://wp-osm-plugin.hanblog.net\">OSM-Plugin<br><br></a>"})]});
     ';
     }
     else if ($a_Type == 'GoogleSatellite'){
@@ -134,7 +134,7 @@ class Osm_OpenLayers
     var '.$a_LayerName.' = new OpenLayers.Map("'.$a_LayerName.'", {projection: "EPSG:3857", displayProjection: "EPSG:4326",
         layers: [new OpenLayers.Layer.Google("Google Satellite",
                 {type: google.maps.MapTypeId.SATELLITE, zoomMethod: null, animationEnabled: false, numZoomLevels: 23, MAX_ZOOM_LEVEL: 22}),
-            new OpenLayers.Layer.Vector("OSM-plugin",{attribution:"<a href=\"http://mapicons.nicolasmollet.com/\">Icon</a> and <a href=\"http://wp-osm-plugin.hanblog.net\">OSM-Plugin<br><br></a>"})]});
+            new OpenLayers.Layer.Vector("OSM-plugin",{attribution:" <a href=\"http://wp-osm-plugin.hanblog.net\">OSM-Plugin<br><br></a>"})]});
     ';
     }
     else if ($a_Type == 'AllGoogle'){
@@ -158,7 +158,7 @@ class Osm_OpenLayers
                 "Google Satellite",
                 {type: google.maps.MapTypeId.SATELLITE, numZoomLevels: 22, zoomMethod: null}
             ),
-            new OpenLayers.Layer.Vector("OSM-plugin",{attribution:"<a href=\"http://mapicons.nicolasmollet.com/\">Icon</a> and <a href=\"http://wp-osm-plugin.hanblog.net\">OSM-Plugin<br><br></a>"})
+            new OpenLayers.Layer.Vector("OSM-plugin",{attribution:" <a href=\"http://wp-osm-plugin.hanblog.net\">OSM-Plugin<br><br></a>"})
         ]});
     '.$a_LayerName.'.addControl(new OpenLayers.Control.LayerSwitcher());
     ';
@@ -783,7 +783,8 @@ class Osm_OpenLayers
         }
         else {
           // set it do invidual marker
-          $this->traceText(DEBUG_ERROR, "e_not_osm_icon");
+          $this->traceText(DEBUG_INFO, "e_not_osm_icon");
+          $this->traceText(DEBUG_INFO, $a_MarkerArray[$row][Marker]);
         }
       }
       else {

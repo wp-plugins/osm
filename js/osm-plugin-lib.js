@@ -102,23 +102,11 @@ function osm_getIconSize(a_IconName){
     Icon["offset_height"] = "-16";
     Icon["offset_width"] = "-16";
   }
-  else if (a_IconName == "bicycling.png"){
-    Icon["height"] = "19";
-    Icon["width"] = "32";
-    Icon["offset_height"] = "-9";
-    Icon["offset_width"] = "-16";
-  }
   else if (a_IconName == "bus.png"){
     Icon["height"] = "32";
     Icon["width"] = "26";
     Icon["offset_height"] = "-16";
     Icon["offset_width"] = "-13";
-  }
-  else if (a_IconName == "car.png"){
-    Icon["height"] = "18";
-    Icon["width"] = "32";
-    Icon["offset_height"] = "-16";
-    Icon["offset_width"] = "-9";
   }
   else if (a_IconName == "geocache.png"){
     Icon["height"] = "25";

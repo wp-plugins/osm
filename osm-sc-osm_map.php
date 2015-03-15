@@ -34,6 +34,8 @@
     'gpx_colour_list' => 'NoColourList',
     'kml_file'  => 'NoFile',           // 'absolut address'          
     'kml_colour'=> 'NoColour',
+    'kml_file_list'   => 'NoFileList',
+    'kml_colour_list' => 'NoColourList',
     // are there markers in the map wished loaded from a file
     'marker_file'     => 'NoFile', // 'absolut address'
     'marker_file_proxy' => 'NoFile', // 'absolut address'
@@ -142,7 +144,7 @@
       $long  = $lon;
     }
 
-
+    $marker_name = Osm_icon::replaceOldIcon($marker_name);
     if (Osm_icon::isOsmIcon($marker_name) == 1){
        $Icon = Osm_icon::getIconsize($marker_name);
        $Icon["name"]  = $marker_name;
@@ -324,6 +326,21 @@ box-shadow: none;}';
       $output .= Osm_OpenLayers::addVectorLayer($MapName, $kml_file,$kml_colour,'KML');
     }
 
+    if ($kml_file_list != 'NoFileList'){
+      $KmlFileListArray   = explode( ',', $kml_file_list ); 
+      $KmlColourListArray = explode( ',', $kml_colour_list);
+      $this->traceText(DEBUG_INFO, "(NumOfGpxFiles: ".sizeof($KmlFileListArray)." NumOfGpxColours: ".sizeof($KmlColourListArray).")!");
+
+      for($x=0;$x<sizeof($KmlFileListArray);$x++){
+        $KmlName = basename($KmlFileListArray[$x], ".kml");
+        $output .= Osm_OpenLayers::addVectorLayer($MapName, $KmlFileListArray[$x],$KmlColourListArray[$x],'KML');
+        }
+
+      if (($kml_colour_list != "NoColourList") && (sizeof($KmlFileListArray) == sizeof($KmlColourListArray))){
+        $this->traceText(DEBUG_ERROR, "e_kml_list_error");
+      }
+    }
+
     // Add the marker here which we get from the file
     if ($marker_file_proxy != 'NoFile'){
       $MarkerName = basename($marker_file_proxy, ".txt");
@@ -390,13 +407,14 @@ box-shadow: none;}';
      // set the center of the map to the first geotag
      $lat = $temp_lat;
      $long = $temp_lon;
-
+     $PostMarker = Osm_icon::replaceOldIcon($PostMarker);
      if (Osm_icon::isOsmIcon($PostMarker) == 1){
        $Icon = Osm_icon::getIconsize($PostMarker);
        $Icon["name"]  = $PostMarker;
      }
      else {
-      $this->traceText(DEBUG_ERROR, "e_not_osm_icon");
+      $this->traceText(DEBUG_INFO, "e_not_osm_icon");
+      $this->traceText(DEBUG_INFO, $PostMarker);
      }
 
      list($temp_lat, $temp_lon) = Osm::checkLatLongRange('Marker',$temp_lat, $temp_lon); 
@@ -416,7 +434,7 @@ box-shadow: none;}';
      $GeoData_Array = explode( ' ', $Data );
      list($temp_lat, $temp_lon) = explode(',', $GeoData_Array[0]); 
      $DoPopUp = 'false';
-
+     $PostMarker = Osm_icon::replaceOldIcon($PostMarker);
      if (Osm_icon::isOsmIcon($PostMarker) == 1){
        $Icon = Osm_icon::getIconsize($PostMarker);
        $Icon["name"]  = $PostMarker;
