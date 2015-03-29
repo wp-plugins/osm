@@ -210,10 +210,11 @@ function osm_saveGeotag(){
       lon: osm_ajax_object.lon,
       icon: osm_ajax_object.icon,
       post_id: osm_ajax_object.post_id,
+      geotag_nonce: osm_ajax_object.geotag_nonce
     };
     jQuery.post(osm_ajax_object.ajax_url, data, function(response) {
       div = document.getElementById("Geotag_Div");
-      div.innerHTML = "Saved geotag!";
+      div.innerHTML = response;
     });
   }
 }

@@ -20,8 +20,13 @@ function osm_map_create() {
 
   wp_enqueue_script( 'ajax-script', plugins_url( '/js/osm-plugin-lib.js', __FILE__ ), array('jquery') );
   wp_localize_script( 'ajax-script', 'osm_ajax_object',
-            array( 'ajax_url' => admin_url( 'admin-ajax.php' ), 'lat' => '', 'lon' => '', 'icon' => '', 'post_id' => '' ) );
-
+            array( 'ajax_url' => admin_url( 'admin-ajax.php' ), 
+                   'lat' => '', 
+                   'lon' => '', 
+                   'icon' => '', 
+                   'post_id' => '',
+                   'geotag_nonce' => wp_create_nonce( 'osm_geotag_nonce')
+            ));
   $screens = array( 'post', 'page' );
   foreach ($screens as $screen) {
     add_meta_box( 'osm-sc-meta', 'WP OSM Plugin shortcode generator', 'osm_map_create_shortcode_function', $screen, 'normal', 'high' );

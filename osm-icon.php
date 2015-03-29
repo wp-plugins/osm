@@ -143,7 +143,8 @@ class Osm_icon
     $a_IconName == "mic_black_car_01.png" || $a_IconName == "mic_green_car_01.png" ||
     $a_IconName == "mic_brown_car_01.png" || $a_IconName == "mic_black_camera_01.png" ||
     $a_IconName == "mic_orange_archery_01.png" || $a_IconName == "mic_black_archery_01.png" ||
-    $a_IconName == "mic_blue_empty_01.png" || $a_IconName == "mic_black_empty_01.png"
+    $a_IconName == "mic_blue_empty_01.png" || $a_IconName == "mic_black_empty_01.png" ||
+    $a_IconName == "mic_black_heart_01.png"
 ){
     return 1;
    }

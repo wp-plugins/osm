@@ -96,7 +96,6 @@
 
 <form name="Naviform" action="">
 <?php _e('Add a link in the marker to route to your marker: ','OSM-plugin') ?> <br>
-<img src="<?php echo OSM_PLUGIN_URL ?>/icons/ORS_01.png" alt="OpenRouteService"><input type="radio" name="Navi_Link" value="ors"> <span><?php _e('OpenRouteService   ','OSM-plugin') ?> </span>
 <img src="<?php echo OSM_PLUGIN_URL ?>/icons/YN_01.png" alt="YourNavigation"><input type="radio" name="Navi_Link" value="yn"> <span><?php _e('YourNavigation   ','OSM-plugin') ?> </span>
 <img src="<?php echo OSM_PLUGIN_URL ?>/icons/OSRM_01.png" alt="Open Source Routing Machine"><input type="radio" name="Navi_Link" value="osrm"> <span><?php _e('Open Source Routing Machine ','OSM-plugin') ?> </span>
 </form>

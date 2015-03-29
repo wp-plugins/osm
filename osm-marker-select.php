@@ -29,8 +29,6 @@
 <option value="mic_blue_mobilephonetower_01.png"><?php _e('Mobilephonetower','OSM-plugin');echo ' ';_e('blue','OSM-plugin') ?></option>
 <option value="mic_orange_hiking_01.png"><?php _e('Hiking','OSM-plugin');echo ' ';_e('orange','OSM-plugin') ?></option>
 <option value="mic_blue_bridge_old_01.png"><?php _e('Bridge','OSM-plugin');echo ' ';_e('blue','OSM-plugin') ?></option>
-<option value="mic_green_arbol_01.png"><?php _e('Tree','OSM-plugin');echo ' ';_e('green','OSM-plugin') ?></option>
-<option value="mic_green_garden_01.png"><?php _e('Garden','OSM-plugin');echo ' ';_e('green','OSM-plugin') ?></option>
 <option value="mic_blue_drinkingwater_01.png"><?php _e('Drinkingwater','OSM-plugin');echo ' ';_e('blue','OSM-plugin') ?></option>
 <option value="mic_orange_archery_01.png"><?php _e('Archery','OSM-plugin');echo ' ';_e('orange','OSM-plugin') ?></option>
 <option value="mic_black_archery_01.png"><?php _e('Archery','OSM-plugin');echo ' ';_e('black','OSM-plugin') ?></option>

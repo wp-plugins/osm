@@ -519,19 +519,19 @@ class Osm_OpenLayers
       }
 
       if (document.post.osm_marker_marker.value != "none"){
-        MarkerField = " marker=\""+Clicklonlat.lat+","+Clicklonlat.lon+"\" marker_name=\"" + MarkerName + "\"";  
+        MarkerField = " marker_latlon=\""+Clicklonlat.lat+","+Clicklonlat.lon+"\" marker_name=\"" + MarkerName + "\"";  
       }
       if (document.post.osm_marker_theme.value == "dark"){
-        ThemeField = " control=\"mouseposition,scaleline\" map_border=\"thin solid grey\" theme=\"dark\"";
+        ThemeField = " map_border=\"thin solid grey\"";
       }
       else if (document.post.osm_marker_theme.value == "blue"){
-        ThemeField = " control=\"mouseposition,scaleline\" map_border=\"thin solid blue\" theme=\"ol\"";  
+        ThemeField = " map_border=\"thin solid blue\"";  
       }
       else if (document.post.osm_marker_theme.value == "orange"){
-        ThemeField = " control=\"mouseposition,scaleline\" map_border=\"thin solid orange\" theme=\"ol_orange\"";
+        ThemeField = " map_border=\"thin solid orange\"";
       }
 
-      GenTxt = "[osm_map lat=\"" + Centerlonlat.lat + "\" lon=\"" + Centerlonlat.lon + "\" zoom=\"" + zoom + "\" width=\"100%\" height=\"450\" " + ThemeField + MarkerField + MapTypeField + "]"; 
+      GenTxt = "[osm_map_v3 map_center=\"" + Centerlonlat.lat + "," + Centerlonlat.lon + "\" zoom=\"" + zoom + "\" width=\"100%\" height=\"450\" " + ThemeField + MarkerField + MapTypeField + "]"; 
 
       div = document.getElementById("ShortCode_Div");
       div.innerHTML = GenTxt;

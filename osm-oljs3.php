@@ -24,15 +24,7 @@ class Osm_OLJS3
     if ($a_Type == "osm"){
       $TileLayer .= '
       var raster = new ol.layer.Tile({
-        source: new ol.source.OSM({
-          attributions: [
-            new ol.Attribution({
-              html: " And " +
-              "<a href=\"http://wp-osm-plugin.HanBlog.net/\">WP OSM Plugin</a>"
-            }),
-            ol.source.OSM.ATTRIBUTION
-          ]
-        })
+        source: new ol.source.OSM({})
       });';
     }
     else if ($a_Type == "stamen_toner"){
@@ -74,9 +66,7 @@ class Osm_OLJS3
               attributions: [
               new ol.Attribution({
                 html: "and &copy; " +
-                "<a href=\"http://www.openseamap.org/\">OpenSeaMap</a>" + 
-                " and " +
-                "<a href=\"http://wp-osm-plugin.HanBlog.net/\">WP OSM Plugin</a>"
+                "<a href=\"http://www.openseamap.org/\">OpenSeaMap</a>"
               }),
               ol.source.OSM.ATTRIBUTION
               ],

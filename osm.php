@@ -3,7 +3,7 @@
 Plugin Name: OSM
 Plugin URI: http://wp-osm-plugin.HanBlog.net
 Description: Embeds maps in your blog and adds geo data to your posts.  Find samples and a forum on the <a href="http://wp-osm-plugin.HanBlog.net">OSM plugin page</a>.  
-Version: 3.1
+Version: 3.1.1
 Author: MiKa
 Author URI: http://MiKa.HanBlog.net
 Minimum WordPress Version Required: 2.8
@@ -27,7 +27,7 @@ Minimum WordPress Version Required: 2.8
 */
 load_plugin_textdomain('OSM-plugin', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/');
 
-define ("PLUGIN_VER", "V3.1");
+define ("PLUGIN_VER", "V3.1.1");
 
 // modify anything about the marker for tagged posts here
 // instead of the coding.
@@ -124,18 +124,24 @@ if ( ! function_exists( 'osm_restrict_mime_types' ) ) {
 
 function saveGeotagAndPic(){
 
-  $latlon = $_POST['lat'].','.$_POST['lon'];
-  $icon = $_POST['icon'];
+  $latlon  = $_POST['lat'].','.$_POST['lon'];
+  $icon    = $_POST['icon'];
   $post_id = $_POST['post_id'];
+  $nonce   = $_POST['geotag_nonce'];
 
-  $CustomField =  get_option('osm_custom_field','OSM_geo_data');
-  delete_post_meta($post_id, $CustomField);
-  delete_post_meta($post_id, "OSM_geo_icon");
-  add_post_meta($post_id, $CustomField, $latlon, true );
-  if ($icon != ""){
-    add_post_meta($post_id, "OSM_geo_icon", $icon, true );	
+  if (!wp_verify_nonce($nonce, 'osm_geotag_nonce')){
+    echo "Error: Bad ajax request";
   }
-
+  else {
+    echo "Saved geotag!";
+    $CustomField =  get_option('osm_custom_field','OSM_geo_data');
+    delete_post_meta($post_id, $CustomField);
+    delete_post_meta($post_id, "OSM_geo_icon");
+    add_post_meta($post_id, $CustomField, $latlon, true );
+    if ($icon != ""){
+      add_post_meta($post_id, "OSM_geo_icon", $icon, true );	
+    }
+  }
   wp_die();
 }
 
@@ -183,7 +189,7 @@ class Osm
 
     // add the WP shortcode
     add_shortcode('osm_map',array(&$this, 'sc_showMap'));
-    add_shortcode('osm_ol3js',array(&$this, 'sc_OL3JS'));
+    add_shortcode('osm_map_v3',array(&$this, 'sc_OL3JS'));
     add_shortcode('osm_image',array(&$this, 'sc_showImage'));
     add_shortcode('osm_info',array(&$this, 'sc_info'));
   }

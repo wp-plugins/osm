@@ -480,13 +480,10 @@ box-shadow: none;}';
      $marker_routing = strtolower($marker_routing);
      if ($marker_routing != 'no') { 
        $temp_popup .= '<br><div class="route"><a href="';
-       if ($marker_routing == 'ors' || $marker_routing == 'openrouteservice') {  
-         $temp_popup .= 'http://openrouteservice.org/index.php?end=' . $temp_lon . ',' . $temp_lat . '&zoom=' . $zoom . '&pref=Fastest&lang=' . substr(get_locale(),0,2) . '&noMotorways=false&noTollways=false';
-       } 
-       elseif ($marker_routing == 'yn' || $marker_routing == 'yournavigation') {  
+       if ($marker_routing == 'yn' || $marker_routing == 'yournavigation') {  
          $temp_popup .= 'http://yournavigation.org/?tlat=' . $temp_lat . '&tlon=' . $temp_lon;
        }
-       elseif ($marker_routing == 'osrm' || $marker_routing == 'cm' || $marker_routing == 'cloudmade') {
+       elseif ($marker_routing == 'ors' || $marker_routing == 'openrouteservice' || $marker_routing == 'osrm' || $marker_routing == 'cm' || $marker_routing == 'cloudmade') {
          $temp_popup .= 'http://map.project-osrm.org/?dest=' . $temp_lat . ',' . $temp_lon;
        }
        else {
