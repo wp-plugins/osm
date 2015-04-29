@@ -227,7 +227,7 @@
     else if ($type == "basemap_at"){
       $output .= '
 
-      var template = "{Layer}/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg";
+      var template = "{Layer}/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png";
       var urls_basemap = [
         "http://maps1.wien.gv.at/basemap/" + template,
         "http://maps2.wien.gv.at/basemap/" + template,

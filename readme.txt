@@ -3,7 +3,7 @@ Contributors: MiKa
 Tags: map, OpenStreetMap, Google Maps, googlemaps, geo, KML, GPX, geotag, geolocation, geocache, geocaching, OSM, travelogue, OpenLayers, Open Layers, Open Street Map, CloudMade, marker, POI, geocode, geotagging, location, Tracks, WMS, OpenWeatherMap, Weather, OpenSeaMap, stamen, basemap, exif, meta, widget
 Requires at least: 2.8
 Tested up to: 4.2.1
-Stable tag: 3.2
+Stable tag: 3.2.1
 
 Customize maps in your post, pages and widgets. Add geotag to your blog and site. Use GPX, KML, CSV, TXT ... 
 
@@ -69,6 +69,8 @@ There must be not format tag (like href ...) in the shortcode.
 
 
 == Changelog ==
+= 3.2.1 =
+* FIX: basemap.at
 = 3.2 =
 * NEW: Add list of GPX files with waypoints using OpenLayers 3
 = 3.1.1 =

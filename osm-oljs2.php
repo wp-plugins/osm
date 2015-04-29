@@ -230,7 +230,7 @@ class Osm_OpenLayers
       $Layer .= '} ';
       $Layer .= 'var layerosm = new OpenLayers.Layer.OSM.Mapnik("Mapnik");';
       $Layer .= 'var layerbasemap_at = new OpenLayers.Layer.WMTS({
-                   url: "'.Osm_BaseMap_Tiles.'{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg",
+                   url: "'.Osm_BaseMap_Tiles.'{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png",
                    name: "basemap.at",
                    layer: "geolandbasemap",
                    style: "normal",
