@@ -281,7 +281,7 @@
        attributions: [
          new ol.Attribution({
            html: "Tiles &copy; " +
-           "<a href=\"https://www.basemap.at/\">basemap.at</a>"
+           "<a href=\"http://www.basemap.at/\">basemap.at</a>"
          }),
          ol.source.OSM.ATTRIBUTION
       ],
