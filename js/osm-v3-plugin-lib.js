@@ -83,7 +83,7 @@ function osm_addMarkerLayer(a_mapname, a_lon, a_lat) {
             anchorXUnits: "fraction",
             anchorYUnits: "pixels",
             opacity: 0.9,
-            src: "http://127.0.0.1/wp-content/plugins/osm/icons/mic_red_pinother_02.png"
+            src: "../../../../wp-content/plugins/osm/icons/mic_red_pinother_02.png"
           }))
         });
         iconFeature.setStyle(iconStyle);
