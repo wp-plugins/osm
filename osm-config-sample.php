@@ -6,6 +6,7 @@ define ("OSM_enable_Ajax", True);
 // to your location
 define ("OSM_default_lat", 48.856614);
 define ("OSM_default_lon", 2.352222);
+define ("OSM_default_zoom", 3);
 
 // SERVER_EMBEDDED   ... loaded by the plugin for each map (default)
 // SERVER_WP_ENQUEUE ... registered and loaded by WordPress

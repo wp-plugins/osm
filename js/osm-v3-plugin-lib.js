@@ -70,20 +70,19 @@ function osm_addPopupClickhandler(a_MapObj, a_MapStr) {
     a_MapObj.on("singleclick", function(evt) {ClickdisplayFeatureInfo(evt);}); 
 }
 
-function osm_addMarkerLayer(a_mapname, a_lon, a_lat) {
+function osm_addMarkerLayer(a_mapname, a_lon, a_lat, a_MarkerName) {
   var iconFeature = new ol.Feature({
     geometry: new ol.geom.Point(
       ol.proj.transform([a_lon,a_lat], "EPSG:4326", "EPSG:3857")),
       name: "Mein Inhalt"
   });
-
         var iconStyle = new ol.style.Style({
           image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
             anchor: [0.5, 46],
             anchorXUnits: "fraction",
             anchorYUnits: "pixels",
             opacity: 0.9,
-            src: "../../../../wp-content/plugins/osm/icons/mic_red_pinother_02.png"
+            src: a_MarkerName
           }))
         });
         iconFeature.setStyle(iconStyle);
